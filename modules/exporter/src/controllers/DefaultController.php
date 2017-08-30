@@ -2,8 +2,8 @@
 
 namespace luya\exporter\controllers;
 
-use Yii;
 use Exception;
+use Yii;
 
 class DefaultController extends \luya\web\Controller
 {

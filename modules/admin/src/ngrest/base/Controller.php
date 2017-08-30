@@ -2,12 +2,12 @@
 
 namespace luya\admin\ngrest\base;
 
-use Yii;
 use Exception;
-use yii\base\InvalidConfigException;
 use luya\admin\ngrest\NgRest;
 use luya\admin\ngrest\render\RenderCrud;
 use luya\helpers\FileHelper;
+use Yii;
+use yii\base\InvalidConfigException;
 use yii\web\ForbiddenHttpException;
 
 /**
@@ -20,10 +20,10 @@ use yii\web\ForbiddenHttpException;
 class Controller extends \luya\admin\base\Controller
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $layout = false;
-    
+
     /**
      * @var string Defines the related model for the NgRest Controller. The full qualified model name is required.
      *
@@ -34,7 +34,7 @@ class Controller extends \luya\admin\base\Controller
     public $modelClass;
 
     /**
-     * @var boolean Disables the permission
+     * @var bool Disables the permission
      */
     public $disablePermissionCheck = true;
 
@@ -48,23 +48,24 @@ class Controller extends \luya\admin\base\Controller
      * ```
      */
     public $globalButtons = [];
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
         parent::init();
-        
+
         if ($this->modelClass === null) {
-            throw new InvalidConfigException("The property `modelClass` must be defined by the Controller.");
+            throw new InvalidConfigException('The property `modelClass` must be defined by the Controller.');
         }
     }
-    
+
     private $_model;
 
     /**
-     * Get Model Object
+     * Get Model Object.
+     *
      * @return \luya\admin\ngrest\base\NgRestModel
      */
     public function getModel()
@@ -75,15 +76,16 @@ class Controller extends \luya\admin\base\Controller
 
         return $this->_model;
     }
-    
+
     /**
-     *
      * @param string $inline
      * @param string $relation
      * @param string $arrayIndex
      * @param string $modelClass
      * @param string $modelSelection
+     *
      * @throws Exception
+     *
      * @return string
      */
     public function actionIndex($inline = false, $relation = false, $arrayIndex = false, $modelClass = false, $modelSelection = false)
@@ -97,11 +99,11 @@ class Controller extends \luya\admin\base\Controller
         }
 
         $userSortSettings = Yii::$app->adminuser->identity->setting->get('ngrestorder.admin/'.$apiEndpoint, false);
-        
+
         if ($userSortSettings && is_array($userSortSettings) && $config->getDefaultOrder() !== false) {
             $config->defaultOrder = [$userSortSettings['field'] => $userSortSettings['sort']];
         }
-        
+
         $ngrest = new NgRest($config);
         $crud = new RenderCrud();
         $crud->setGlobalButtons($this->globalButtons);
@@ -113,26 +115,27 @@ class Controller extends \luya\admin\base\Controller
         if ($relation) {
             //$crud->viewFile = 'crud_relation.php';
         }
+
         return $ngrest->render($crud);
     }
-    
+
     public function actionExportDownload($key)
     {
         $sessionkey = Yii::$app->session->get('tempNgRestFileKey');
         $fileName = Yii::$app->session->get('tempNgRestFileName');
         $mimeType = Yii::$app->session->get('tempNgRestFileMime');
-        
+
         if ($sessionkey !== base64_decode($key)) {
             throw new ForbiddenHttpException('Invalid download key.');
         }
-    
+
         $content = FileHelper::getFileContent('@runtime/'.$sessionkey.'.tmp');
-    
+
         Yii::$app->session->remove('tempNgRestFileKey');
         Yii::$app->session->remove('tempNgRestFileName');
         Yii::$app->session->remove('tempNgRestFileMime');
         @unlink(Yii::getAlias('@runtime/'.$sessionkey.'.tmp'));
-    
+
         return Yii::$app->response->sendContentAsFile($content, $fileName, ['mimeType' => $mimeType]);
     }
 }

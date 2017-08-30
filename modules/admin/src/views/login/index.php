@@ -32,7 +32,7 @@ $spinner = '<svg version="1.1"
 ?>
 <div class="login-frame">
     <div class="login-logo">
-        <img src="<?= $this->getAssetUrl("luya\admin\assets\Login") .'/images/luyalogo_destructed.png' ?>" alt="<?= Module::t('login_pre_title', ['title' => Yii::$app->siteTitle]); ?>" />
+        <img src="<?= $this->getAssetUrl("luya\admin\assets\Login").'/images/luyalogo_destructed.png' ?>" alt="<?= Module::t('login_pre_title', ['title' => Yii::$app->siteTitle]); ?>" />
     </div>
     <!-- normal login form -->
     <form class="login-form" method="post" id="loginForm">
@@ -82,7 +82,7 @@ $spinner = '<svg version="1.1"
 
 <div class="login-info">
     <h1 class="login-title"><?= Yii::$app->siteTitle; ?></h1>
-    <span class="login-info-text"><?php if (Yii::$app->request->isSecureConnection): ?><i alt="<?= Module::t('login_ssl_info');?>" title="<?= Module::t('login_ssl_info');?>" class="material-icons">verified_user</i><?php endif; ?><?= Yii::$app->request->hostInfo; ?></span>
+    <span class="login-info-text"><?php if (Yii::$app->request->isSecureConnection): ?><i alt="<?= Module::t('login_ssl_info'); ?>" title="<?= Module::t('login_ssl_info'); ?>" class="material-icons">verified_user</i><?php endif; ?><?= Yii::$app->request->hostInfo; ?></span>
 </div>
 
 <div class="login-links">

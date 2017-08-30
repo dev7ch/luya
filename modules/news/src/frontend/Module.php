@@ -10,7 +10,7 @@ namespace luya\news\frontend;
 final class Module extends \luya\base\Module
 {
     /**
-     * @var boolean use the application view folder
+     * @var bool use the application view folder
      */
     public $useAppViewPath = true;
 
@@ -20,24 +20,24 @@ final class Module extends \luya\base\Module
      * In order to read more about activeDataProvider defaultOrder: http://www.yiiframework.com/doc-2.0/yii-data-sort.html#$defaultOrder-detail
      */
     public $articleDefaultOrder = ['timestamp_create' => SORT_DESC];
-    
+
     /**
-     * @var integer Default number of pages.
+     * @var int Default number of pages.
      */
     public $articleDefaultPageSize = 10;
-    
+
     /**
      * @var array The default order for the category article list in the category action for the news.
      *
      * In order to read more about activeDataProvider defaultOrder: http://www.yiiframework.com/doc-2.0/yii-data-sort.html#$defaultOrder-detail
      */
     public $categoryArticleDefaultOrder = ['timestamp_create' => SORT_DESC];
-    
+
     /**
-     * @var integer Default number of pages.
+     * @var int Default number of pages.
      */
     public $categoryArticleDefaultPageSize = 10;
-    
+
     /**
      * @var array
      */

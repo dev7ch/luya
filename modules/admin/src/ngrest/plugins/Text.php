@@ -15,14 +15,14 @@ class Text extends Plugin
      * @var string Define a HTML placeholder attribute.
      */
     public $placeholder;
-    
+
     /**
      * @var array An array with options can be passed to the createListTag.
      */
     public $listOptions = [];
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderList($id, $ngModel)
     {
@@ -30,7 +30,7 @@ class Text extends Plugin
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderCreate($id, $ngModel)
     {
@@ -38,7 +38,7 @@ class Text extends Plugin
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderUpdate($id, $ngModel)
     {

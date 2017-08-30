@@ -2,11 +2,11 @@
 
 namespace luya\cms\admin\importers;
 
-use Yii;
-use luya\Exception;
-use luya\helpers\FileHelper;
 use luya\cms\models\Layout;
 use luya\console\Importer;
+use luya\Exception;
+use luya\helpers\FileHelper;
+use Yii;
 use yii\helpers\Inflector;
 use yii\helpers\Json;
 
@@ -18,46 +18,46 @@ use yii\helpers\Json;
 class CmslayoutImporter extends Importer
 {
     public $ignorePrefix = ['_', '.'];
-    
+
     private function verifyVariable($chars)
     {
         if (preg_match('/[^a-zA-Z0-9]+/', $chars, $matches)) {
             return false;
         }
-        
+
         return true;
     }
-    
+
     public function generateReadableName($name)
     {
         return Inflector::humanize(Inflector::camel2words($name));
     }
-    
+
     public function run()
     {
         $cmslayouts = Yii::getAlias('@app/views/cmslayouts');
         $layoutFiles = [];
         if (file_exists($cmslayouts)) {
             $files = FileHelper::findFiles($cmslayouts, [
-                'recursive' => false,
+                'recursive'     => false,
                 'caseSensitive' => false,
-                'only' => ['*.php'],
-                'filter' => function ($path) {
+                'only'          => ['*.php'],
+                'filter'        => function ($path) {
                     return in_array(substr(basename($path), 0, 1), $this->ignorePrefix) ? false : null;
-                }]);
-            
+                }, ]);
+
             foreach ($files as $file) {
                 $fileinfo = FileHelper::getFileInfo($file);
-                $fileBaseName = $fileinfo->name . '.' . $fileinfo->extension;
+                $fileBaseName = $fileinfo->name.'.'.$fileinfo->extension;
 
                 $json = false;
-                
-                if (file_exists($fileinfo->sourceFilename. '.json')) {
-                    $json = FileHelper::getFileContent($fileinfo->sourceFilename. '.json');
-                    
+
+                if (file_exists($fileinfo->sourceFilename.'.json')) {
+                    $json = FileHelper::getFileContent($fileinfo->sourceFilename.'.json');
+
                     try {
                         $json = Json::decode($json);
-                        
+
                         // the rows column defines the placeholders
                         // if the rows column does not exists fail back to normal layout processing
                         if (isset($json['rows'])) {
@@ -69,13 +69,13 @@ class CmslayoutImporter extends Importer
                         $json = false;
                     }
                 }
-                
+
                 $readableFileName = $this->generateReadableName($fileinfo->name);
-                
+
                 $layoutFiles[] = $fileBaseName;
 
                 $content = file_get_contents($file);
-                
+
                 preg_match_all("/placeholders\[[\'\"](.*?)[\'\"]\]/", $content, $results);
 
                 if (!$json) {
@@ -90,22 +90,21 @@ class CmslayoutImporter extends Importer
                 } else {
                     $_placeholders = ['placeholders' => $json];
                 }
-                
-                
+
                 $layoutItem = Layout::find()->where(['or', ['view_file' => $fileBaseName]])->one();
-                
+
                 if ($layoutItem) {
                     $match = $this->comparePlaceholders($_placeholders, json_decode($layoutItem->json_config, true));
                     $matchRevert = $this->comparePlaceholders(json_decode($layoutItem->json_config, true), $_placeholders);
                     if ($match && $matchRevert) {
                         $layoutItem->updateAttributes([
-                            'name' => $readableFileName,
+                            'name'      => $readableFileName,
                             'view_file' => $fileBaseName,
                         ]);
                     } else {
                         $layoutItem->updateAttributes([
-                            'name' => $readableFileName,
-                            'view_file' => $fileBaseName,
+                            'name'        => $readableFileName,
+                            'view_file'   => $fileBaseName,
                             'json_config' => json_encode($_placeholders),
                         ]);
                         $this->addLog('existing cmslayout '.$readableFileName.' updated');
@@ -115,8 +114,8 @@ class CmslayoutImporter extends Importer
                     $data = new Layout();
                     $data->scenario = 'restcreate';
                     $data->setAttributes([
-                        'name' => $readableFileName,
-                        'view_file' => $fileBaseName,
+                        'name'        => $readableFileName,
+                        'view_file'   => $fileBaseName,
                         'json_config' => json_encode($_placeholders),
                     ]);
                     $data->save(false);
@@ -155,10 +154,10 @@ class CmslayoutImporter extends Importer
             }
 
             foreach ($holder as $var => $value) {
-                if ($var == "label") {
+                if ($var == 'label') {
                     continue;
                 }
-                
+
                 if (!array_key_exists($var, $a2[$key])) {
                     return false;
                 }

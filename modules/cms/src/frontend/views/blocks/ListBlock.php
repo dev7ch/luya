@@ -1,6 +1,6 @@
 <?php
 /**
- * @var $this \luya\cms\base\PhpBlockView
+ * @var \luya\cms\base\PhpBlockView
  */
 ?>
 <?php if (!empty($this->varValue('elements'))): ?>

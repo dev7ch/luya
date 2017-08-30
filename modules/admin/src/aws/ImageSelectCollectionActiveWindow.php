@@ -2,8 +2,8 @@
 
 namespace luya\admin\aws;
 
-use Yii;
 use luya\admin\ngrest\base\ActiveWindow;
+use Yii;
 
 /**
  * Create an Active Window where you can select Images and store them into a Ref Table.
@@ -77,7 +77,7 @@ class ImageSelectCollectionActiveWindow extends ActiveWindow
     {
         return Yii::$app->db->createCommand()->delete($this->refTableName, [
             $this->imageIdFieldName => (int) $imageId,
-            $this->refFieldName => (int) $this->getItemId(),
+            $this->refFieldName     => (int) $this->getItemId(),
         ])->execute();
     }
 
@@ -87,7 +87,7 @@ class ImageSelectCollectionActiveWindow extends ActiveWindow
 
         Yii::$app->db->createCommand()->insert($this->refTableName, [
             $this->imageIdFieldName => (int) $imageId,
-            $this->refFieldName => (int) $this->getItemId(),
+            $this->refFieldName     => (int) $this->getItemId(),
         ])->execute();
 
         return Yii::$app->storage->getImage($imageId)->toArray();

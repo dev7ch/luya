@@ -12,6 +12,7 @@ namespace luya\web;
  * ```
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 interface LinkInterface
@@ -22,7 +23,7 @@ interface LinkInterface
      * @return string Returns the href string which can be either with or without domain.
      */
     public function getHref();
-    
+
     /**
      * Get the target attribute value inside the Link tag.
      *

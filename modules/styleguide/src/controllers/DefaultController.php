@@ -24,7 +24,7 @@ class DefaultController extends \luya\web\Controller
         foreach (Yii::$app->element->getElements() as $name => $closure) {
             $reflection = new \ReflectionFunction($closure);
             $args = $reflection->getParameters();
-            
+
             $params = [];
             $writtenParams = [];
             foreach ($args as $k => $v) {
@@ -40,21 +40,21 @@ class DefaultController extends \luya\web\Controller
                     }
                 }
             }
-            
+
             $containers[] = [
                 'name' => $name,
-                'tag' => Html::tag('div', Yii::$app->element->getElement($name, $params), $this->module->divOptions),
+                'tag'  => Html::tag('div', Yii::$app->element->getElement($name, $params), $this->module->divOptions),
                 'args' => $writtenParams,
             ];
         }
-        
+
         foreach ($this->module->assetFiles as $class) {
             $this->registerAsset($class);
         }
 
         return $this->render('index', [
             'containers' => $containers,
-            'global' => Html::tag('div', $this->renderPartial('_global'), $this->module->divOptions),
+            'global'     => Html::tag('div', $this->renderPartial('_global'), $this->module->divOptions),
         ]);
     }
 
@@ -72,7 +72,7 @@ class DefaultController extends \luya\web\Controller
         }
 
         return $this->render('login', [
-            'e' => $e
+            'e' => $e,
         ]);
     }
 

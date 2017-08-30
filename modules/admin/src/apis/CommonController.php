@@ -2,12 +2,12 @@
 
 namespace luya\admin\apis;
 
-use Yii;
-use luya\traits\CacheableTrait;
-use luya\admin\models\Property;
-use luya\admin\models\Lang;
 use luya\admin\base\RestController;
+use luya\admin\models\Lang;
+use luya\admin\models\Property;
 use luya\admin\models\UserLogin;
+use luya\traits\CacheableTrait;
+use Yii;
 
 /**
  * Common Admin API Tasks.
@@ -20,40 +20,40 @@ use luya\admin\models\UserLogin;
 class CommonController extends RestController
 {
     use CacheableTrait;
-    
+
     /**
      * Set the lastest ngrest filter selection in the User Settings.
      *
-     * @return boolean
+     * @return bool
      */
     public function actionNgrestFilter()
     {
         $apiEndpoint = Yii::$app->request->getBodyParam('apiEndpoint');
         $filterName = Yii::$app->request->getBodyParam('filterName');
-        
+
         return Yii::$app->adminuser->identity->setting->set('ngrestfilter.'.$apiEndpoint, $filterName);
     }
-    
+
     /**
      * Set the lastest ngrest curd list order direction in the User Settings.
      *
-     * @return boolean
+     * @return bool
      */
     public function actionNgrestOrder()
     {
         $apiEndpoint = Yii::$app->request->getBodyParam('apiEndpoint');
         $sort = Yii::$app->request->getBodyParam('sort');
         $field = Yii::$app->request->getBodyParam('field');
-        
+
         if ($sort == '-') {
             $sort = SORT_DESC;
         } else {
             $sort = SORT_ASC;
         }
-        
+
         return Yii::$app->adminuser->identity->setting->set('ngrestorder.'.$apiEndpoint, ['sort' => $sort, 'field' => $field]);
     }
-    
+
     /**
      * Get all available languages from the database as array.
      *
@@ -63,7 +63,7 @@ class CommonController extends RestController
     {
         return Lang::find()->asArray()->all();
     }
-    
+
     /**
      * Get all available administration regisetered properties.
      *
@@ -75,37 +75,37 @@ class CommonController extends RestController
         foreach (Property::find()->all() as $item) {
             $object = Property::getObject($item->class_name);
             $data[] = [
-                'id' => $item->id,
-                'var_name' => $object->varName(),
-                'option_json' => $object->options(),
-                'label' => $object->label(),
-                'type' => $object->type(),
+                'id'            => $item->id,
+                'var_name'      => $object->varName(),
+                'option_json'   => $object->options(),
+                'label'         => $object->label(),
+                'type'          => $object->type(),
                 'default_value' => $object->defaultValue(),
-                'i18n' => $object->i18n,
+                'i18n'          => $object->i18n,
             ];
         }
-        
+
         return $data;
     }
-    
+
     /**
      * Triggerable action to flush the application cache and force user reload.
      *
-     * @return boolean
+     * @return bool
      */
     public function actionCache()
     {
         if (Yii::$app->has('cache')) {
             Yii::$app->cache->flush();
         }
-    
+
         $user = Yii::$app->adminuser->identity;
         $user->force_reload = false;
         $user->save(false);
-    
+
         return true;
     }
-    
+
     /**
      * Get a list with all frontend modules, which is used in several dropdowns in the admin ui.
      *
@@ -117,29 +117,30 @@ class CommonController extends RestController
         foreach (Yii::$app->getFrontendModules() as $k => $f) {
             $data[] = ['value' => $k, 'label' => $k];
         }
+
         return $data;
     }
 
     /**
      * Save the last selected filemanager folder in the user settings.
      *
-     * @return boolean
+     * @return bool
      */
     public function actionSaveFilemanagerFolderState()
     {
         $folderId = Yii::$app->request->getBodyParam('folderId');
-        
+
         if ($folderId) {
             return Yii::$app->adminuser->identity->setting->set('filemanagerFolderId', $folderId);
         } else {
             return Yii::$app->adminuser->identity->setting->remove('filemanagerFolderId');
         }
     }
-    
+
     /**
      * Return the latest selected filemanager from the user settings.
      *
-     * @return integer The folder id.
+     * @return int The folder id.
      */
     public function actionGetFilemanagerFolderState()
     {
@@ -160,7 +161,8 @@ class CommonController extends RestController
     }
 
     /**
-     * Last User logins
+     * Last User logins.
+     *
      * @return array|\yii\db\ActiveRecord[]
      */
     public function actionLastLogins()

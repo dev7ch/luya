@@ -3,13 +3,13 @@
 namespace luya\admin\commands;
 
 use Curl\Curl;
-use yii\helpers\Json;
 use luya\admin\models\Config;
 use luya\admin\proxy\ClientBuild;
 use luya\admin\proxy\ClientTransfer;
-use luya\traits\CacheableTrait;
-use luya\helpers\Url;
 use luya\console\Command;
+use luya\helpers\Url;
+use luya\traits\CacheableTrait;
+use yii\helpers\Json;
 
 /**
  * Synchronise a PROD env to your locale env with files and images.
@@ -44,7 +44,7 @@ use luya\console\Command;
  *
  * which is equals to:
  *
-  * ```sh
+ * ```sh
  * ./vendor/bin/luya admin/proxy -s=0 -t=large_table
  * ```
  *
@@ -67,41 +67,40 @@ use luya\console\Command;
 class ProxyController extends Command
 {
     use CacheableTrait;
-    
+
     const CONFIG_VAR_URL = 'lcpProxyUrl';
-    
+
     const CONFIG_VAR_TOKEN = 'lcpProxyToken';
-    
+
     const CONFIG_VAR_IDENTIFIER = 'lcpProxyIdentifier';
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $defaultAction = 'sync';
-    
+
     /**
-     * @var boolean Whether the isComplet sync check should be done after finish or not. If a table has a lot of traffic sometimes
-     * there is a difference between the exchange of table informations (build) and transfer the data. In order to prevent
-     * the exception message you can disable the strict compare mode. In order to ensure strict comparing enable $strict.
+     * @var bool Whether the isComplet sync check should be done after finish or not. If a table has a lot of traffic sometimes
+     *           there is a difference between the exchange of table informations (build) and transfer the data. In order to prevent
+     *           the exception message you can disable the strict compare mode. In order to ensure strict comparing enable $strict.
      */
     public $strict = false;
-    
+
     /**
      * @var string If a table option is passed only this table will be synchronised. If false by default all tables will be synced. You
-     * can define multible tables ab seperating those with a comma `table1,table2,table`. In order to define only tables with start
-     * with a given prefix you can use `app_*` using asterisks symbold to define wild card starts with string defintions.
+     *             can define multible tables ab seperating those with a comma `table1,table2,table`. In order to define only tables with start
+     *             with a given prefix you can use `app_*` using asterisks symbold to define wild card starts with string defintions.
      */
     public $table;
-    
+
     /**
      * @var string The production environment Domain where your LUYA application is running in production mode make so to use the right protocolo
-     * examples:
-     * - https://luya.io
-     * - http://www.example.com
-     *
+     *             examples:
+     *             - https://luya.io
+     *             - http://www.example.com
      */
     public $url;
-    
+
     /**
      * @var string The identifier you get from the Machines menu in your production env admin looks like this: lcp58e35acb4ca69
      */
@@ -111,23 +110,23 @@ class ProxyController extends Command
      * @var string The token which is used for the identifier, looks like this: ESOH1isB3ka_dF09ozkDJewpeecGCdUw
      */
     public $token;
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function options($actionID)
     {
         return ['strict', 'table', 'url', 'idf', 'token'];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function optionAliases()
     {
         return ['s' => 'strict', 't' => 'table', 'u' => 'url', 'i' => 'idf', 'tk' => 'token'];
     }
-    
+
     /**
      * Sync Proxy Data.
      *
@@ -137,7 +136,7 @@ class ProxyController extends Command
     {
         if ($this->url === null) {
             $url = Config::get(self::CONFIG_VAR_URL);
-            
+
             if (!$url) {
                 $url = $this->prompt('Enter the Proxy PROD env URL (e.g. https://example.com):');
                 Config::set(self::CONFIG_VAR_URL, $url);
@@ -145,10 +144,10 @@ class ProxyController extends Command
         } else {
             $url = $this->url;
         }
-        
+
         if ($this->idf === null) {
             $identifier = Config::get(self::CONFIG_VAR_IDENTIFIER);
-            
+
             if (!$identifier) {
                 $identifier = $this->prompt('Please enter the identifier ID:');
                 Config::set(self::CONFIG_VAR_IDENTIFIER, trim($identifier));
@@ -156,10 +155,10 @@ class ProxyController extends Command
         } else {
             $identifier = $this->idf;
         }
-        
+
         if ($this->token === null) {
             $token = Config::get(self::CONFIG_VAR_TOKEN);
-            
+
             if (!$token) {
                 $token = $this->prompt('Please enter the access token:');
                 Config::set(self::CONFIG_VAR_TOKEN, trim($token));
@@ -167,41 +166,41 @@ class ProxyController extends Command
         } else {
             $token = $this->token;
         }
-        
-        
-        $proxyUrl = Url::ensureHttp(rtrim(trim($url), '/')) . '/admin/api-admin-proxy';
-        $this->outputInfo('Connect to: ' . $proxyUrl);
-        
+
+        $proxyUrl = Url::ensureHttp(rtrim(trim($url), '/')).'/admin/api-admin-proxy';
+        $this->outputInfo('Connect to: '.$proxyUrl);
+
         $curl = new Curl();
         $curl->get($proxyUrl, ['identifier' => $identifier, 'token' => sha1($token)]);
-        
+
         if (!$curl->error) {
             $this->flushHasCache();
-            
+
             $this->verbosePrint($curl->response);
-            
+
             $response = Json::decode($curl->response);
             $build = new ClientBuild($this, [
-                'optionStrict' => $this->strict,
-                'optionTable' => $this->table,
-                'buildToken' => sha1($response['buildToken']),
-                'buildConfig' => $response['config'],
-                'requestUrl' => $response['providerUrl'],
-                'requestCloseUrl' => $response['requestCloseUrl'],
-                'fileProviderUrl' => $response['fileProviderUrl'],
-                'imageProviderUrl' => $response['imageProviderUrl'],
+                'optionStrict'      => $this->strict,
+                'optionTable'       => $this->table,
+                'buildToken'        => sha1($response['buildToken']),
+                'buildConfig'       => $response['config'],
+                'requestUrl'        => $response['providerUrl'],
+                'requestCloseUrl'   => $response['requestCloseUrl'],
+                'fileProviderUrl'   => $response['fileProviderUrl'],
+                'imageProviderUrl'  => $response['imageProviderUrl'],
                 'machineIdentifier' => $identifier,
-                'machineToken' => sha1($token),
+                'machineToken'      => sha1($token),
             ]);
-            
+
             $process = new ClientTransfer(['build' => $build]);
             if ($process->start()) {
                 return $this->outputSuccess('sync process has been sucessfull finished.');
             }
         }
-        
+
         $this->clearConfig();
         $this->output($curl->response);
+
         return $this->outputError($curl->error_message);
     }
 
@@ -211,7 +210,7 @@ class ProxyController extends Command
         Config::remove(self::CONFIG_VAR_URL);
         Config::remove(self::CONFIG_VAR_IDENTIFIER);
     }
-    
+
     /**
      * Cleanup all stored Config Data.
      *
@@ -220,6 +219,7 @@ class ProxyController extends Command
     public function actionClear()
     {
         $this->clearConfig();
+
         return $this->outputSuccess('Config has been cleared.');
     }
 }

@@ -12,6 +12,7 @@ use yii\helpers\Console;
  * muted behavior to run unit tests without respones.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 abstract class Controller extends \yii\console\Controller
@@ -31,7 +32,7 @@ abstract class Controller extends \yii\console\Controller
      * Helper method for writting console application output, include before and after wrappers.
      *
      * @param string $message The message which is displayed
-     * @param string $color A color from {{\yii\helpers\Console}} color constants.
+     * @param string $color   A color from {{\yii\helpers\Console}} color constants.
      */
     protected function output($message, $color = null)
     {
@@ -48,6 +49,7 @@ abstract class Controller extends \yii\console\Controller
      * Helper method to stop the console command with an error message, outputError returns exit code 1.
      *
      * @param string $message The message which should be displayed.
+     *
      * @return int Exit code 1
      */
     public function outputError($message)
@@ -61,6 +63,7 @@ abstract class Controller extends \yii\console\Controller
      * Helper method to stop the console command with a success message, outputSuccess returns exit code 0.
      *
      * @param string $message The message which sould be displayed
+     *
      * @return int Exit code 0
      */
     public function outputSuccess($message)
@@ -69,18 +72,19 @@ abstract class Controller extends \yii\console\Controller
 
         return 0;
     }
-    
+
     /**
      * Helper method to stop the console command with a info message which is threated in case of returns as success
      * but does have a different output color (blue). outputInfo returns exit code 0.
      *
      * @param string $message The message which sould be displayed.
+     *
      * @return int Exit code 0
      */
     public function outputInfo($message)
     {
         $this->output($message, Console::FG_CYAN);
-        
+
         return 0;
     }
 }

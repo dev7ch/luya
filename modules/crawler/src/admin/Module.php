@@ -2,27 +2,27 @@
 
 namespace luya\crawler\admin;
 
-use Yii;
 use luya\admin\components\AdminMenuBuilder;
+use Yii;
 
 final class Module extends \luya\admin\base\Module
 {
     public $apis = [
         'api-crawler-builderindex' => 'luya\crawler\admin\apis\BuilderindexController',
-        'api-crawler-index' => 'luya\crawler\admin\apis\IndexController',
-        'api-crawler-searchdata' => 'luya\crawler\admin\apis\SearchdataController',
+        'api-crawler-index'        => 'luya\crawler\admin\apis\IndexController',
+        'api-crawler-searchdata'   => 'luya\crawler\admin\apis\SearchdataController',
     ];
 
     public $translations = [
         [
-            'prefix' => 'crawleradmin*',
+            'prefix'   => 'crawleradmin*',
             'basePath' => '@crawleradmin/messages',
-            'fileMap' => [
+            'fileMap'  => [
                 'crawleradmin' => 'crawleradmin.php',
             ],
         ],
     ];
-    
+
     public function getMenu()
     {
         return (new AdminMenuBuilder($this))->node('crawler', 'find_in_page')

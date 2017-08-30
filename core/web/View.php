@@ -2,9 +2,8 @@
 
 namespace luya\web;
 
-use Yii;
-
 use luya\Exception;
+use Yii;
 
 /**
  * LUYA web view wrapper.
@@ -14,18 +13,20 @@ use luya\Exception;
  * @property string $publicHtml Return the relativ path to your public_html folder
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class View extends \yii\web\View
 {
     /**
-     * @var boolean If csrf validation is enabled in the request component, and autoRegisterCsrf is enabled, then
-     * all the meta informations will be auto added to meta tags.
+     * @var bool If csrf validation is enabled in the request component, and autoRegisterCsrf is enabled, then
+     *           all the meta informations will be auto added to meta tags.
      */
     public $autoRegisterCsrf = true;
-    
+
     /**
      * Init view object. Implements auto register csrf meta tokens.
+     *
      * @see \yii\base\View::init()
      */
     public function init()
@@ -46,17 +47,19 @@ class View extends \yii\web\View
      * is `app\assets\ResourcesAsset`.
      *
      * @param string $assetName The class name of the asset bundle (without the leading backslash)
-     * @return string The internal base path to the asset file.
+     *
      * @throws Exception
+     *
+     * @return string The internal base path to the asset file.
      */
     public function getAssetUrl($assetName)
     {
         $assetName = ltrim($assetName, '\\');
-        
+
         if (!isset($this->assetBundles[$assetName])) {
             throw new Exception("The AssetBundle '$assetName' is not registered.");
         }
-        
+
         return $this->assetBundles[$assetName]->baseUrl;
     }
 
@@ -64,6 +67,7 @@ class View extends \yii\web\View
      * Removes redundant whitespaces (>1) and new lines (>1).
      *
      * @param string $content input string
+     *
      * @return string compressed string
      */
     public function compress($content)

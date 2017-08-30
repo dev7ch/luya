@@ -6,20 +6,21 @@ use Yii;
 use yii\db\ActiveRecord;
 
 /**
- * ADMIN PROPERTY
+ * ADMIN PROPERTY.
  *
  * Base classes for CMS properties which are set by import process.
  *
- * @property integer $id
+ * @property int $id
  * @property string $module_name
  * @property string $var_name
  * @property string $class_name
+ *
  * @author Basil Suter <basil@nadar.io>
  */
 final class Property extends ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -27,7 +28,7 @@ final class Property extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -41,23 +42,23 @@ final class Property extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'id'          => 'ID',
             'module_name' => 'Module Name',
-            'var_name' => 'Var Name',
-            'class_name' => 'Class Name',
+            'var_name'    => 'Var Name',
+            'class_name'  => 'Class Name',
         ];
     }
-    
+
     public function createObject($value)
     {
         return static::getObject($this->class_name, $value);
     }
-    
+
     public static function getObject($className, $value = null)
     {
         return Yii::createObject(['class' => $className, 'value' => $value]);

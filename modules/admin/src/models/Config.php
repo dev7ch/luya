@@ -2,8 +2,8 @@
 
 namespace luya\admin\models;
 
-use yii\db\ActiveRecord;
 use luya\traits\RegistryTrait;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "admin_config".
@@ -16,15 +16,15 @@ use luya\traits\RegistryTrait;
 final class Config extends ActiveRecord
 {
     use RegistryTrait;
-    
+
     const CONFIG_LAST_IMPORT_TIMESTAMP = 'last_import_timestamp';
-    
+
     const CONFIG_SETUP_COMMAND_TIMESTAMP = 'setup_command_timestamp';
-    
+
     const CONFIG_INSTALLER_VENDOR_TIMESTAMP = 'installer_vendor_timestamp';
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -32,7 +32,7 @@ final class Config extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -41,14 +41,14 @@ final class Config extends ActiveRecord
             [['name'], 'unique'],
         ];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributeLabels()
     {
         return [
-            'name' => 'Name',
+            'name'  => 'Name',
             'value' => 'Value',
         ];
     }

@@ -2,23 +2,23 @@
 
 namespace luya\admin\models;
 
-use Yii;
-use luya\admin\file\Item;
-use luya\admin\ngrest\base\NgRestModel;
-use luya\admin\Module;
 use luya\admin\aws\StorageFilterImagesActiveWindow;
+use luya\admin\file\Item;
+use luya\admin\Module;
+use luya\admin\ngrest\base\NgRestModel;
+use Yii;
 
 /**
  * This is the model class for table "admin_storage_filter".
  *
- * @property integer $id
+ * @property int $id
  * @property string $identifier
  * @property string $name
  */
 final class StorageFilter extends NgRestModel
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -26,7 +26,7 @@ final class StorageFilter extends NgRestModel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -37,15 +37,15 @@ final class StorageFilter extends NgRestModel
             [['identifier'], 'unique'],
         ];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributeLabels()
     {
         return [
             'identifier' => Module::t('model_storagefilter_identifier'),
-            'name' => Module::t('model_storagefilter_name'),
+            'name'       => Module::t('model_storagefilter_name'),
         ];
     }
 
@@ -57,14 +57,15 @@ final class StorageFilter extends NgRestModel
         $log = [];
         foreach (StorageImage::find()->where(['filter_id' => $this->id])->all() as $img) {
             $image = Yii::$app->storage->getImage($img->id);
-            
+
             $log[$image->serverSource] = $img->deleteSource();
         }
+
         return $log;
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeDelete()
     {
@@ -72,9 +73,10 @@ final class StorageFilter extends NgRestModel
             foreach (StorageImage::find()->where(['filter_id' => $this->id])->all() as $img) {
                 $img->delete();
             }
+
             return true;
         }
-        
+
         return false;
     }
 
@@ -82,23 +84,24 @@ final class StorageFilter extends NgRestModel
      * Apply the current filter chain.
      *
      * @param \luya\admin\file\Item $file
-     * @param unknown $fileSavePath
-     * @return boolean
+     * @param unknown               $fileSavePath
+     *
+     * @return bool
      */
     public function applyFilterChain(Item $file, $fileSavePath)
     {
         $loadFrom = $file->getServerSource();
-        
+
         foreach (StorageFilterChain::find()->where(['filter_id' => $this->id])->joinWith('effect')->all() as $chain) {
             $response = $chain->applyFilter($loadFrom, $fileSavePath);
             $loadFrom = $fileSavePath;
         }
-        
+
         return true;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function ngRestApiEndpoint()
     {
@@ -106,25 +109,25 @@ final class StorageFilter extends NgRestModel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function ngRestAttributeTypes()
     {
         return [
-            'name' => 'text',
+            'name'       => 'text',
             'identifier' => 'text',
         ];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function ngRestConfig($config)
     {
         $config->aw->load(StorageFilterImagesActiveWindow::class);
-        
+
         $this->ngRestConfigDefine($config, 'list', ['name', 'identifier']);
-        
+
         return $config;
     }
 }

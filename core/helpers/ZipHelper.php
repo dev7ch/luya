@@ -8,6 +8,7 @@ use ZipArchive;
  * Helper methods when dealing with ZIP Archives.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class ZipHelper
@@ -15,9 +16,9 @@ class ZipHelper
     /**
      * Add files and sub-directories in a folder to zip file.
      *
-     * @param string $folder
+     * @param string      $folder
      * @param \ZipArchive $zipFile
-     * @param integer $exclusiveLength Number of text to be exclusived from the file path.
+     * @param int         $exclusiveLength Number of text to be exclusived from the file path.
      */
     private static function folderToZip($folder, &$zipFile, $exclusiveLength)
     {
@@ -51,7 +52,7 @@ class ZipHelper
      */
     public static function dir($sourcePath, $outZipPath)
     {
-        $pathInfo = pathInfo($sourcePath);
+        $pathInfo = pathinfo($sourcePath);
         $parentPath = $pathInfo['dirname'];
         $dirName = $pathInfo['basename'];
 

@@ -2,16 +2,16 @@
 
 namespace luya\admin\models;
 
-use Yii;
 use luya\admin\ngrest\base\NgRestModel;
 use luya\admin\traits\SoftDeleteTrait;
+use Yii;
 
 /**
  * Proxy Machine.
  *
  * File has been created with `crud/create` command on LUYA version 1.0.0-dev.
  *
- * @property integer $id
+ * @property int $id
  * @property string $name
  * @property tring $identifier
  * @property string $access_token
@@ -21,45 +21,45 @@ use luya\admin\traits\SoftDeleteTrait;
 class ProxyMachine extends NgRestModel
 {
     use SoftDeleteTrait;
-    
+
     public function init()
     {
         parent::init();
-        
+
         $this->on(self::EVENT_BEFORE_VALIDATE, [$this, 'gernateIds']);
     }
-    
+
     public function gernateIds()
     {
         $this->identifier = uniqid('lcp');
         $this->access_token = Yii::$app->security->generateRandomString(32);
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
         return 'admin_proxy_machine';
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('app', 'ID'),
-            'name' => Yii::t('app', 'Name'),
+            'id'           => Yii::t('app', 'ID'),
+            'name'         => Yii::t('app', 'Name'),
             'access_token' => Yii::t('app', 'Access Token'),
-            'is_deleted' => Yii::t('app', 'Is Deleted'),
-            'is_disabled' => Yii::t('app', 'Is Disabled'),
-            'identifier' => Yii::t('app', 'Identifier'),
+            'is_deleted'   => Yii::t('app', 'Is Deleted'),
+            'is_disabled'  => Yii::t('app', 'Is Disabled'),
+            'identifier'   => Yii::t('app', 'Identifier'),
         ];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -77,7 +77,7 @@ class ProxyMachine extends NgRestModel
     {
         return ['name'];
     }
-    
+
     /**
      * @return string Defines the api endpoint for the angular calls
      */
@@ -85,24 +85,25 @@ class ProxyMachine extends NgRestModel
     {
         return 'api-admin-proxymachine';
     }
-    
+
     /**
      * @return array An array define the field types of each field
      */
     public function ngRestAttributeTypes()
     {
         return [
-            'name' => 'text',
+            'name'         => 'text',
             'access_token' => 'text',
-            'identifier' => 'text',
-            'is_disabled' => 'toggleStatus',
+            'identifier'   => 'text',
+            'is_disabled'  => 'toggleStatus',
         ];
     }
-    
+
     /**
      * Define the NgRestConfig for this model with the ConfigBuilder object.
      *
      * @param \luya\admin\ngrest\ConfigBuilder $config The current active config builder object.
+     *
      * @return \luya\admin\ngrest\ConfigBuilder
      */
     public function ngRestConfig($config)
@@ -110,10 +111,10 @@ class ProxyMachine extends NgRestModel
         // define fields for types based from ngrestAttributeTypes
         $this->ngRestConfigDefine($config, 'list', ['name', 'identifier', 'access_token', 'is_disabled']);
         $this->ngRestConfigDefine($config, ['create'], ['name']);
-        
+
         // enable or disable ability to delete;
         $config->delete = true;
-        
+
         return $config;
     }
 }

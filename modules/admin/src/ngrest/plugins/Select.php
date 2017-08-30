@@ -2,8 +2,8 @@
 
 namespace luya\admin\ngrest\plugins;
 
-use luya\helpers\StringHelper;
 use luya\admin\ngrest\base\Plugin;
+use luya\helpers\StringHelper;
 
 /**
  * Base class for select dropdowns via Array or Model.
@@ -13,11 +13,11 @@ use luya\admin\ngrest\base\Plugin;
 abstract class Select extends Plugin
 {
     public $initValue = 0;
-    
+
     /**
      * @var string This value will be displayed in the ngrest list overview if the given value is empty().
      */
-    public $emptyListValue = "-";
+    public $emptyListValue = '-';
 
     /**
      * Getter method for data array.
@@ -27,7 +27,7 @@ abstract class Select extends Plugin
     abstract public function getData();
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderList($id, $ngModel)
     {
@@ -35,7 +35,7 @@ abstract class Select extends Plugin
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderCreate($id, $ngModel)
     {
@@ -43,7 +43,7 @@ abstract class Select extends Plugin
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderUpdate($id, $ngModel)
     {
@@ -51,20 +51,20 @@ abstract class Select extends Plugin
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function serviceData($event)
     {
         return ['selectdata' => $this->getData()];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function onAfterListFind($event)
     {
         $value = StringHelper::typeCast($event->sender->getAttribute($this->name));
-        
+
         if ($this->emptyListValue && empty($value)) {
             $event->sender->setAttribute($this->name, $this->emptyListValue);
         } else {

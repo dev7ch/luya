@@ -2,8 +2,8 @@
 
 namespace tests\admin\base;
 
-use luya\admin\base\Filter;
 use admintests\AdminTestCase;
+use luya\admin\base\Filter;
 
 class MyFilter extends Filter
 {
@@ -21,11 +21,11 @@ class MyFilter extends Filter
     {
         return [
             [self::EFFECT_THUMBNAIL, [
-                'width' => 200,
+                'width'  => 200,
                 'height' => 100,
             ]],
             [self::EFFECT_CROP, [
-                'width' => 200,
+                'width'  => 200,
                 'height' => 100,
             ]],
         ];

@@ -3,7 +3,7 @@
 namespace luya\admin\ngrest;
 
 /**
- * NgRest Config Interface
+ * NgRest Config Interface.
  *
  * @author Basil Suter <basil@nadar.io>
  */
@@ -16,29 +16,29 @@ interface ConfigInterface
     public function getExtraFields();
 
     public function onFinish();
-    
+
     // ensured
-    
+
     public function getHash();
-    
+
     public function getPrimaryKey();
-    
+
     public function setDefaultOrder($defaultOrder);
-    
+
     public function getDefaultOrderDirection();
-    
+
     public function getDefaultOrderField();
 
     public function getTableName();
-    
+
     public function getOption($key);
 
     public function getGroupByField();
-    
+
     public function getFilters();
-    
+
     public function getAttributeGroups();
-    
+
     public function getApiEndpoint();
 
     public function getRelataions();

@@ -1,11 +1,10 @@
 <?php
 /**
- * @var $className
+ * @var
  * @var $modelClass
  * @var $namespace
  * @var $luyaVersion
  */
-
 echo "<?php\n";
 ?>
 
@@ -21,5 +20,5 @@ class <?php echo $className; ?> extends \luya\admin\ngrest\base\Controller
     /**
      * @var string The path to the model which is the provider for the rules and fields.
      */
-    public $modelClass = '<?= $modelClass;?>';
+    public $modelClass = '<?= $modelClass; ?>';
 }

@@ -2,8 +2,8 @@
 
 namespace luyatests\core\tag\tags;
 
-use luyatests\LuyaWebTestCase;
 use luya\tag\tags\MailTag;
+use luyatests\LuyaWebTestCase;
 
 class MailTagTest extends LuyaWebTestCase
 {
@@ -13,7 +13,7 @@ class MailTagTest extends LuyaWebTestCase
 
         $this->assertNotNull($tag->readme());
         $this->assertNotNull($tag->readme());
-        
+
         $this->assertSame('<a href="mailto:hello@luya.io">hello@luya.io</a>', $tag->parse('hello@luya.io', null));
         $this->assertSame('<a href="mailto:hello@luya.io">E-Mail</a>', $tag->parse('hello@luya.io', 'E-Mail'));
     }

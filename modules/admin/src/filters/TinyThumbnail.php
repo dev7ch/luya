@@ -5,7 +5,7 @@ namespace luya\admin\filters;
 use luya\admin\base\Filter;
 
 /**
- * Admin Module default Filter: Tiny Thumbnail (40xnull)
+ * Admin Module default Filter: Tiny Thumbnail (40xnull).
  *
  * @author Basil Suter <basil@nadar.io>
  */
@@ -25,7 +25,7 @@ class TinyThumbnail extends Filter
     {
         return [
             [self::EFFECT_THUMBNAIL, [
-                'width' => 40,
+                'width'  => 40,
                 'height' => null,
             ]],
         ];

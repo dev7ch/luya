@@ -9,7 +9,7 @@ class Data extends \yii\db\ActiveRecord
     public $message;
 
     public $serverName;
-    
+
     public $errorArray = [];
 
     public static function tableName()
@@ -35,16 +35,18 @@ class Data extends \yii\db\ActiveRecord
     {
         if (is_array($this->error_json)) {
             $event->isValid = false;
+
             return $this->addError('error_json', Module::t('data_json_error'));
         }
-        
+
         $errorJsonArray = json_decode($this->error_json, true);
-        
+
         if (!isset($errorJsonArray['message']) || !isset($errorJsonArray['serverName'])) {
             $event->isValid = false;
+
             return $this->addError('error_json', Module::t('data_content_error'));
         }
-        
+
         $this->errorArray = $errorJsonArray;
         $this->message = $errorJsonArray['message'];
         $this->serverName = $errorJsonArray['serverName'];

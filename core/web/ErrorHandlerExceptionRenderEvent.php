@@ -12,6 +12,7 @@ use yii\base\Event;
  * The $exception property contains the throwed {{yii\base\Exception}} object.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class ErrorHandlerExceptionRenderEvent extends Event

@@ -24,6 +24,7 @@ use luya\admin\models\Tag;
  * ```
  *
  * @since 1.0.0
+ *
  * @author Basil Suter <basil@nadar.io>
  */
 trait TagsTrait
@@ -37,7 +38,7 @@ trait TagsTrait
     {
         return Tag::findRelations(static::tableName(), $this->id);
     }
-    
+
     /**
      * Get all tags associated with this table.
      *

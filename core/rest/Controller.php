@@ -2,10 +2,10 @@
 
 namespace luya\rest;
 
-use Yii;
-use yii\base\Model;
 use luya\traits\RestBehaviorsTrait;
+use Yii;
 use yii\base\InvalidParamException;
+use yii\base\Model;
 
 /**
  * Basic Rest Controller.
@@ -42,12 +42,13 @@ use yii\base\InvalidParamException;
  * ```
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class Controller extends \yii\rest\Controller
 {
     use RestBehaviorsTrait;
-    
+
     /**
      * Send Model errors with correct headers.
      *
@@ -72,7 +73,9 @@ class Controller extends \yii\rest\Controller
      * ```
      *
      * @param \yii\base\Model $model The model to find the first error.
+     *
      * @throws \yii\base\InvalidParamException
+     *
      * @return array If the model has errors InvalidParamException will be thrown
      */
     public function sendModelError(Model $model)
@@ -85,7 +88,7 @@ class Controller extends \yii\rest\Controller
         $result = [];
         foreach ($model->getFirstErrors() as $name => $message) {
             $result[] = [
-                'field' => $name,
+                'field'   => $name,
                 'message' => $message,
             ];
         }

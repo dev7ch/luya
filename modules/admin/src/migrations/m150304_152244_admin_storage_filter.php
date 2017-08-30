@@ -8,9 +8,9 @@ class m150304_152244_admin_storage_filter extends Migration
     public function safeUp()
     {
         $this->createTable('admin_storage_filter', [
-            'id' => $this->primaryKey(),
+            'id'         => $this->primaryKey(),
             'identifier' => $this->string(100)->notNull()->unique(),
-            'name' => $this->string(255),
+            'name'       => $this->string(255),
         ]);
     }
 

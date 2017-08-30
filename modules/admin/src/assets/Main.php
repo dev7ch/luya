@@ -10,37 +10,37 @@ namespace luya\admin\assets;
 class Main extends \luya\web\Asset
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $sourcePath = '@admin/resources';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $css = [
-        'dist/css/admin.css'
+        'dist/css/admin.css',
     ];
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $js = [
         'dist/js/main.js',
     ];
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $depends = [
         'luya\admin\assets\Jquery',
     ];
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $publishOptions = [
         'except' => [
             'node_modules/',
-        ]
+        ],
     ];
 }

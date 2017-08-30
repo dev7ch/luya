@@ -6,6 +6,7 @@ namespace luya\console\interfaces;
  * Command ImportController Interface.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 interface ImportControllerInterface
@@ -28,6 +29,7 @@ interface ImportControllerInterface
      * If there are no files found getDirectoryFiles will return an empty array.
      *
      * @param stirng $folderName The folder name to find all files from.
+     *
      * @return array If no files found for the given folder an empty array will be returned, otherwise a list of all files inside the given folder.
      */
     public function getDirectoryFiles($folderName);
@@ -40,7 +42,7 @@ interface ImportControllerInterface
      * ```
      *
      * @param string $section The section of where the log is executed.
-     * @param string $value The message to log.
+     * @param string $value   The message to log.
      */
     public function addLog($section, $value);
 }

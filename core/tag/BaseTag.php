@@ -11,12 +11,13 @@ use yii\base\Object;
  * @property \luya\web\View $view The view object in order to register scripts.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 abstract class BaseTag extends Object implements TagInterface
 {
     private $_view;
-    
+
     /**
      * Get the view object to register assets in tags.
      *
@@ -27,7 +28,7 @@ abstract class BaseTag extends Object implements TagInterface
         if ($this->_view === null) {
             $this->_view = Yii::$app->getView();
         }
-        
+
         return $this->_view;
     }
 }

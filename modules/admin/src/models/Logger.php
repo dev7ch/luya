@@ -2,11 +2,11 @@
 
 namespace luya\admin\models;
 
-use yii\helpers\Json;
-use yii\base\Arrayable;
-use luya\admin\ngrest\base\NgRestModel;
-use luya\admin\Module;
 use luya\admin\aws\DetailViewActiveWindow;
+use luya\admin\Module;
+use luya\admin\ngrest\base\NgRestModel;
+use yii\base\Arrayable;
+use yii\helpers\Json;
 
 /**
  * Logger to store information when working in controllers and actions.
@@ -53,10 +53,10 @@ use luya\admin\aws\DetailViewActiveWindow;
  * }
  * ```
  *
- * @property integer $id
- * @property integer $time
+ * @property int $id
+ * @property int $time
  * @property string $message
- * @property integer $type
+ * @property int $type
  * @property string $trace_file
  * @property string $trace_line
  * @property string $trace_function
@@ -66,32 +66,32 @@ use luya\admin\aws\DetailViewActiveWindow;
  * @property string $session
  * @property string $server
  * @property string $group_identifier If provided the group_identifier is used to group multiple logging informations into one trace in order to see what messages should be display togher (trace behavior).
- * @property integer $group_identifier_index
+ * @property int $group_identifier_index
  */
 final class Logger extends NgRestModel
 {
     /**
-     * @var integer Type level info.
+     * @var int Type level info.
      */
     const TYPE_INFO = 1;
-    
+
     /**
-     * @var integer Type level warning.
+     * @var int Type level warning.
      */
     const TYPE_WARNING = 2;
-    
+
     /**
-     * @var integer Type level error.
+     * @var int Type level error.
      */
     const TYPE_ERROR = 3;
-    
+
     /**
-     * @var integer Type level success.
+     * @var int Type level success.
      */
     const TYPE_SUCCESS = 4;
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -99,28 +99,28 @@ final class Logger extends NgRestModel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function ngRestApiEndpoint()
     {
         return 'api-admin-logger';
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function ngRestAttributeTypes()
     {
         return [
-            'time' => 'datetime',
-            'message' => 'text',
-            'group_identifier' => 'text',
+            'time'                   => 'datetime',
+            'message'                => 'text',
+            'group_identifier'       => 'text',
             'group_identifier_index' => 'number',
         ];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function ngRestExtraAttributeTypes()
     {
@@ -128,7 +128,7 @@ final class Logger extends NgRestModel
             'typeBadge' => 'html',
         ];
     }
-    
+
     /**
      * Get the html badge for a status type in order to display inside the admin module.
      *
@@ -147,27 +147,27 @@ final class Logger extends NgRestModel
                 return '<span class="badge green">success</span>';
         }
     }
-    
+
     public function ngRestGroupByField()
     {
         return 'group_identifier';
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function extraFields()
     {
         return ['typeBadge'];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function ngRestConfig($config)
     {
         $config->aw->load([
-            'class' => DetailViewActiveWindow::className(),
+            'class'      => DetailViewActiveWindow::className(),
             'attributes' => [
                 'id',
                 'time:datetime',
@@ -186,9 +186,9 @@ final class Logger extends NgRestModel
         $this->ngRestConfigDefine($config, ['list'], ['message', 'typeBadge', 'time', 'group_identifier', 'group_identifier_index']);
         $config->delete = true;
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -209,102 +209,103 @@ final class Logger extends NgRestModel
         if (self::$requestIdentifier === null) {
             self::$requestIdentifier = uniqid('logger', true);
         }
-        
+
         return self::$requestIdentifier;
     }
-    
+
     private static function getHashArray($message, $groupIdentifier)
     {
-        $hash = md5(static::getRequestIdentifier() . Json::encode((array) $groupIdentifier));
+        $hash = md5(static::getRequestIdentifier().Json::encode((array) $groupIdentifier));
         if (isset(self::$identiferIndex[$hash])) {
             self::$identiferIndex[$hash]++;
         } else {
             self::$identiferIndex[$hash] = 1;
         }
-    
-        $hashIndex =  self::$identiferIndex[$hash];
-    
+
+        $hashIndex = self::$identiferIndex[$hash];
+
         return [
-            'hash' => $hash,
+            'hash'  => $hash,
             'index' => $hashIndex,
         ];
     }
-    
+
     private static function log($type, $message, $trace, $groupIdentifier)
     {
         $hashArray = static::getHashArray($message, $groupIdentifier);
-        
+
         $file = 'unknown';
         $line = 'unknown';
         $fn = 'unknown';
         $fnArgs = [];
-        
+
         if (isset($trace[0])) {
-            $file = !isset($trace[0]['file']) ? : $trace[0]['file'];
-            $line = !isset($trace[0]['line']) ? : $trace[0]['line'];
-            $fn = !isset($trace[0]['function']) ? : $trace[0]['function'];
-            $fnArgs = !isset($trace[0]['args']) ? : $trace[0]['args'];
+            $file = !isset($trace[0]['file']) ?: $trace[0]['file'];
+            $line = !isset($trace[0]['line']) ?: $trace[0]['line'];
+            $fn = !isset($trace[0]['function']) ?: $trace[0]['function'];
+            $fnArgs = !isset($trace[0]['args']) ?: $trace[0]['args'];
         }
-        
+
         if (isset($trace[1])) {
-            $fn = !isset($trace[1]['function']) ? : $trace[1]['function'];
-            $fnArgs = !isset($trace[1]['args']) ? : $trace[1]['args'];
+            $fn = !isset($trace[1]['function']) ?: $trace[1]['function'];
+            $fnArgs = !isset($trace[1]['args']) ?: $trace[1]['args'];
         }
-        
+
         if ($message instanceof Arrayable) {
             $message = $message->toArray();
         }
-        
+
         $model = new self();
         $model->attributes = [
-            'time' => time(),
-            'message' => is_array($message) ? Json::encode($message) : $message,
-            'type' => $type,
-            'trace_file' => $file,
-            'trace_line' => $line,
-            'trace_function' => $fn,
-            'trace_function_args' => Json::encode($fnArgs),
-            'get' => (isset($_GET)) ? Json::encode($_GET) : '{}',
-            'post' => (isset($_POST)) ? Json::encode($_POST) : '{}',
-            'session' => (isset($_SESSION)) ? Json::encode($_SESSION) : '{}',
-            'server' => (isset($_SERVER)) ? Json::encode($_SERVER) : '{}',
-            'group_identifier' => $hashArray['hash'],
+            'time'                   => time(),
+            'message'                => is_array($message) ? Json::encode($message) : $message,
+            'type'                   => $type,
+            'trace_file'             => $file,
+            'trace_line'             => $line,
+            'trace_function'         => $fn,
+            'trace_function_args'    => Json::encode($fnArgs),
+            'get'                    => (isset($_GET)) ? Json::encode($_GET) : '{}',
+            'post'                   => (isset($_POST)) ? Json::encode($_POST) : '{}',
+            'session'                => (isset($_SESSION)) ? Json::encode($_SESSION) : '{}',
+            'server'                 => (isset($_SERVER)) ? Json::encode($_SERVER) : '{}',
+            'group_identifier'       => $hashArray['hash'],
             'group_identifier_index' => $hashArray['index'],
         ];
-        
+
         return $model->save(false);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributeLabels()
     {
         return [
-            'id' => Module::t('model_pk_id'),
-            'time' => Module::t('model_logger_time'),
-            'message' => Module::t('model_logger_message'),
-            'type' => Module::t('model_logger_type'),
-            'trace_file' => Module::t('model_logger_trace_file'),
-            'trace_line' => Module::t('model_logger_trace_line'),
-            'trace_function' => Module::t('model_logger_trace_function'),
-            'trace_function_args' => Module::t('model_logger_trace_function_args'),
-            'get' => Module::t('model_logger_get'),
-            'post' => Module::t('model_logger_post'),
-            'session' => Module::t('model_logger_session'),
-            'server' => Module::t('model_logger_server'),
-            'group_identifier' => Module::t('model_logger_group_identifier'),
+            'id'                     => Module::t('model_pk_id'),
+            'time'                   => Module::t('model_logger_time'),
+            'message'                => Module::t('model_logger_message'),
+            'type'                   => Module::t('model_logger_type'),
+            'trace_file'             => Module::t('model_logger_trace_file'),
+            'trace_line'             => Module::t('model_logger_trace_line'),
+            'trace_function'         => Module::t('model_logger_trace_function'),
+            'trace_function_args'    => Module::t('model_logger_trace_function_args'),
+            'get'                    => Module::t('model_logger_get'),
+            'post'                   => Module::t('model_logger_post'),
+            'session'                => Module::t('model_logger_session'),
+            'server'                 => Module::t('model_logger_server'),
+            'group_identifier'       => Module::t('model_logger_group_identifier'),
             'group_identifier_index' => Module::t('model_logger_group_identifier_index'),
-            'typeBadge' => Module::t('model_logger_badgetype'),
+            'typeBadge'              => Module::t('model_logger_badgetype'),
         ];
     }
-    
+
     /**
      * Log a success message.
      *
-     * @param string $message The message to log for this current request event.
+     * @param string $message         The message to log for this current request event.
      * @param string $groupIdentifier If multiple logger events are in the same action and you want to seperate them, define an additional group identifier.
-     * @return boolean
+     *
+     * @return bool
      */
     public static function success($message, $groupIdentifier = null)
     {
@@ -314,33 +315,36 @@ final class Logger extends NgRestModel
     /**
      * Log an error message.
      *
-     * @param string $message The message to log for this current request event.
+     * @param string $message         The message to log for this current request event.
      * @param string $groupIdentifier If multiple logger events are in the same action and you want to seperate them, define an additional group identifier.
-     * @return boolean
+     *
+     * @return bool
      */
     public static function error($message, $groupIdentifier = null)
     {
         return static::log(self::TYPE_ERROR, $message, debug_backtrace(false, 2), $groupIdentifier);
     }
-    
+
     /**
      * Log an info message.
      *
-     * @param string $message The message to log for this current request event.
+     * @param string $message         The message to log for this current request event.
      * @param string $groupIdentifier If multiple logger events are in the same action and you want to seperate them, define an additional group identifier.
-     * @return boolean
+     *
+     * @return bool
      */
     public static function info($message, $groupIdentifier = null)
     {
         return static::log(self::TYPE_INFO, $message, debug_backtrace(false, 2), $groupIdentifier);
     }
-    
+
     /**
      * Log a warning message.
      *
-     * @param string $message The message to log for this current request event.
+     * @param string $message         The message to log for this current request event.
      * @param string $groupIdentifier If multiple logger events are in the same action and you want to seperate them, define an additional group identifier.
-     * @return boolean
+     *
+     * @return bool
      */
     public static function warning($message, $groupIdentifier = null)
     {

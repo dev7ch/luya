@@ -2,15 +2,15 @@
 
 namespace luya\cms\frontend\controllers;
 
+use luya\cms\frontend\base\Controller;
+use luya\cms\menu\InjectItem;
+use luya\cms\models\NavItem;
 use Yii;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
-use luya\cms\models\NavItem;
-use luya\cms\menu\InjectItem;
-use luya\cms\frontend\base\Controller;
 
 /**
- * CMS Preview Rendering
+ * CMS Preview Rendering.
  *
  * @author Basil Suter <basil@nadar.io>
  */
@@ -23,11 +23,11 @@ class PreviewController extends Controller
         }
 
         $navItem = NavItem::findOne($itemId);
-        
+
         if (!$navItem) {
             throw new NotFoundHttpException("The requested nav item with id {$itemId} does not exist.");
         }
-        
+
         $langShortCode = $navItem->lang->short_code;
 
         Yii::$app->composition['langShortCode'] = $langShortCode;
@@ -38,11 +38,11 @@ class PreviewController extends Controller
         if (!$item) {
             // create new item to inject
             $inject = new InjectItem([
-                'id' => $itemId,
-                'navId' => $navItem->nav->id,
-                'childOf' => Yii::$app->menu->home->id,
-                'title' => $navItem->title,
-                'alias' => $navItem->alias,
+                'id'       => $itemId,
+                'navId'    => $navItem->nav->id,
+                'childOf'  => Yii::$app->menu->home->id,
+                'title'    => $navItem->title,
+                'alias'    => $navItem->alias,
                 'isHidden' => true,
             ]);
             // inject item into menu component
@@ -51,13 +51,13 @@ class PreviewController extends Controller
             $item = Yii::$app->menu->find()->where(['id' => $inject->id])->with('hidden')->lang($langShortCode)->one();
             // something really went wrong while finding injected item
             if (!$item) {
-                throw new NotFoundHttpException("Unable to find the preview for this ID, maybe the page is still Offline?");
+                throw new NotFoundHttpException('Unable to find the preview for this ID, maybe the page is still Offline?');
             }
         }
 
         // set the current item, as it would be resolved wrong from the url manager / request path
         Yii::$app->menu->current = $item;
-        
+
         return $this->renderContent($this->renderItem($itemId, null, $version));
     }
 }

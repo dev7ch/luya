@@ -5,7 +5,7 @@ namespace luya\admin\filters;
 use luya\admin\base\Filter;
 
 /**
- * Admin Module default Filter: Small Landscape (150x50)
+ * Admin Module default Filter: Small Landscape (150x50).
  *
  * @author Basil Suter <basil@nadar.io>
  */
@@ -25,7 +25,7 @@ class SmallLandscape extends Filter
     {
         return [
             [self::EFFECT_THUMBNAIL, [
-                'width' => 150,
+                'width'  => 150,
                 'height' => 50,
             ]],
         ];

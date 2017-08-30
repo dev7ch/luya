@@ -2,8 +2,8 @@
 
 namespace luya\news\admin;
 
-use Yii;
 use luya\admin\components\AdminMenuBuilder;
+use Yii;
 
 /**
  * News Admin Module.
@@ -14,22 +14,22 @@ final class Module extends \luya\admin\base\Module
 {
     public $apis = [
         'api-news-article' => 'luya\news\admin\apis\ArticleController',
-        'api-news-tag' => 'luya\news\admin\apis\TagController',
-        'api-news-cat' => 'luya\news\admin\apis\CatController',
+        'api-news-tag'     => 'luya\news\admin\apis\TagController',
+        'api-news-cat'     => 'luya\news\admin\apis\CatController',
     ];
 
     public $translations = [
         [
-            'prefix' => 'newsadmin*',
+            'prefix'   => 'newsadmin*',
             'basePath' => '@newsadmin/messages',
-            'fileMap' => [
+            'fileMap'  => [
                 'newsadmin' => 'newsadmin.php',
             ],
         ],
     ];
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getMenu()
     {
@@ -44,7 +44,8 @@ final class Module extends \luya\admin\base\Module
      * Translat news messages.
      *
      * @param string $message
-     * @param array $params
+     * @param array  $params
+     *
      * @return string
      */
     public static function t($message, array $params = [])

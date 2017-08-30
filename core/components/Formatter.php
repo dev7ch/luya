@@ -25,13 +25,14 @@ namespace luya\components;
  * - `$format` Or without php prefix use ICU options: http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class Formatter extends \yii\i18n\Formatter
 {
     /**
      * @var array An array with date formats to use as default values where key is the local language and value the format
-     * to use for the given language.
+     *            to use for the given language.
      *
      * ```php
      * 'dateFormats' => [
@@ -46,7 +47,7 @@ class Formatter extends \yii\i18n\Formatter
 
     /**
      * @var array An array with datetime formats to use as default values where the key is the local language and value
-     * the format to use for the given language.
+     *            the format to use for the given language.
      *
      * ```php
      * 'datetimeFormats' => [
@@ -58,10 +59,10 @@ class Formatter extends \yii\i18n\Formatter
      * See {{\luya\component\Formatter::$datetimeFormat}} for more informations about valid values.
      */
     public $datetimeFormats = [];
-    
+
     /**
      * @var array An array with time formats to use as default values where the key is the local language and value
-     * the format to use for the given language.
+     *            the format to use for the given language.
      *
      * ```php
      * 'timeFormats' => [
@@ -75,7 +76,7 @@ class Formatter extends \yii\i18n\Formatter
     public $timeFormats = [];
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -84,11 +85,11 @@ class Formatter extends \yii\i18n\Formatter
         if (isset($this->dateFormats[$this->locale])) {
             $this->dateFormat = $this->dateFormats[$this->locale];
         }
-        
+
         if (isset($this->datetimeFormats[$this->locale])) {
             $this->datetimeFormat = $this->datetimeFormats[$this->locale];
         }
-        
+
         if (isset($this->timeFormats[$this->locale])) {
             $this->timeFormat = $this->timeFormats[$this->locale];
         }

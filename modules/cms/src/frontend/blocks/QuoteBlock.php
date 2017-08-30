@@ -2,9 +2,9 @@
 
 namespace luya\cms\frontend\blocks;
 
-use luya\cms\frontend\Module;
-use luya\cms\frontend\blockgroups\TextGroup;
 use luya\cms\base\PhpBlock;
+use luya\cms\frontend\blockgroups\TextGroup;
+use luya\cms\frontend\Module;
 
 /**
  * Blockquote Block.
@@ -14,25 +14,25 @@ use luya\cms\base\PhpBlock;
 final class QuoteBlock extends PhpBlock
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $module = 'cms';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $cacheEnabled = true;
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function name()
     {
         return Module::t('block_quote_name');
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function blockGroup()
     {
@@ -40,7 +40,7 @@ final class QuoteBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function icon()
     {
@@ -48,7 +48,7 @@ final class QuoteBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function config()
     {
@@ -60,10 +60,10 @@ final class QuoteBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function admin()
     {
-        return '{% if vars.content is not empty %}<blockquote><p>{{ vars.content }}</p></blockquote>{% else %}<span class="block__empty-text">' . Module::t('block_quote_no_content') . '</span>{% endif %}';
+        return '{% if vars.content is not empty %}<blockquote><p>{{ vars.content }}</p></blockquote>{% else %}<span class="block__empty-text">'.Module::t('block_quote_no_content').'</span>{% endif %}';
     }
 }

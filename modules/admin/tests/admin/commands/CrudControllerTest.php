@@ -2,37 +2,36 @@
 
 namespace admintests\admin\commands;
 
-use Yii;
-use luya\admin\commands\CrudController;
 use admintests\AdminTestCase;
+use luya\admin\commands\CrudController;
+use Yii;
 
 class CrudControllerTest extends AdminTestCase
 {
     public function testFindModelFolderIsModelFolderAvailable()
     {
         $ctrl = new CrudController('id', Yii::$app);
-    
+
         $testShema = Yii::$app->db->getTableSchema('admin_user', true);
         $ctrl->moduleName = 'crudmodulefolderadmin';
-        
-        
+
         $ctrl->ensureBasePathAndNamespace();
-        
+
         $this->assertNotEquals($ctrl->basePath, $ctrl->modelBasePath);
         $this->assertNotEquals($ctrl->namespace, $ctrl->modelNamespace);
     }
-    
+
     public function testAssertsion()
     {
         $ctrl = new CrudController('id', Yii::$app);
-        
+
         $testShema = Yii::$app->db->getTableSchema('admin_user', true);
-        
+
         $this->assertNotNull($testShema);
-        
+
         $this->assertSame(7, count($ctrl->generateRules($testShema)));
         $this->assertSame(14, count($ctrl->generateLabels($testShema)));
-        
+
         $tpl = <<<'EOT'
 <?php
 
@@ -51,9 +50,9 @@ class TestModel extends \luya\admin\ngrest\base\Api
     public $modelClass = '\path\to\model';
 }
 EOT;
-        
+
         $this->assertSame($tpl, $ctrl->generateApiContent('file\\namespace', 'TestModel', '\\path\\to\\model'));
-        
+
         $tpl2 = <<<'EOT'
 <?php
 
@@ -73,8 +72,7 @@ class TestModel extends \luya\admin\ngrest\base\Controller
 }
 EOT;
         $this->assertSame($tpl2, $ctrl->generateControllerContent('file\\namespace', 'TestModel', '\\path\\to\\model'));
-        
-        
+
         $model = <<<'EOT'
 <?php
 
@@ -216,7 +214,7 @@ EOT;
             true
         );
         $this->assertSame($model, $c);
-        
+
         $sum = <<<'EOT'
 public $apis = [
     'api-endpoit-name' => '\path\to\api\Model',
@@ -232,11 +230,11 @@ public function getMenu()
 EOT;
         $this->assertSame($sum, $ctrl->generateBuildSummery('api-endpoit-name', '\\path\\to\\api\\Model', 'AdminUser', 'module/admin-user/index'));
     }
-    
+
     public function testModelWithoutI18n()
     {
         $ctrl = new CrudController('id', Yii::$app);
-        
+
         $c = $ctrl->generateModelContent(
             'file\\namespace',
             'TestModel',
@@ -244,7 +242,7 @@ EOT;
             Yii::$app->db->getTableSchema('admin_lang', true),
             false
         );
-        
+
         $model = <<<'EOT'
 <?php
 

@@ -2,8 +2,8 @@
 
 namespace luyatests\core\web;
 
-use luya\web\View;
 use luya\web\Asset;
+use luya\web\View;
 
 class TestAsset extends Asset
 {
@@ -34,7 +34,7 @@ class ViewTest extends \luyatests\LuyaWebTestCase
         $resultString = $view->compress($string);
         $this->assertEquals(14, strlen($resultString));
     }
-    
+
     /*
     public function testAssetUrlGetter()
     {
@@ -44,14 +44,14 @@ class ViewTest extends \luyatests\LuyaWebTestCase
         $this->assertContains('c0d3b50b', $url);
     }
     */
-    
+
     public function testUknownAssetUrl()
     {
         $this->expectException('luya\Exception');
         $view = new View();
         $view->getAssetUrl('Uknown');
     }
-    
+
     public function testGetPublicHtml()
     {
         $view = new View();

@@ -2,12 +2,12 @@
 
 namespace luya\admin\controllers;
 
-use Yii;
-use yii\web\Response;
-use luya\helpers\Url;
+use luya\admin\base\Controller;
 use luya\admin\models\LoginForm;
 use luya\admin\Module;
-use luya\admin\base\Controller;
+use luya\helpers\Url;
+use Yii;
+use yii\web\Response;
 
 /**
  * Login Controller contains async actions, async token send action and login mechanism.
@@ -19,16 +19,17 @@ class LoginController extends Controller
     public $layout = '@admin/views/layouts/nosession';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
+     *
      * @see \luya\admin\base\Controller::getRules()
      */
     public function getRules()
     {
         return [
             [
-                'allow' => true,
+                'allow'   => true,
                 'actions' => ['index', 'async', 'async-token'],
-                'roles' => ['?', '@'],
+                'roles'   => ['?', '@'],
             ],
         ];
     }
@@ -44,14 +45,14 @@ class LoginController extends Controller
         if (!Yii::$app->adminuser->isGuest) {
             return $this->redirect(['/admin/default/index']);
         }
-        
+
         $this->registerAsset('\luya\admin\assets\Login');
-        
+
         $this->view->registerJs("$(function(){ $('#email').focus(); observeLogin('#loginForm', '".Url::toAjax('admin/login/async')."', '".Url::toAjax('admin/login/async-token')."'); });", \luya\web\View::POS_END);
-    
+
         return $this->render('index');
     }
-    
+
     /**
      * Async Secure Token Login.
      *
@@ -69,6 +70,7 @@ class LoginController extends Controller
             if ($user) {
                 if (Yii::$app->adminuser->login($user)) {
                     Yii::$app->session->remove('secureId');
+
                     return ['refresh' => true, 'message' => null];
                 }
             } else {
@@ -97,6 +99,7 @@ class LoginController extends Controller
                 if ($this->module->secureLogin) {
                     if ($model->sendSecureLogin()) {
                         Yii::$app->session->set('secureId', $model->getUser()->id);
+
                         return ['refresh' => false, 'errors' => false, 'enterSecureToken' => true];
                     }
                 } else {

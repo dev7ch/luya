@@ -3,14 +3,14 @@
  * Created by PhpStorm.
  * User: marc
  * Date: 21.02.17
- * Time: 11:02
+ * Time: 11:02.
  */
 
 namespace cmstests\src\widgets;
 
-use Yii;
 use cmstests\CmsFrontendTestCase;
 use luya\cms\widgets\NavTree;
+use Yii;
 
 class NavTreeTest extends CmsFrontendTestCase
 {
@@ -36,20 +36,20 @@ class NavTreeTest extends CmsFrontendTestCase
             'itemActiveClass' => 'nav__item--active',
 
             'wrapperOptions' => [
-                'tag' => 'nav',
-                'class' => 'nav'
+                'tag'   => 'nav',
+                'class' => 'nav',
             ],
             'listOptions' => [
-                'tag' => 'ul',
-                'class' => 'nav__list'
+                'tag'   => 'ul',
+                'class' => 'nav__list',
             ],
             'itemOptions' => [
-                'tag' => 'li',
-                'class' => 'nav__item nav__item--{{depth}} nav__item--{{alias}} nav__item--{{id}}'
+                'tag'   => 'li',
+                'class' => 'nav__item nav__item--{{depth}} nav__item--{{alias}} nav__item--{{id}}',
             ],
             'linkOptions' => [
-                'tag' => 'a',
-                'class' => 'nav__link nav__link--{{depth}} nav__item--{{alias}} nav__item--{{id}}'
+                'tag'   => 'a',
+                'class' => 'nav__link nav__link--{{depth}} nav__item--{{alias}} nav__item--{{id}}',
             ],
         ]));
     }
@@ -62,7 +62,7 @@ class NavTreeTest extends CmsFrontendTestCase
 
         $this->assertSame($expectedHtml, NavTree::widget([
             'listOptions' => [
-                'tag' => 'ul'
+                'tag' => 'ul',
             ],
         ]));
     }
@@ -75,7 +75,7 @@ class NavTreeTest extends CmsFrontendTestCase
 
         $this->assertSame($expectedHtml, NavTree::widget([
             'itemOptions' => [
-                'class' => 'nav__item nav__item--{{thisIsWrong}}'
+                'class' => 'nav__item nav__item--{{thisIsWrong}}',
             ],
         ]));
     }
@@ -87,7 +87,7 @@ class NavTreeTest extends CmsFrontendTestCase
         Yii::$app->menu->setLanguageContainer('en', CmsFrontendTestCase::mockMenuArray());
 
         $this->assertSame($expectedHtml, NavTree::widget([
-            'maxDepth' => 1
+            'maxDepth' => 1,
         ]));
     }
 
@@ -98,7 +98,7 @@ class NavTreeTest extends CmsFrontendTestCase
         Yii::$app->menu->setLanguageContainer('en', CmsFrontendTestCase::mockMenuArray());
 
         $this->assertSame($expectedHtml, NavTree::widget([
-            'startItem' => Yii::$app->menu->findOne(['nav_id' => 2])
+            'startItem' => Yii::$app->menu->findOne(['nav_id' => 2]),
         ]));
     }
 
@@ -109,7 +109,7 @@ class NavTreeTest extends CmsFrontendTestCase
         Yii::$app->menu->setLanguageContainer('en', CmsFrontendTestCase::mockMenuArray());
 
         $this->assertSame($expectedHtml, NavTree::widget([
-            'ignoreFirstListTag' => true
+            'ignoreFirstListTag' => true,
         ]));
     }
 }

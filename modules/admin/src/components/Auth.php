@@ -2,8 +2,8 @@
 
 namespace luya\admin\components;
 
-use Yii;
 use luya\Exception;
+use Yii;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
 
@@ -17,55 +17,57 @@ use yii\helpers\ArrayHelper;
 class Auth extends \yii\base\Component
 {
     /**
-     * @var integer Can create new records
+     * @var int Can create new records
      */
     const CAN_CREATE = 1;
 
     /**
-     * @var integer Can update records
+     * @var int Can update records
      */
     const CAN_UPDATE = 2;
 
     /**
-     * @var integer Can delete records.
+     * @var int Can delete records.
      */
     const CAN_DELETE = 3;
 
     private $_permissionTable;
-    
+
     /**
      * Get all permissions entries for the given User.
      *
-     * @param integer $userId The user id to retrieve the data for.
+     * @param int $userId The user id to retrieve the data for.
+     *
      * @return array
      */
     private function getPermissionTable($userId)
     {
         if ($this->_permissionTable === null) {
-            
+
             /* OLD CODE IN ORDER TO ENSURE ISSUES:
         	 * $this->_permissionTable = Yii::$app->db->createCommand('SELECT * FROM admin_user_group AS t1 LEFT JOIN(admin_group_auth as t2 LEFT JOIN (admin_auth as t3) ON (t2.auth_id = t3.id)) ON (t1.group_id=t2.group_id) WHERE t1.user_id=:user_id')
              * ->bindValue('user_id', $userId)
              * ->queryAll();
         	 */
-            
+
             $this->_permissionTable = (new Query())
-                ->select("*")
+                ->select('*')
                 ->from('admin_user_group')
                 ->innerJoin('admin_group_auth', 'admin_user_group.group_id=admin_group_auth.group_id')
                 ->innerJoin('admin_auth', 'admin_group_auth.auth_id = admin_auth.id')
                 ->where(['admin_user_group.user_id' => $userId])
                 ->all();
         }
-        
+
         return $this->_permissionTable;
     }
-    
+
     /**
      * Get the data for a given api and user.
      *
-     * @param integer $userId The user id the find the data from.
+     * @param int    $userId      The user id the find the data from.
      * @param string $apiEndpoint The api endpoint to find from the permission system.
+     *
      * @return array
      */
     public function getApiTable($userId, $apiEndpoint)
@@ -76,14 +78,16 @@ class Auth extends \yii\base\Component
                 $data[] = $item;
             }
         }
+
         return $data;
     }
-    
+
     /**
      * Get the data for a given route and user.
      *
-     * @param integer $userId The user id the find the data from.
-     * @param string $route The route to find from the permission system.
+     * @param int    $userId The user id the find the data from.
+     * @param string $route  The route to find from the permission system.
+     *
      * @return array
      */
     public function getRouteTable($userId, $route)
@@ -94,15 +98,17 @@ class Auth extends \yii\base\Component
                 $data[] = $item;
             }
         }
+
         return $data;
     }
-    
+
     /**
      * Calculate the weight from whether the user can create, udpate and/or delete.
      *
-     * @param integer $create Whether the user can create new records
-     * @param integer $update Whether the user can update records.
-     * @param integer $delete Whether the user can delete records.
+     * @param int $create Whether the user can create new records
+     * @param int $update Whether the user can update records.
+     * @param int $delete Whether the user can delete records.
+     *
      * @return number The calculated weight of the permissions based on the input.
      */
     public function permissionWeight($create, $update, $delete)
@@ -111,7 +117,7 @@ class Auth extends \yii\base\Component
         $update = $update ? 3 : 0;
         $delete = $delete ? 5 : 0;
 
-        return ($create + $update + $delete);
+        return $create + $update + $delete;
     }
 
     /**
@@ -119,14 +125,15 @@ class Auth extends \yii\base\Component
      *
      * In order to calculate the permissions weight see {{\luya\admin\components\Auth::permissionWeight}}.
      *
-     * @param string $type The type of permission (1,2,3 see constants)
-     * @param integer $permissionWeight A weight of the permssions which is value between 1 - 9, see [[app-admin-module-permission.md]].
-     * @return boolean
+     * @param string $type             The type of permission (1,2,3 see constants)
+     * @param int    $permissionWeight A weight of the permssions which is value between 1 - 9, see [[app-admin-module-permission.md]].
+     *
+     * @return bool
      */
     public function permissionVerify($type, $permissionWeight)
     {
         $numbers = [];
-        
+
         switch ($type) {
             case self::CAN_CREATE:
                 $numbers = [1, 4, 6, 9];
@@ -145,9 +152,10 @@ class Auth extends \yii\base\Component
     /**
      * See if a User have rights to access this api.
      *
-     * @param integer $userId
-     * @param string $apiEndpoint As defined in the Module.php like (api-admin-user) which is a unique identifiere
-     * @param integer|string $typeVerification The CONST number provided from CAN_*
+     * @param int        $userId
+     * @param string     $apiEndpoint      As defined in the Module.php like (api-admin-user) which is a unique identifiere
+     * @param int|string $typeVerification The CONST number provided from CAN_*
+     *
      * @return bool
      */
     public function matchApi($userId, $apiEndpoint, $typeVerification = false)
@@ -166,18 +174,19 @@ class Auth extends \yii\base\Component
 
         return false;
     }
-    
+
     /**
      * See if the user has permitted the provided route.
      *
-     * @param integer $userId The user id from admin users
-     * @param string $route The route to test.
-     * @return boolean
+     * @param int    $userId The user id from admin users
+     * @param string $route  The route to test.
+     *
+     * @return bool
      */
     public function matchRoute($userId, $route)
     {
         $groups = $this->getRouteTable($userId, $route);
-        
+
         if (is_array($groups) && count($groups) > 0) {
             return true;
         }
@@ -186,12 +195,14 @@ class Auth extends \yii\base\Component
     }
 
     /**
-     * Add a new route to the permission system (admin_auth)
+     * Add a new route to the permission system (admin_auth).
      *
      * @param string $moduleName The name of the module where the route is located.
-     * @param string $route The route which is an identifier.
-     * @param string $name A readable name for the route to display in the permissions system.
+     * @param string $route      The route which is an identifier.
+     * @param string $name       A readable name for the route to display in the permissions system.
+     *
      * @throws \luya\Exception
+     *
      * @return number
      */
     public function addRoute($moduleName, $route, $name)
@@ -199,16 +210,16 @@ class Auth extends \yii\base\Component
         $handler = (new Query())->select('COUNT(*) AS count')->from('admin_auth')->where(['route' => $route])->one();
         if ($handler['count'] == 1) {
             return Yii::$app->db->createCommand()->update('admin_auth', [
-                'alias_name' => $name,
+                'alias_name'  => $name,
                 'module_name' => $moduleName,
             ], ['route' => $route])->execute();
         } elseif ($handler['count'] == 0) {
             return Yii::$app->db->createCommand()->insert('admin_auth', [
-                'alias_name' => $name,
+                'alias_name'  => $name,
                 'module_name' => $moduleName,
-                'is_crud' => false,
-                'route' => $route,
-                'api' => 0,
+                'is_crud'     => false,
+                'route'       => $route,
+                'api'         => 0,
             ])->execute();
         } else {
             throw new Exception("Error while inserting/updating auth ROUTE '$route' with name '$name' in module '$moduleName'.");
@@ -216,12 +227,14 @@ class Auth extends \yii\base\Component
     }
 
     /**
-     * Add a new api route to the permission system (admin_auth)
+     * Add a new api route to the permission system (admin_auth).
      *
-     * @param string $moduleName The name of the module where the route is located.
+     * @param string $moduleName  The name of the module where the route is located.
      * @param string $apiEndpoint An API endpoint name like `admin-user-group` which is an identifier.
-     * @param string $name A readable name for the api to display in the permission system.
+     * @param string $name        A readable name for the api to display in the permission system.
+     *
      * @throws \luya\Exception
+     *
      * @return number
      */
     public function addApi($moduleName, $apiEndpoint, $name)
@@ -229,16 +242,16 @@ class Auth extends \yii\base\Component
         $handler = (new Query())->select('COUNT(*) AS count')->from('admin_auth')->where(['api' => $apiEndpoint])->one();
         if ($handler['count'] == 1) {
             return Yii::$app->db->createCommand()->update('admin_auth', [
-                'alias_name' => $name,
+                'alias_name'  => $name,
                 'module_name' => $moduleName,
             ], ['api' => $apiEndpoint])->execute();
         } elseif ($handler['count'] == 0) {
             return Yii::$app->db->createCommand()->insert('admin_auth', [
-                'alias_name' => $name,
+                'alias_name'  => $name,
                 'module_name' => $moduleName,
-                'is_crud' => true,
-                'route' => 0,
-                'api' => $apiEndpoint,
+                'is_crud'     => true,
+                'route'       => 0,
+                'api'         => $apiEndpoint,
             ])->execute();
         } else {
             throw new Exception("Error while inserting/updating auth API '$apiEndpoint' with name '$name' in module '$moduleName'.");
@@ -255,7 +268,7 @@ class Auth extends \yii\base\Component
         // define response structure of array
         $data = [
             'routes' => [],
-            'apis' => [],
+            'apis'   => [],
         ];
         // get all auth data
         foreach ((new Query())->select('*')->from('admin_auth')->all() as $item) {
@@ -284,6 +297,7 @@ class Auth extends \yii\base\Component
      * The above provided data are valid rules.
      *
      * @param array $data array with key apis and routes
+     *
      * @return array
      */
     public function prepareCleanup(array $data)
@@ -309,6 +323,7 @@ class Auth extends \yii\base\Component
      * Execute the data to delete based on an array containing a key 'id' with the corresponding value from the Database.
      *
      * @param array $data
+     *
      * @return bool
      */
     public function executeCleanup(array $data)

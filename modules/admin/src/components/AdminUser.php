@@ -2,9 +2,9 @@
 
 namespace luya\admin\components;
 
+use luya\admin\models\UserOnline;
 use Yii;
 use yii\web\User;
-use luya\admin\models\UserOnline;
 use yii\web\UserEvent;
 
 /**
@@ -17,45 +17,46 @@ use yii\web\UserEvent;
 class AdminUser extends User
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $identityClass = '\luya\admin\models\User';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $loginUrl = ['/admin/login/index'];
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $identityCookie = ['name' => '_adminIdentity', 'httpOnly' => true];
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $enableAutoLogin = false;
-    
+
     /**
      * @var string Variable to assign the default language from the admin module in order to set default language if not set.
      */
     public $defaultLanguage;
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
         parent::init();
-        
-        $this->idParam = '__luyaAdminId_' . md5(Yii::$app->id);
-        
+
+        $this->idParam = '__luyaAdminId_'.md5(Yii::$app->id);
+
         $this->on(self::EVENT_BEFORE_LOGOUT, [$this, 'onBeforeLogout']);
         $this->on(self::EVENT_AFTER_LOGIN, [$this, 'onAfterLogin']);
     }
 
     /**
      * After the login process of the user, set the admin interface language based on the user settings.
+     *
      * @param UserEvent $event
      */
     public function onAfterLogin(UserEvent $event)
@@ -75,7 +76,7 @@ class AdminUser extends User
     {
         UserOnline::removeUser($this->getId());
     }
-    
+
     /**
      * Perform a can api match request for the logged in user if user is logged in, returns false otherwhise.
      *
@@ -83,7 +84,8 @@ class AdminUser extends User
      *
      * @param string $apiEndpoint
      * @param string $typeVerification
-     * @return boolean Whether the current user can request the provided api endpoint.
+     *
+     * @return bool Whether the current user can request the provided api endpoint.
      */
     public function canApi($apiEndpoint, $typeVerification = false)
     {
@@ -96,6 +98,7 @@ class AdminUser extends User
      * See the {{luya\admin\components\Auth::matchRoute}} for details.
      *
      * @param string $route
+     *
      * @return bool Whether the current user can request the provided route.
      */
     public function canRoute($route)

@@ -2,9 +2,9 @@
 
 namespace luyatests\core\helpers;
 
-use Yii;
-use luyatests\LuyaWebTestCase;
 use luya\helpers\ZipHelper;
+use luyatests\LuyaWebTestCase;
+use Yii;
 
 class ZipHelperTest extends LuyaWebTestCase
 {

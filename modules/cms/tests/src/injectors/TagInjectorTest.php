@@ -4,8 +4,8 @@ namespace cmstests\src\injectors;
 
 use cmstests\CmsFrontendTestCase;
 use cmstests\data\blocks\UnitTestBlock;
-use luya\cms\injectors\TagInjector;
 use cmstests\data\fixtures\TagFixture;
+use luya\cms\injectors\TagInjector;
 
 class StubTagBlock extends UnitTestBlock
 {
@@ -26,13 +26,13 @@ class TagInjectorTest extends CmsFrontendTestCase
     {
         $model = new TagFixture();
         $model->load();
-        
+
         $block = new StubTagBlock();
         $injector = new TagInjector(['context' => $block]);
         $injector->setup();
-        
+
         $vars = $block->getConfigVarsExport();
-       
+
         $this->assertContains(['items' => [
             ['value' => 2, 'label' => 'Jane'],
             ['value' => 1, 'label' => 'John'],

@@ -2,9 +2,9 @@
 
 namespace luya\web;
 
-use Yii;
 use luya\Exception;
 use luya\helpers\FileHelper;
+use Yii;
 
 /**
  * HTML Element Component.
@@ -62,6 +62,7 @@ use luya\helpers\FileHelper;
  * The styleguide will now insert the mocked values instead of generic values.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class Element extends \yii\base\Component
@@ -75,7 +76,7 @@ class Element extends \yii\base\Component
      * @var string The path to the folder where the view files to render can be found.
      */
     public $viewsFolder = '@app/views/elements/';
-    
+
     /**
      * @var array Contains all registered elements.
      */
@@ -112,8 +113,9 @@ class Element extends \yii\base\Component
      * $element->name($param1);
      * ```
      *
-     * @param string $name access method name
-     * @param array $params access method params
+     * @param string $name   access method name
+     * @param array  $params access method params
+     *
      * @return mixed
      */
     public function __call($name, $params)
@@ -124,7 +126,7 @@ class Element extends \yii\base\Component
     /**
      * Add an element with a closure to the elements array.
      *
-     * @param string $name The identifier of the element where the close is binde to.
+     * @param string   $name    The identifier of the element where the close is binde to.
      * @param callable $closure The closure function to registered, for example:
      *
      * ```php
@@ -132,27 +134,27 @@ class Element extends \yii\base\Component
      *     return 'foobar';
      * }
      * ```
-     *
      * @param array $mockedArgs An array with key value pairing for the argument in order to render them for the styleguide.
      */
     public function addElement($name, $closure, $mockedArgs = [])
     {
         $this->_elements[$name] = $closure;
-        
+
         $this->mockArgs($name, $mockedArgs);
     }
 
     /**
-     * Checks whether an elemnt exists in the elements list or not
+     * Checks whether an elemnt exists in the elements list or not.
      *
      * @param string $name The name of the element
-     * @return boolean
+     *
+     * @return bool
      */
     public function hasElement($name)
     {
         return array_key_exists($name, $this->_elements);
     }
-    
+
     /**
      * Returns an array with all registered Element-Names.
      *
@@ -172,21 +174,23 @@ class Element extends \yii\base\Component
     {
         return $this->_elements;
     }
-    
+
     /**
      * Renders the closure for the given name and returns the content.
      *
      * @param string $name   The name of the elemente to execute.
      * @param array  $params The params to pass to the closure methode.
-     * @return mixed The return value of the executed closure function.
+     *
      * @throws Exception
+     *
+     * @return mixed The return value of the executed closure function.
      */
     public function getElement($name, array $params = [])
     {
         if (!array_key_exists($name, $this->_elements)) {
             throw new Exception("The requested element '$name' does not exist in the list. You may register the element first with `addElement(name, closure)`.");
         }
-    
+
         return call_user_func_array($this->_elements[$name], $params);
     }
 
@@ -196,14 +200,16 @@ class Element extends \yii\base\Component
      * @param string $name   The name of the elemente to execute.
      * @param array  $params The params to pass to the closure methode.
      *
+     * @throws Exception
+     *
      * @return mixed The return value of the executed closure function.
      *
-     * @throws Exception
      * @deprecated Depracted in 1.0.0 and will be removed.
      */
     public function run($name, array $params = [])
     {
         trigger_error('method `run()` is deprectaed, use `getElement` instead.', E_NOTICE);
+
         return $this->getElement($name, $params);
     }
 
@@ -221,33 +227,34 @@ class Element extends \yii\base\Component
 
         return $this->_folder;
     }
-    
+
     private $_mockedArguments = [];
-    
+
     /**
      * Mock arguments for an element in order to render those inside the styleguide.
      *
      * @param string $elementName The element name the arguments are defined for.
-     * @param array $args Arguments where the key is the argument name value and value to mock.
+     * @param array  $args        Arguments where the key is the argument name value and value to mock.
      */
     public function mockArgs($elementName, array $args)
     {
         $this->_mockedArguments[$elementName] = $args;
     }
-    
+
     /**
      * Find the mocked value for an element argument.
      *
      * @param string $elementName The name of the element.
-     * @param string $argName The name of the argument.
-     * @return mixed|boolean Whether the mocked argument value exists returns the value otherwise false.
+     * @param string $argName     The name of the argument.
+     *
+     * @return mixed|bool Whether the mocked argument value exists returns the value otherwise false.
      */
     public function getMockedArgValue($elementName, $argName)
     {
         if (isset($this->_mockedArguments[$elementName]) && isset($this->_mockedArguments[$elementName][$argName])) {
             return $this->_mockedArguments[$elementName][$argName];
         }
-        
+
         return false;
     }
 
@@ -263,6 +270,7 @@ class Element extends \yii\base\Component
     public function render($file, array $args = [])
     {
         $view = new View();
-        return $view->renderPhpFile(rtrim($this->getFolder(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . FileHelper::ensureExtension($file, 'php'), $args);
+
+        return $view->renderPhpFile(rtrim($this->getFolder(), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.FileHelper::ensureExtension($file, 'php'), $args);
     }
 }

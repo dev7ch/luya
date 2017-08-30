@@ -2,9 +2,9 @@
 
 namespace luya\web;
 
+use luya\Exception;
 use Yii;
 use yii\base\Component;
-use luya\Exception;
 
 /**
  * Composition provides multi lingual handling and detection.
@@ -14,6 +14,7 @@ use luya\Exception;
  * @property string $language Return wrapper of getKey('langShortCode')
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class Composition extends Component implements \ArrayAccess
@@ -35,14 +36,14 @@ class Composition extends Component implements \ArrayAccess
 
     /**
      * @var bool Enable or disable the->getFull() prefix. If disabled the response of getFull() would be empty, otherwhise it
-     * returns the full prefix composition pattern based url.
+     *           returns the full prefix composition pattern based url.
      */
     public $hidden = true;
 
     /**
      * @var string Url matching prefix, which is used for all the modules (e.g. an e-store requireds a language
-     * as the cms needs this informations too). After proccessing this informations, they will be removed
-     * from the url for further proccessing.
+     *             as the cms needs this informations too). After proccessing this informations, they will be removed
+     *             from the url for further proccessing.
      *
      * The fullqualified composer key will be stored in `$request->get('urlPrefixCompositionKey')`.
      *
@@ -61,8 +62,8 @@ class Composition extends Component implements \ArrayAccess
 
     /**
      * @var array Define the default behavior for differnet host info schemas, if the host info is not found
-     * the default behvaior via `$default` will be used.
-     * An array where the key is the host info and value the array with the default configuration .e.g.
+     *            the default behvaior via `$default` will be used.
+     *            An array where the key is the host info and value the array with the default configuration .e.g.
      *
      * ```
      * 'hostInfoMapping' => [
@@ -79,7 +80,7 @@ class Composition extends Component implements \ArrayAccess
      * Class constructor, to get data from DiContainer.
      *
      * @param \luya\web\Request $request Request componet resolved from Depency Manager
-     * @param array $config The object configuration array
+     * @param array             $config  The object configuration array
      */
     public function __construct(Request $request, array $config = [])
     {
@@ -98,7 +99,7 @@ class Composition extends Component implements \ArrayAccess
     }
 
     private $_compositionKeys = [];
-    
+
     /**
      * Resolve the the composition on init.
      */
@@ -108,7 +109,7 @@ class Composition extends Component implements \ArrayAccess
 
         // check if the required key langShortCode exist in the default array.
         if (!array_key_exists('langShortCode', $this->default)) {
-            throw new Exception("The composition default rule must contain a langShortCode.");
+            throw new Exception('The composition default rule must contain a langShortCode.');
         }
 
         if (array_key_exists($this->request->hostInfo, $this->hostInfoMapping)) {
@@ -144,6 +145,7 @@ class Composition extends Component implements \ArrayAccess
      * Resolve the current url request and retun an array contain resolved route and the resolved values.
      *
      * @param \yii\web\Request $request
+     *
      * @return array An array containing the route and the resolvedValues. Example array output when request path is `de/hello/world`:
      *
      * ```php
@@ -188,14 +190,14 @@ class Composition extends Component implements \ArrayAccess
         // return array with route and resolvedValues
         return ['route' => implode('/', $requestUrlParts), 'resolvedValues' => $resolvedValues, 'compositionKeys' => $keys, 'keys' => $foundKeys];
     }
-    
+
     private $_composition = [];
 
     /**
      * Set a new composition key and value in composition array. If the key already exists, it will
      * be overwritten. The setKey method triggers the CompositionAfterSetEvent class.
      *
-     * @param string $key The key in the array, e.g. langShortCode
+     * @param string $key   The key in the array, e.g. langShortCode
      * @param string $value The value coresponding to the key e.g. de
      */
     public function setKey($key, $value)
@@ -216,6 +218,7 @@ class Composition extends Component implements \ArrayAccess
      *
      * @param string $key          The key to find in the composition array e.g. langShortCode
      * @param string $defaultValue The default value if they could not be found
+     *
      * @return string|bool
      */
     public function getKey($key, $defaultValue = false)
@@ -247,6 +250,7 @@ class Composition extends Component implements \ArrayAccess
      * create a route but ensures if composition is hidden anywho.
      *
      * @param array $overrideKeys
+     *
      * @return string
      */
     public function createRouteEnsure(array $overrideKeys = [])
@@ -259,6 +263,7 @@ class Composition extends Component implements \ArrayAccess
      * all the default values will be used.
      *
      * @param array $overrideKeys
+     *
      * @return string
      */
     public function createRoute(array $overrideKeys = [])
@@ -277,8 +282,9 @@ class Composition extends Component implements \ArrayAccess
     /**
      * Prepend to current composition (or to provided composition prefix-route) to a given route.
      *
-     * @param string $route The route where the composition prefix should be prepended.
+     * @param string      $route  The route where the composition prefix should be prepended.
      * @param null|string $prefix Define the value you want to prepend to the route or not.
+     *
      * @return string
      */
     public function prependTo($route, $prefix = null)
@@ -301,9 +307,10 @@ class Composition extends Component implements \ArrayAccess
     }
 
     /**
-     * Remove the composition full parterns from a given route
+     * Remove the composition full parterns from a given route.
      *
      * @param string $route
+     *
      * @return string route cleanup from the compositon pattern (without).
      */
     public function removeFrom($route)
@@ -316,7 +323,7 @@ class Composition extends Component implements \ArrayAccess
     /**
      * Wrapper for `getKey('langShortCode')` to load language to set php env settings.
      *
-     * @return string|boolean Get the language value from the langShortCode key, false if not set.
+     * @return string|bool Get the language value from the langShortCode key, false if not set.
      */
     public function getLanguage()
     {
@@ -327,7 +334,8 @@ class Composition extends Component implements \ArrayAccess
      * ArrayAccess offset exists.
      *
      * @see ArrayAccess::offsetExists()
-     * @return boolean
+     *
+     * @return bool
      */
     public function offsetExists($offset)
     {
@@ -338,8 +346,10 @@ class Composition extends Component implements \ArrayAccess
      * ArrayAccess set value to array.
      *
      * @see ArrayAccess::offsetSet()
+     *
      * @param string $offset The key of the array
-     * @param mixed $value The value for the offset key.
+     * @param mixed  $value  The value for the offset key.
+     *
      * @throws \luya\Exception
      */
     public function offsetSet($offset, $value)
@@ -354,7 +364,9 @@ class Composition extends Component implements \ArrayAccess
      * ArrayAccess get the value for a key.
      *
      * @see ArrayAccess::offsetGet()
+     *
      * @param string $offset The key to get from the array.
+     *
      * @return mixed The value for the offset key from the array.
      */
     public function offsetGet($offset)
@@ -368,7 +380,9 @@ class Composition extends Component implements \ArrayAccess
      * Unsetting data via array access is not allowed.
      *
      * @see ArrayAccess::offsetUnset()
+     *
      * @param string $offset The key to unset from the array.
+     *
      * @throws \luya\Exception
      */
     public function offsetUnset($offset)

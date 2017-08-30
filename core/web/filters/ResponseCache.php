@@ -2,10 +2,10 @@
 
 namespace luya\web\filters;
 
+use luya\traits\CacheableTrait;
 use Yii;
 use yii\base\ActionFilter;
 use yii\web\Response;
-use luya\traits\CacheableTrait;
 
 /**
  * Filter to enable Response Cache.
@@ -57,17 +57,18 @@ use luya\traits\CacheableTrait;
  * ```
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class ResponseCache extends ActionFilter
 {
     use CacheableTrait;
-    
+
     /**
      * @var array list of factors that would cause the variation of the content being cached.
-     * Each factor is a string representing a variation (e.g. the language, a GET parameter).
-     * The following variation setting will cause the content to be cached in different versions
-     * according to the current application language:
+     *            Each factor is a string representing a variation (e.g. the language, a GET parameter).
+     *            The following variation setting will cause the content to be cached in different versions
+     *            according to the current application language:
      *
      * ```php
      * [
@@ -76,12 +77,12 @@ class ResponseCache extends ActionFilter
      * ```
      */
     public $variations;
-    
+
     /**
-     * @var integer The time of the ResponseCache should be stored, in seconds. When 0 the cache never expires.
+     * @var int The time of the ResponseCache should be stored, in seconds. When 0 the cache never expires.
      */
     public $duration = 0;
-    
+
     /**
      * @var array|\yii\caching\Dependency The dependency that the cached content depends on.
      *
@@ -101,10 +102,10 @@ class ResponseCache extends ActionFilter
      * This is because the cookies and headers are currently stored separately from the actual page content, causing the dependency to be evaluated twice.
      */
     public $dependency;
-    
+
     /**
      * @var array The list of actions where the ResponseCache should be applied. You have to define the actions otherwhise the Response
-     * Cache will not be active. For example,
+     *            Cache will not be active. For example,
      *
      * ```php
      * ['get-posts', 'data']
@@ -125,7 +126,7 @@ class ResponseCache extends ActionFilter
      * ```
      */
     public $actionsCallable = [];
-    
+
     /**
      * call the action callable if available.
      *
@@ -138,34 +139,35 @@ class ResponseCache extends ActionFilter
             call_user_func($this->actionsCallable[$action], $result);
         }
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {
         if (!in_array($action->id, $this->actions)) {
             return true;
         }
-        
+
         $cache = $this->getHasCache($this->calculateCacheKey());
         $response = Yii::$app->getResponse();
-        
+
         if ($cache !== false) {
             $this->callActionCallable($action->id, $cache);
             $response->content = $cache;
+
             return $response->send();
         }
-        
+
         $response->on(Response::EVENT_AFTER_SEND, function ($event) use ($action) {
             $this->callActionCallable($action->id, $event->sender->content);
         });
-        
+
         $response->on(Response::EVENT_AFTER_SEND, [$this, 'cacheResponseContent']);
-        
+
         return true;
     }
-    
+
     /**
      * Will be executed after the Response Object has send its content.
      *
@@ -175,9 +177,9 @@ class ResponseCache extends ActionFilter
     {
         $this->setHasCache($this->calculateCacheKey(), $event->sender->content, $this->dependency, $this->duration);
     }
-    
+
     private $_cacheKey;
-    
+
     /**
      * Calculate the cache key based in several informations in order to make cache key unique.
      *
@@ -194,7 +196,7 @@ class ResponseCache extends ActionFilter
             }
             $this->_cacheKey = $key;
         }
-        
+
         return $this->_cacheKey;
     }
 }

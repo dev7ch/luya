@@ -2,9 +2,9 @@
 
 namespace luya\cms\frontend\blocks;
 
-use luya\cms\frontend\Module;
-use luya\cms\frontend\blockgroups\TextGroup;
 use luya\cms\base\PhpBlock;
+use luya\cms\frontend\blockgroups\TextGroup;
+use luya\cms\frontend\Module;
 
 /**
  * WYSIWYG Block with ng-wig.
@@ -14,25 +14,25 @@ use luya\cms\base\PhpBlock;
 final class WysiwygBlock extends PhpBlock
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $module = 'cms';
-    
+
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public $cacheEnabled = true;
-    
+
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function name()
     {
         return Module::t('block_wysiwyg_name');
     }
-    
+
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function blockGroup()
     {
@@ -40,7 +40,7 @@ final class WysiwygBlock extends PhpBlock
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function icon()
     {
@@ -48,7 +48,7 @@ final class WysiwygBlock extends PhpBlock
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function config()
     {
@@ -60,10 +60,10 @@ final class WysiwygBlock extends PhpBlock
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function admin()
     {
-        return '{% if vars.content is empty %}<span class="block__empty-text">' . Module::t('block_wysiwyg_no_content') . '</span>{% else %}{{ vars.content }}{% endif %}';
+        return '{% if vars.content is empty %}<span class="block__empty-text">'.Module::t('block_wysiwyg_no_content').'</span>{% else %}{{ vars.content }}{% endif %}';
     }
 }

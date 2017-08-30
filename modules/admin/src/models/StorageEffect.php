@@ -2,13 +2,13 @@
 
 namespace luya\admin\models;
 
-use luya\admin\ngrest\base\NgRestModel;
 use luya\admin\Module;
+use luya\admin\ngrest\base\NgRestModel;
 
 /**
  * This is the model class for table "admin_storage_effect".
  *
- * @property integer $id
+ * @property int $id
  * @property string $identifier
  * @property string $name
  * @property string $imagine_name
@@ -17,7 +17,7 @@ use luya\admin\Module;
 final class StorageEffect extends NgRestModel
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -25,7 +25,7 @@ final class StorageEffect extends NgRestModel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -37,22 +37,22 @@ final class StorageEffect extends NgRestModel
             [['identifier'], 'unique'],
         ];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributeLabels()
     {
         return [
-            'identifier' => Module::t('model_storageeffect_identifier'),
-            'name' => Module::t('model_storageeffect_name'),
-            'imagine_name' => Module::t('model_storageeffect_imagine_name'),
+            'identifier'          => Module::t('model_storageeffect_identifier'),
+            'name'                => Module::t('model_storageeffect_name'),
+            'imagine_name'        => Module::t('model_storageeffect_imagine_name'),
             'imagine_json_params' => Module::t('model_storageeffect_imagine_json_params'),
         ];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function ngRestApiEndpoint()
     {
@@ -60,25 +60,25 @@ final class StorageEffect extends NgRestModel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function ngRestAttributeTypes()
     {
         return [
-            'name' => 'text',
-            'identifier' => 'text',
-            'imagine_name' => 'text',
+            'name'                => 'text',
+            'identifier'          => 'text',
+            'imagine_name'        => 'text',
             'imagine_json_params' => 'textarea',
         ];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function ngRestConfig($config)
     {
         $this->ngRestConfigDefine($config, 'list', ['identifier', 'imagine_json_params']);
-        
+
         return $config;
     }
 }

@@ -2,15 +2,15 @@
 
 namespace luya\errorapi;
 
-use Yii;
 use luya\base\CoreModuleInterface;
+use Yii;
 
 final class Module extends \luya\base\Module implements CoreModuleInterface
 {
     public $recipient = [];
 
     public $slackToken;
-    
+
     public $slackChannel = '#luya';
 
     public $urlRules = [
@@ -20,9 +20,9 @@ final class Module extends \luya\base\Module implements CoreModuleInterface
 
     public $translations = [
         [
-            'prefix' => 'errorapi*',
+            'prefix'   => 'errorapi*',
             'basePath' => '@errorapi/messages',
-            'fileMap' => [
+            'fileMap'  => [
                 'errorapi' => 'errorapi.php',
             ],
         ],

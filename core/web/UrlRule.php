@@ -13,15 +13,16 @@ namespace luya\web;
  * ```
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class UrlRule extends \yii\web\UrlRule
 {
     /**
      * @var array Composition rules are multi lingual rule definitions match against different
-     * languages from composition component. This variable will be assigned from the modules urlRule
-     * variable and while foreaching the urlRules the composition values for each rule will be stored
-     * in this variable to retrieve the informations later on.
+     *            languages from composition component. This variable will be assigned from the modules urlRule
+     *            variable and while foreaching the urlRules the composition values for each rule will be stored
+     *            in this variable to retrieve the informations later on.
      */
     public $composition = [];
 }

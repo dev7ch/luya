@@ -2,32 +2,32 @@
 
 namespace luya\cms\models;
 
-use Yii;
 use luya\admin\models\User;
-use yii\helpers\Json;
 use luya\cms\admin\Module;
+use Yii;
 use yii\base\InvalidParamException;
+use yii\helpers\Json;
 
 /**
- * Eventer-Logger for CMS Activitys
+ * Eventer-Logger for CMS Activitys.
  *
- * @property integer $id
- * @property integer $user_id
- * @property integer $is_insertion
- * @property integer $is_update
- * @property integer $is_deletion
- * @property integer $timestamp
+ * @property int $id
+ * @property int $user_id
+ * @property int $is_insertion
+ * @property int $is_update
+ * @property int $is_deletion
+ * @property int $timestamp
  * @property string $message
  * @property string $data_json
  * @property string $table_name
- * @property integer $row_id
+ * @property int $row_id
  *
  * @author Basil Suter <basil@nadar.io>
  */
 class Log extends \yii\db\ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -41,7 +41,7 @@ class Log extends \yii\db\ActiveRecord
         $this->user_id = (Yii::$app instanceof \luya\web\Application) ? Yii::$app->adminuser->getId() : 0;
         $this->data_json = json_encode($this->data_json);
     }
-    
+
     public function getMessageArray()
     {
         try {
@@ -50,32 +50,33 @@ class Log extends \yii\db\ActiveRecord
             return [];
         }
     }
-    
+
     public function getRowDescriber()
     {
         if (!empty($this->row_id)) {
             switch ($this->table_name) {
-                case "nav":
+                case 'nav':
                     return Nav::findOne($this->row_id)->activeLanguageItem->title;
-                case "nav_item":
+                case 'nav_item':
                     return NavItem::findOne($this->row_id)->title;
-                case "cms_nav_item_page_block_item":
+                case 'cms_nav_item_page_block_item':
                     $block = NavItemPageBlockItem::findOne($this->row_id);
                     if (!$block || $block->block == null) {
                         $arr = $this->getMessageArray();
                         if (!empty($arr) && isset($arr['blockName'])) {
-                            return $arr['blockName'] . " ({$arr['pageTitle']})";
+                            return $arr['blockName']." ({$arr['pageTitle']})";
                         } else {
                             return;
                         }
                     }
-                    return $block->block->getNameForLog() . " (" .$block->droppedPageTitle. ")";
+
+                    return $block->block->getNameForLog().' ('.$block->droppedPageTitle.')';
             }
         }
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -83,26 +84,26 @@ class Log extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'user_id' => 'User ID',
+            'id'           => 'ID',
+            'user_id'      => 'User ID',
             'is_insertion' => 'Is Insertion',
-            'is_update' => 'Is Update',
-            'is_deletion' => 'Is Deletion',
-            'timestamp' => 'Timestamp',
-            'message' => 'Message',
-            'data_json' => 'Data Json',
-            'table_name' => 'Table Name',
-            'row_id' => 'Row ID',
+            'is_update'    => 'Is Update',
+            'is_deletion'  => 'Is Deletion',
+            'timestamp'    => 'Timestamp',
+            'message'      => 'Message',
+            'data_json'    => 'Data Json',
+            'table_name'   => 'Table Name',
+            'row_id'       => 'Row ID',
         ];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -110,29 +111,29 @@ class Log extends \yii\db\ActiveRecord
             [['is_insertion', 'is_deletion', 'is_update', 'message', 'data_json', 'row_id', 'table_name'], 'safe'],
         ];
     }
-    
+
     public function getAction()
     {
         if ($this->is_insertion) {
             switch ($this->table_name) {
-                case "nav_item":
+                case 'nav_item':
                     return Module::t('log_action_insert_cms_nav_item', ['info' => $this->rowDescriber]);
-                case "nav":
+                case 'nav':
                     return Module::t('log_action_insert_cms_nav', ['info' => $this->rowDescriber]);
-                case "cms_nav_item_page_block_item":
+                case 'cms_nav_item_page_block_item':
                     return Module::t('log_action_insert_cms_nav_item_page_block_item', ['info' => $this->rowDescriber]);
                 default:
                     return Module::t('log_action_insert_unkown', ['info' => $this->rowDescriber]);
             }
         }
-        
+
         if ($this->is_update) {
             switch ($this->table_name) {
-                case "nav_item":
+                case 'nav_item':
                     return Module::t('log_action_update_cms_nav_item', ['info' => $this->rowDescriber]);
-                case "nav":
+                case 'nav':
                     return Module::t('log_action_update_cms_nav', ['info' => $this->rowDescriber]);
-                case "cms_nav_item_page_block_item":
+                case 'cms_nav_item_page_block_item':
                     return Module::t('log_action_update_cms_nav_item_page_block_item', ['info' => $this->rowDescriber]);
                 default:
                     return Module::t('log_action_update_unkown', ['info' => $this->rowDescriber]);
@@ -141,47 +142,48 @@ class Log extends \yii\db\ActiveRecord
 
         if ($this->is_deletion) {
             switch ($this->table_name) {
-                case "nav_item":
+                case 'nav_item':
                     return Module::t('log_action_delete_cms_nav_item', ['info' => $this->rowDescriber]);
-                case "nav":
+                case 'nav':
                     return Module::t('log_action_delete_cms_nav', ['info' => $this->rowDescriber]);
-                case "cms_nav_item_page_block_item":
+                case 'cms_nav_item_page_block_item':
                     return Module::t('log_action_delete_cms_nav_item_page_block_item', ['info' => $this->rowDescriber]);
                 default:
                     return Module::t('log_action_delete_unkown');
             }
         }
     }
-    
+
     public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
     /**
-     *
-     * @param integer $type Types of message:
-     * + 1 = insertion
-     * + 2 = update
-     * + 3 = deletion
-     * @param array $message
+     * @param int    $type           Types of message:
+     *                               + 1 = insertion
+     *                               + 2 = update
+     *                               + 3 = deletion
+     * @param array  $message
      * @param string $tableName
-     * @param integer $rowId
-     * @param array $additionalData
-     * @return boolean
+     * @param int    $rowId
+     * @param array  $additionalData
+     *
+     * @return bool
      */
     public static function add($type, array $message, $tableName, $rowId = 0, array $additionalData = [])
     {
         $model = new self();
         $model->setAttributes([
             'is_insertion' => ($type == 1) ? true : false,
-            'is_update' => ($type == 2) ? true : false,
-            'is_deletion' => ($type == 3) ? true : false,
-            'table_name' => $tableName,
-            'row_id' => $rowId,
-            'message' => Json::encode($message),
-            'data_json' => $additionalData,
+            'is_update'    => ($type == 2) ? true : false,
+            'is_deletion'  => ($type == 3) ? true : false,
+            'table_name'   => $tableName,
+            'row_id'       => $rowId,
+            'message'      => Json::encode($message),
+            'data_json'    => $additionalData,
         ]);
+
         return $model->insert(false);
     }
 }

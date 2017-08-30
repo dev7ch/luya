@@ -13,7 +13,7 @@ use Yii;
 class NavItemBlockController extends \luya\admin\base\RestController
 {
     /**
-     * Copy all attached sub blocks (referencing sourceId) into new context and update prevId to sourceId
+     * Copy all attached sub blocks (referencing sourceId) into new context and update prevId to sourceId.
      *
      * @param $sourceId
      * @param $targetPrevId
@@ -54,10 +54,11 @@ class NavItemBlockController extends \luya\admin\base\RestController
 
             if ($newModel->insert()) {
                 $this->copySubBlocksTo(Yii::$app->request->getBodyParam('copyBlockId', false), $newModel->id, $newModel->nav_item_page_id);
+
                 return ['response' => true];
             }
         }
-        
+
         return ['response' => false];
     }
 }

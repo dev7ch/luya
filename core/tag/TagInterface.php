@@ -3,9 +3,10 @@
 namespace luya\tag;
 
 /**
- * TagInterface for all LUYA Tags
+ * TagInterface for all LUYA Tags.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 interface TagInterface
@@ -17,7 +18,7 @@ interface TagInterface
      * @return string The example string like `mail[info@luya.io](Mail us!)`.
      */
     public function example();
-    
+
     /**
      * Get the readme informations of the current tag, markdown syntax is allowed.
      *
@@ -47,8 +48,9 @@ interface TagInterface
      *
      * Woud replace and return tag with **Hello, John Doe**.
      *
-     * @param string $value The value of the tag enclosed by square bracket `[]`
-     * @param string|null $sub The optional value of the tag enclise by round bracket `()`, is not required by tag. If not provided equals `null`.
+     * @param string      $value The value of the tag enclosed by square bracket `[]`
+     * @param string|null $sub   The optional value of the tag enclise by round bracket `()`, is not required by tag. If not provided equals `null`.
+     *
      * @return string The new generated string of the Tag.
      */
     public function parse($value, $sub);

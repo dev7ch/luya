@@ -4,9 +4,9 @@ namespace luya\admin\importers;
 
 use luya\admin\models\StorageFile;
 use luya\admin\models\StorageImage;
+use luya\console\Importer;
 use luya\helpers\FileHelper;
 use Yii;
-use luya\console\Importer;
 
 /**
  * Storage Importer.
@@ -14,6 +14,7 @@ use luya\console\Importer;
  * Storage system importer behavior to cleanup the storage database and folder.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class StorageImporter extends Importer
@@ -23,14 +24,14 @@ class StorageImporter extends Importer
     private static function getFindFilesDirectory()
     {
         $path = Yii::$app->storage->serverPath;
-        
+
         if (is_dir($path) && file_exists($path)) {
             return FileHelper::findFiles($path, ['except' => ['.*']]);
         }
-        
+
         return false;
     }
-    
+
     /**
      * Get orphaned files array.
      *
@@ -43,7 +44,7 @@ class StorageImporter extends Importer
     public static function getOrphanedFileList()
     {
         $diskFiles = static::getFindFilesDirectory();
-        
+
         if ($diskFiles === false) {
             return false;
         }
@@ -64,13 +65,13 @@ class StorageImporter extends Importer
 
         // check image filter files
         $imageList = StorageImage::find()->asArray()->all();
-        
+
         // check all storage files including is_deleted entries
         $allStorageFileEntries = StorageFile::find()->indexBy('id')->asArray()->all();
 
         foreach ($imageList as $image) {
             if (array_key_exists($image['file_id'], $allStorageFileEntries)) {
-                $filterImage = $image['filter_id'] . '_' . $allStorageFileEntries[$image['file_id']]['name_new_compound'];
+                $filterImage = $image['filter_id'].'_'.$allStorageFileEntries[$image['file_id']]['name_new_compound'];
                 if (isset($diskFiles[$filterImage])) {
                     unset($diskFiles[$filterImage]);
                 }
@@ -92,7 +93,7 @@ class StorageImporter extends Importer
     public static function removeMissingStorageFiles()
     {
         $storageFileList = static::getFindFilesDirectory();
-        
+
         if (!$storageFileList) {
             return 0;
         }
@@ -114,11 +115,12 @@ class StorageImporter extends Importer
                 $count++;
             }
         }
+
         return $count;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function run()
     {
@@ -126,20 +128,20 @@ class StorageImporter extends Importer
 
         $this->importer->verbosePrint('Retrieve all orphaned files.', __METHOD__);
         $orphanedFileList = static::getOrphanedFileList();
-        
+
         if ($orphanedFileList === false) {
-            $log["error"] = "unable to find a storage folder '".Yii::$app->storage->serverPath."' to compare.";
+            $log['error'] = "unable to find a storage folder '".Yii::$app->storage->serverPath."' to compare.";
         } else {
-            $log["files_missing_in_table"] = count($orphanedFileList);
-            
+            $log['files_missing_in_table'] = count($orphanedFileList);
+
             $this->importer->verbosePrint('Start marking not found storage files as deleted in database.', __METHOD__);
-            $log["files_missing_in_file_table"] = static::removeMissingStorageFiles();
+            $log['files_missing_in_file_table'] = static::removeMissingStorageFiles();
 
             foreach ($orphanedFileList as $file) {
-                $log["files_to_remove"][] = $file;
+                $log['files_to_remove'][] = $file;
             }
         }
-        
+
         $this->importer->verbosePrint('Start the thumbnail processing.', __METHOD__);
         Yii::$app->storage->processThumbnails();
 

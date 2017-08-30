@@ -17,13 +17,13 @@ class StorageTest extends AdminTestCase
         $this->assertTrue($response['upload']);
     }
     */
-    
+
     public function testErrorUploadFromFiles()
     {
         $files[] = ['tmp_name' => 'not/found.jpg', 'name' => 'image.jpg', 'type' => 'image/jpg', 'error' => 1, 'size' => 123];
-    
+
         $response = Storage::uploadFromFiles($files);
-    
+
         $this->assertFalse($response['upload']);
     }
 }

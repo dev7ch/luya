@@ -2,9 +2,9 @@
 
 namespace luya\cms\frontend\blocks;
 
-use luya\cms\frontend\Module;
-use luya\cms\frontend\blockgroups\LayoutGroup;
 use luya\cms\base\PhpBlock;
+use luya\cms\frontend\blockgroups\LayoutGroup;
+use luya\cms\frontend\Module;
 
 /**
  * Layout/Grid Block.
@@ -14,17 +14,17 @@ use luya\cms\base\PhpBlock;
 final class LayoutBlock extends PhpBlock
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $module = 'cms';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $isContainer = true;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function name()
     {
@@ -32,7 +32,7 @@ final class LayoutBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function icon()
     {
@@ -40,7 +40,7 @@ final class LayoutBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function config()
     {
@@ -70,32 +70,32 @@ final class LayoutBlock extends PhpBlock
                 [
                     ['var' => 'left', 'cols' => $this->getExtraValue('leftWidth'), 'label' => Module::t('block_layout_placeholders_left')],
                     ['var' => 'right', 'cols' => $this->getExtraValue('rightWidth'), 'label' => Module::t('block_layout_placeholders_right')],
-                ]
+                ],
             ],
         ];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function extraVars()
     {
         return [
-            'leftWidth' => $this->getVarValue('width', 6),
+            'leftWidth'  => $this->getVarValue('width', 6),
             'rightWidth' => 12 - $this->getVarValue('width', 6),
         ];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function admin()
     {
         return '';
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function blockGroup()
     {

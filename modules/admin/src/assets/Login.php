@@ -15,7 +15,7 @@ class Login extends \luya\web\Asset
     public $sourcePath = '@admin/resources';
 
     /**
-     * @var array A list of css style documents located in the $sourcePath folder.
+     * @var array A list of css style documents located in the folder.
      */
     public $css = [
         'dist/css/admin.css',
@@ -23,7 +23,7 @@ class Login extends \luya\web\Asset
     ];
 
     /**
-     * @var array A list of javascript files located in the $sourcePath folder.
+     * @var array A list of javascript files located in the folder.
      */
     public $js = [
         'dist/js/login.js',

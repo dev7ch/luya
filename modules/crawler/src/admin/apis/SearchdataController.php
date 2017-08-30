@@ -8,7 +8,7 @@ namespace luya\crawler\admin\apis;
 class SearchdataController extends \luya\admin\ngrest\base\Api
 {
     /**
-     * @var string $modelClass The path to the model which is the provider for the rules and fields.
+     * @var string The path to the model which is the provider for the rules and fields.
      */
     public $modelClass = '\luya\crawler\models\Searchdata';
 }

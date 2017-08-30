@@ -2,11 +2,10 @@
 
 namespace luya\console\commands;
 
-use Yii;
-
 use luya\admin\models\Config;
 use luya\console\Command;
 use luya\console\interfaces\ImportControllerInterface;
+use Yii;
 
 /**
  * Import controller runs the module defined importer classes.
@@ -20,6 +19,7 @@ use luya\console\interfaces\ImportControllerInterface;
  * Each of the importer classes must extend the {{\luya\console\Importer}} class.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class ImportController extends Command implements ImportControllerInterface
@@ -31,12 +31,12 @@ class ImportController extends Command implements ImportControllerInterface
     private $_scanFolders = ['blocks', 'filters', 'properties', 'blockgroups'];
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
         parent::init();
-        
+
         // foreach scanFolders of all modules
         foreach (Yii::$app->getApplicationModules() as $id => $module) {
             foreach ($this->_scanFolders as $folderName) {
@@ -55,9 +55,9 @@ class ImportController extends Command implements ImportControllerInterface
         foreach (scandir($path) as $file) {
             if (substr($file, 0, 1) !== '.') {
                 $files[] = [
-                    'file' => $file,
+                    'file'   => $file,
                     'module' => $module,
-                    'ns' => $ns.'\\'.pathinfo($file, PATHINFO_FILENAME),
+                    'ns'     => $ns.'\\'.pathinfo($file, PATHINFO_FILENAME),
                 ];
             }
         }
@@ -69,16 +69,16 @@ class ImportController extends Command implements ImportControllerInterface
     {
         if (file_exists($path)) {
             $this->_dirs[$folderName][] = [
-                'ns' => $ns,
-                'module' => $module,
+                'ns'         => $ns,
+                'module'     => $module,
                 'folderPath' => $path.DIRECTORY_SEPARATOR,
-                'files' => $this->scanDirectoryFiles($path, $ns, $module),
+                'files'      => $this->scanDirectoryFiles($path, $ns, $module),
             ];
         }
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getDirectoryFiles($folderName)
     {
@@ -90,18 +90,18 @@ class ImportController extends Command implements ImportControllerInterface
                 }
             }
         }
-        
+
         return $files;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function addLog($section, $value)
     {
         $this->_log[$section][] = $value;
     }
-    
+
     /**
      * Get all log data.
      *
@@ -122,7 +122,7 @@ class ImportController extends Command implements ImportControllerInterface
         $queue = [];
         foreach (Yii::$app->getApplicationModules() as $id => $module) {
             $response = $module->import($this);
-            
+
             // if there response is an array, the it will be added to the queue
             if (is_array($response)) {
                 foreach ($response as $class) {
@@ -138,11 +138,12 @@ class ImportController extends Command implements ImportControllerInterface
                 }
             }
         }
-        
+
         ksort($queue);
+
         return $queue;
     }
-    
+
     /**
      * Run the import process.
      *
@@ -162,24 +163,24 @@ class ImportController extends Command implements ImportControllerInterface
             Config::set(Config::CONFIG_INSTALLER_VENDOR_TIMESTAMP, Yii::$app->packageInstaller->timestamp);
             Yii::$app->db->createCommand()->update('admin_user', ['force_reload' => 1])->execute();
         }
-        
+
         foreach ($this->getLog() as $section => $value) {
-            $this->outputInfo(PHP_EOL . $section . ":");
+            $this->outputInfo(PHP_EOL.$section.':');
             foreach ($value as $k => $v) {
                 if (is_array($v)) {
                     foreach ($v as $kk => $kv) {
                         if (is_array($kv)) {
-                            $this->output(" - {$kk}: " . print_r($kv, true));
+                            $this->output(" - {$kk}: ".print_r($kv, true));
                         } else {
                             $this->output(" - {$kk}: {$kv}");
                         }
                     }
                 } else {
-                    $this->output(" - " . $v);
+                    $this->output(' - '.$v);
                 }
             }
         }
-        
-        return $this->outputSuccess("Importer run successfull.");
+
+        return $this->outputSuccess('Importer run successfull.');
     }
 }

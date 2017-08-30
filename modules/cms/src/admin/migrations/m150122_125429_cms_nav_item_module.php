@@ -8,7 +8,7 @@ class m150122_125429_cms_nav_item_module extends Migration
     public function safeUp()
     {
         $this->createTable('cms_nav_item_module', [
-            'id' => $this->primaryKey(),
+            'id'          => $this->primaryKey(),
             'module_name' => $this->string(255)->notNull(),
         ]);
     }

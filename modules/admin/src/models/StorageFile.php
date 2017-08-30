@@ -2,17 +2,17 @@
 
 namespace luya\admin\models;
 
-use Yii;
-use luya\web\Application;
-use yii\db\ActiveRecord;
 use luya\helpers\FileHelper;
+use luya\web\Application;
+use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "admin_storage_file".
  *
- * @property integer $id
- * @property boolean $is_hidden
- * @property integer $folder_id
+ * @property int $id
+ * @property bool $is_hidden
+ * @property int $folder_id
  * @property string $name_original
  * @property string $name_new
  * @property string $name_new_compound
@@ -20,13 +20,13 @@ use luya\helpers\FileHelper;
  * @property string $extension
  * @property string $hash_file
  * @property string $hash_name
- * @property integer $upload_timestamp
- * @property integer $file_size
- * @property integer $upload_user_id
- * @property integer $is_deleted
- * @property integer $passthrough_file
+ * @property int $upload_timestamp
+ * @property int $file_size
+ * @property int $upload_user_id
+ * @property int $is_deleted
+ * @property int $passthrough_file
  * @property string $passthrough_file_password
- * @property integer $passthrough_file_stats
+ * @property int $passthrough_file_stats
  * @property string $caption
  *
  * @author Basil Suter <basil@nadar.io>
@@ -34,7 +34,7 @@ use luya\helpers\FileHelper;
 final class StorageFile extends ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -43,7 +43,7 @@ final class StorageFile extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -51,7 +51,7 @@ final class StorageFile extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -62,23 +62,24 @@ final class StorageFile extends ActiveRecord
             [['caption'], 'string'],
         ];
     }
-    
+
     public function delete()
     {
         $file = Yii::$app->storage->getFile($this->id);
-        
+
         if ($file) {
             if (!FileHelper::unlink($file->serverSource)) {
-                Logger::error("Unable to remove storage file: " . $file->serverSource);
+                Logger::error('Unable to remove storage file: '.$file->serverSource);
             }
         }
         $this->is_deleted = true;
         $this->update(false);
+
         return true;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function find()
     {

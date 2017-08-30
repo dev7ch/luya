@@ -16,6 +16,7 @@ use luya\traits\ApplicationTrait;
  * @property \luya\web\Request $request The request component.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class Application extends \yii\web\Application
@@ -23,20 +24,20 @@ class Application extends \yii\web\Application
     use ApplicationTrait;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function coreComponents()
     {
         return array_merge($this->luyaCoreComponents(), [
-            'request' => ['class' => 'luya\web\Request'],
+            'request'      => ['class' => 'luya\web\Request'],
             'errorHandler' => ['class' => 'luya\web\ErrorHandler'],
-            'urlManager' => ['class' => 'luya\web\UrlManager'],
-            'view' => ['class' => 'luya\web\View'],
-            'element' => ['class' => 'luya\web\Element'],
-            'composition' => ['class' => 'luya\web\Composition'],
+            'urlManager'   => ['class' => 'luya\web\UrlManager'],
+            'view'         => ['class' => 'luya\web\View'],
+            'element'      => ['class' => 'luya\web\Element'],
+            'composition'  => ['class' => 'luya\web\Composition'],
             'assetManager' => [
-                'class' => 'luya\web\AssetManager',
-                'forceCopy' => YII_DEBUG,
+                'class'           => 'luya\web\AssetManager',
+                'forceCopy'       => YII_DEBUG,
                 'appendTimestamp' => !YII_DEBUG,
             ],
         ]);

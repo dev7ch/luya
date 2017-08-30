@@ -2,8 +2,8 @@
 
 namespace luya\admin\ngrest\plugins;
 
-use Yii;
 use luya\admin\ngrest\base\Plugin;
+use Yii;
 
 /**
  * Type Image Upload.
@@ -39,17 +39,17 @@ use luya\admin\ngrest\base\Plugin;
 class Image extends Plugin
 {
     /**
-     * @var boolean Whether the user can choose a filter or not.
+     * @var bool Whether the user can choose a filter or not.
      */
     public $filter = true;
 
     /**
-     * @var boolean Whether to return a {{luya\admin\image\Item}} instead of the numeric image id value from the database.
+     * @var bool Whether to return a {{luya\admin\image\Item}} instead of the numeric image id value from the database.
      */
     public $imageItem = false;
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderList($id, $ngModel)
     {
@@ -57,7 +57,7 @@ class Image extends Plugin
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderCreate($id, $ngModel)
     {
@@ -65,15 +65,15 @@ class Image extends Plugin
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderUpdate($id, $ngModel)
     {
         return $this->renderCreate($id, $ngModel);
     }
-    
+
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function onAfterFind($event)
     {

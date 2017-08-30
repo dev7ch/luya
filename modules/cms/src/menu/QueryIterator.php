@@ -3,9 +3,9 @@
 namespace luya\cms\menu;
 
 use Iterator;
-use yii\base\Object;
 use luya\cms\models\Nav;
 use luya\helpers\ArrayHelper;
+use yii\base\Object;
 
 /**
  * Iterator class for menu items.
@@ -25,7 +25,7 @@ class QueryIterator extends Object implements Iterator
 
     /**
      * @var string|null Can contain the language context, so the sub querys for this item will be the same language context
-     * as the parent object which created this object.
+     *                  as the parent object which created this object.
      */
     public $lang;
 
@@ -33,27 +33,27 @@ class QueryIterator extends Object implements Iterator
      * @see \luya\cms\menu\Query::with()
      */
     public $with = [];
-    
+
     /**
-     * @var boolean Whether all models for each menu element should be preloaded or not, on large systems with propertie access it
-     * can reduce the sql requests but uses more memory instead.
+     * @var bool Whether all models for each menu element should be preloaded or not, on large systems with propertie access it
+     *           can reduce the sql requests but uses more memory instead.
      */
     public $preloadModels = false;
-    
+
     /**
      * @internal
      */
     public function init()
     {
         parent::init();
-        
+
         if ($this->preloadModels) {
             $this->loadModels();
         }
     }
-    
+
     private $_loadModels;
-    
+
     /**
      * Load all models for ghe given Menu Query.
      *
@@ -65,23 +65,24 @@ class QueryIterator extends Object implements Iterator
         if ($this->_loadModels === null) {
             $this->_loadModels = Nav::find()->indexBy('id')->where(['in', 'id', ArrayHelper::getColumn($this->data, 'nav_id')])->with(['properties'])->all();
         }
-        
+
         return $this->_loadModels;
     }
-    
+
     /**
      * Get the model for a given id.
      *
      * If the model was not preloaded by {{loadModels}} null is returned.
      *
-     * @param integer $id
+     * @param int $id
+     *
      * @return null|\luya\cms\models\Nav
      */
     public function getLoadedModel($id)
     {
         return isset($this->_loadModels[$id]) ? $this->_loadModels[$id] : null;
     }
-    
+
     /**
      * Iterator get current element, generates a new object for the current item on accessing.s.
      *
@@ -90,6 +91,7 @@ class QueryIterator extends Object implements Iterator
     public function current()
     {
         $data = current($this->data);
+
         return Query::createItemObject($data, $this->lang, $this->getLoadedModel($data['id']));
     }
 

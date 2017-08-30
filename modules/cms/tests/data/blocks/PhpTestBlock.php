@@ -10,17 +10,17 @@ class PhpTestBlock extends PhpBlock
     {
         return 'PHP Test Block';
     }
-    
+
     public function config()
     {
         return [];
     }
-    
+
     public function admin()
     {
         return 'admin';
     }
-    
+
     public function extraVars()
     {
         return ['foo' => 'bar'];

@@ -15,12 +15,13 @@ use yii\rest\ActiveController as BaseActiveController;
  * See the {{luya\traits\RestBehaviorsTrait}} documentation in order to read more about the default enabled behaviors and protection settings.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 abstract class ActiveController extends BaseActiveController
 {
     use RestBehaviorsTrait;
-    
+
     /**
      * @var string The constant for the restcreate scenario
      */
@@ -42,7 +43,7 @@ abstract class ActiveController extends BaseActiveController
     public $updateScenario = self::SCENARIO_RESTUPDATE;
 
     /**
-     * @var boolean|array|\yii\data\Pagination Whether the pagination is enabled for this ActiveController or not by default pagination for rest controllers is disabled.
+     * @var bool|array|\yii\data\Pagination Whether the pagination is enabled for this ActiveController or not by default pagination for rest controllers is disabled.
      *
      * An example of activatedpagination by setting it to 100 Records per Page:
      *
@@ -55,16 +56,17 @@ abstract class ActiveController extends BaseActiveController
      * @see \yii\data\Pagination
      */
     public $pagination = false;
-    
+
     /**
-     * If a user should not get access to the rest api, an ForbiddenHttpException must be thrown:
+     * If a user should not get access to the rest api, an ForbiddenHttpException must be thrown:.
      *
      * ```php
      * throw new \yii\web\ForbiddenHttpException
      * ```
      *
      * To make access restrictions checks in your Rest controller you have to override this method, otherwise there is no access check.
-     * {@inheritDoc}
+     * {@inheritdoc}
+     *
      * @see \yii\rest\ActiveController::checkAccess()
      */
     public function checkAccess($action, $model = null, $params = [])

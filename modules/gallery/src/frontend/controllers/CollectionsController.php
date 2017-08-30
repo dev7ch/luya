@@ -2,8 +2,8 @@
 
 namespace luya\gallery\frontend\controllers;
 
-use luya\web\Controller;
 use luya\gallery\models\Album;
+use luya\web\Controller;
 
 /**
  * Get all collections or for a specificy categorie.
@@ -13,7 +13,7 @@ use luya\gallery\models\Album;
 class CollectionsController extends Controller
 {
     /**
-     * Get all collections
+     * Get all collections.
      */
     public function actionData()
     {
@@ -21,11 +21,12 @@ class CollectionsController extends Controller
             'data' => Album::find()->orderBy(['is_highlight' => SORT_DESC, 'sort_index' => SORT_ASC])->all(),
         ]);
     }
-    
+
     /**
-     * Get all collections for a specfici categorie
+     * Get all collections for a specfici categorie.
      *
-     * @param integer $catId
+     * @param int $catId
+     *
      * @return string
      */
     public function actionDataByCategorie($catId)

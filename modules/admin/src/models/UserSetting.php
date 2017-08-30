@@ -39,6 +39,7 @@ use yii\db\ActiveRecordInterface;
  * If the key does not exists, null will be returned by default.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0-beta8
  */
 final class UserSetting extends Object implements \ArrayAccess
@@ -59,8 +60,9 @@ final class UserSetting extends Object implements \ArrayAccess
     /**
      * Get a key of the user settings, dot notation is allowed to return a key of an array.
      *
-     * @param string $key
+     * @param string           $key
      * @param string|bool|null $default
+     *
      * @return string|array|null
      */
     public function get($key, $default = null)
@@ -76,12 +78,12 @@ final class UserSetting extends Object implements \ArrayAccess
 
         return $array;
     }
-    
+
     /**
-     *
-     * @param array $keys
+     * @param array   $keys
      * @param unknown $default
-     * @return string[]|array[]|NULL[]
+     *
+     * @return string[]|array[]|null[]
      */
     public function getArray(array $keys, $default = null)
     {
@@ -89,7 +91,7 @@ final class UserSetting extends Object implements \ArrayAccess
         foreach ($keys as $key) {
             $data[$key] = $this->get($key, $default);
         }
-        
+
         return $data;
     }
 
@@ -97,7 +99,8 @@ final class UserSetting extends Object implements \ArrayAccess
      * Check if an element existing inside the user settings or not.
      *
      * @param string $key
-     * @return boolean
+     *
+     * @return bool
      */
     public function has($key)
     {
@@ -117,6 +120,7 @@ final class UserSetting extends Object implements \ArrayAccess
      * Remove an element from the user settings data array.
      *
      * @param string $key
+     *
      * @return bool
      */
     public function remove($key)
@@ -129,23 +133,25 @@ final class UserSetting extends Object implements \ArrayAccess
                     $array = &$array[$item];
                 }
             }
-            
+
             unset($lastArray[$item]);
             if (empty($lastArray)) {
                 unset($lastArray);
             }
             $this->save();
+
             return true;
         }
-        
+
         return false;
     }
 
     /**
      * Add a new element to the user settings array.
      *
-     * @param string $key
-     * @param array|string|boolean $value
+     * @param string            $key
+     * @param array|string|bool $value
+     *
      * @return bool
      */
     public function set($key, $value)
@@ -162,6 +168,7 @@ final class UserSetting extends Object implements \ArrayAccess
         }
         $array = $value;
         $this->save();
+
         return true;
     }
 
@@ -171,7 +178,8 @@ final class UserSetting extends Object implements \ArrayAccess
      * Exists method for ArrayAccess.
      *
      * @param string $offset The offset key
-     * @return boolean Whether the offset key exists in the array or not.
+     *
+     * @return bool Whether the offset key exists in the array or not.
      */
     public function offsetExists($offset)
     {
@@ -182,7 +190,7 @@ final class UserSetting extends Object implements \ArrayAccess
      * Setter method for ArrayAccess.
      *
      * @param string $offset The offset key
-     * @param mixed $value The offset value
+     * @param mixed  $value  The offset value
      */
     public function offsetSet($offset, $value)
     {
@@ -203,6 +211,7 @@ final class UserSetting extends Object implements \ArrayAccess
      * Getter method for ArrayAccess.
      *
      * @param string $offset The offset key
+     *
      * @return mixed The value when accessing the array.
      */
     public function offsetGet($offset)

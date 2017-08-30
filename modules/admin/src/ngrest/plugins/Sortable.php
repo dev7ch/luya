@@ -17,26 +17,26 @@ use luya\admin\ngrest\base\Plugin;
 class Sortable extends Plugin
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderList($id, $ngModel)
     {
         return [
             $this->createTag('i', 'keyboard_arrow_up', ['ng-init' => '$first ? changeOrder(\''.$this->name.'\', \'+\') : null', 'ng-click' => 'sortableUp($index, item, \''.$this->name.'\')', 'ng-hide' => '$first', 'class' => 'material-icons btn btn-outline-secondary btn-symbol']),
-            $this->createTag('i', 'keyboard_arrow_down', ['ng-click' => 'sortableDown($index, item, \''.$this->name.'\')', 'ng-hide' => '$last', 'class' => 'material-icons btn btn-outline-secondary btn-symbol'])
+            $this->createTag('i', 'keyboard_arrow_down', ['ng-click' => 'sortableDown($index, item, \''.$this->name.'\')', 'ng-hide' => '$last', 'class' => 'material-icons btn btn-outline-secondary btn-symbol']),
         ];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderCreate($id, $ngModel)
     {
         return $this->createFormTag('zaa-number', $id, $ngModel);
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderUpdate($id, $ngModel)
     {

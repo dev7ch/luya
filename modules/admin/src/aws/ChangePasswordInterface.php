@@ -28,7 +28,7 @@ interface ChangePasswordInterface
      *
      * The implementation of this must make sure if the $newPassword and $newPasswordRepetition are equals!
      *
-     * @param string $newPassword The new password which must be set.
+     * @param string $newPassword           The new password which must be set.
      * @param string $newPasswordRepetition The repeation in order to check whether does inputs are equal or not.
      */
     public function changePassword($newPassword, $newPasswordRepetition);

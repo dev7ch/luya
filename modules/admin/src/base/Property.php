@@ -30,11 +30,11 @@ abstract class Property extends Component implements TypesInterface
      * @var mixed The value from the database assigned into the property object.
      */
     public $value;
-    
+
     /**
-     * @var boolean Whether the property is used for an i18n use case or not, this will
-     * serialize the input as json into the database and the getValue/getAdminValue methods will
-     * automatically unserialize the correctly value.
+     * @var bool Whether the property is used for an i18n use case or not, this will
+     *           serialize the input as json into the database and the getValue/getAdminValue methods will
+     *           automatically unserialize the correctly value.
      */
     public $i18n = false;
 
@@ -93,6 +93,7 @@ abstract class Property extends Component implements TypesInterface
      * ```
      *
      * @see \luya\admin\base\TypesInterface
+     *
      * @return string
      */
     abstract public function type();
@@ -106,7 +107,7 @@ abstract class Property extends Component implements TypesInterface
     {
         return empty($this->getValue()) ? '' : $this->getValue();
     }
-    
+
     /**
      * Options you may have to pass to the selected type.
      *
@@ -150,7 +151,7 @@ abstract class Property extends Component implements TypesInterface
     {
         return false;
     }
-    
+
     /**
      * The value is passed from the administration area side to the angular view.
      *
@@ -161,10 +162,10 @@ abstract class Property extends Component implements TypesInterface
         if ($this->i18n) {
             $this->value = I18n::decode($this->value);
         }
-        
+
         return $this->value;
     }
-    
+
     /**
      * This is what will be returned when the property is requested in the frontend.
      *
@@ -189,7 +190,7 @@ abstract class Property extends Component implements TypesInterface
         if ($this->i18n) {
             $this->value = I18n::decode($this->value);
         }
-        
+
         return $this->value;
     }
 }

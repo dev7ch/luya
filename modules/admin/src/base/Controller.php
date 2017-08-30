@@ -2,9 +2,9 @@
 
 namespace luya\admin\base;
 
+use luya\admin\models\UserOnline;
 use Yii;
 use yii\filters\AccessControl;
-use luya\admin\models\UserOnline;
 use yii\filters\ContentNegotiator;
 use yii\web\Response;
 
@@ -21,7 +21,7 @@ class Controller extends \luya\web\Controller
     public $layout = false;
 
     /**
-     * @var boolean When enabling `$disablePermissionCheck` all actions are not secured by access controller but are do require an authtenticated user (logged in user).
+     * @var bool When enabling `$disablePermissionCheck` all actions are not secured by access controller but are do require an authtenticated user (logged in user).
      */
     public $disablePermissionCheck = false;
 
@@ -56,7 +56,7 @@ class Controller extends \luya\web\Controller
      * ```
      */
     public $apiResponseActions = [];
-    
+
     /**
      * Returns the rules for the AccessControl filter behavior.
      *
@@ -67,15 +67,16 @@ class Controller extends \luya\web\Controller
      *   2a. If {{luya\admin\base\Controller::$disabledPermissionCheck}} enabled, the match route behavior is disabled.
      *
      * @return array A list of rules.
+     *
      * @see yii\filters\AccessControl
      */
     public function getRules()
     {
         return [
             [
-                'allow' => true,
-                'actions' => [], // apply to all actions by default
-                'roles' => ['@'],
+                'allow'         => true,
+                'actions'       => [], // apply to all actions by default
+                'roles'         => ['@'],
                 'matchCallback' => function ($rule, $action) {
                     // see if a controller property has been defined to disabled the permission checks
                     if ($action->controller->disablePermissionCheck) {
@@ -83,9 +84,9 @@ class Controller extends \luya\web\Controller
                     }
                     // get the route based on the current $action object
                     $route = implode('/', [$action->controller->module->id, $action->controller->id, $action->id]);
-                    
+
                     UserOnline::refreshUser($this->user->id, $route);
-                    
+
                     // check the access inside auth->matchRoute and return true/false.
                     return Yii::$app->auth->matchRoute($this->user->id, $route);
                 },
@@ -103,34 +104,35 @@ class Controller extends \luya\web\Controller
         $behaviors = [
             'access' => [
                 'class' => AccessControl::className(),
-                'user' => Yii::$app->adminuser,
+                'user'  => Yii::$app->adminuser,
                 'rules' => $this->getRules(),
             ],
         ];
-        
+
         if (!empty($this->apiResponseActions)) {
             $behaviors['negotiator'] = [
-                'class' => ContentNegotiator::className(),
-                'only' => $this->apiResponseActions,
+                'class'   => ContentNegotiator::className(),
+                'only'    => $this->apiResponseActions,
                 'formats' => [
                     'application/json' => Response::FORMAT_JSON,
                 ],
             ];
         }
-        
+
         return $behaviors;
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
             Yii::$app->language = Yii::$app->adminuser->interfaceLanguage;
+
             return true;
         }
-        
+
         return false;
     }
 }

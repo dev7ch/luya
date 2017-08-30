@@ -100,37 +100,39 @@ use yii\web\User;
  * ```
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class GroupUser extends User
 {
     /**
-     * Checks whether a user exists for the provided group based on the GroupUserIdentityInterface implementation
+     * Checks whether a user exists for the provided group based on the GroupUserIdentityInterface implementation.
      *
      * @param string|array $alias
-     * @return bool
+     *
      * @throws InvalidConfigException
+     *
+     * @return bool
      */
     public function inGroup($alias)
     {
         if ($this->isGuest) {
             return false;
         }
-        
+
         $identity = $this->identity;
-        
+
         if (!$identity instanceof GroupUserIdentityInterface) {
             throw new InvalidConfigException('The $identityClass must be instance of luya\web\GroupUserIdentityInterface.');
         }
-        
-        
+
         $groups = (array) $alias;
         foreach ($groups as $groupAlias) {
             if (in_array($groupAlias, $identity->authGroups())) {
                 return true;
             }
         }
-        
+
         return false;
     }
 }

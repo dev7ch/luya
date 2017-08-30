@@ -2,14 +2,14 @@
 
 namespace luya\cms\models;
 
-use Yii;
-use luya\admin\models\Lang;
-use yii\base\Exception;
-use yii\helpers\Inflector;
-use luya\cms\admin\Module;
 use luya\admin\base\GenericSearchInterface;
-use yii\db\ActiveRecordInterface;
+use luya\admin\models\Lang;
 use luya\admin\models\User;
+use luya\cms\admin\Module;
+use Yii;
+use yii\base\Exception;
+use yii\db\ActiveRecordInterface;
+use yii\helpers\Inflector;
 
 /**
  * NavItem Model represents a Item bound to Nav and Language, each Nav(Menu) can contain a nav_item for each language.Each
@@ -17,15 +17,15 @@ use luya\admin\models\User;
  * nav_item_type_id (pk of the table).
  *
  * @property \luya\cms\models\NavItemPage|\luya\cms\models\NavItemModule\luya\cms\models\NavItemRedirect $type The type object based on the current type id
- * @property integer $id
- * @property integer $nav_id
- * @property integer $lang_id
- * @property integer $nav_item_type
- * @property integer $nav_item_type_id
- * @property integer $create_user_id
- * @property integer $update_user_id
- * @property integer $timestamp_create
- * @property integer $timestamp_update
+ * @property int $id
+ * @property int $nav_id
+ * @property int $lang_id
+ * @property int $nav_item_type
+ * @property int $nav_item_type_id
+ * @property int $create_user_id
+ * @property int $update_user_id
+ * @property int $timestamp_create
+ * @property int $timestamp_update
  * @property string $title
  * @property string $alias
  * @property string $description
@@ -46,7 +46,7 @@ class NavItem extends \yii\db\ActiveRecord implements GenericSearchInterface
     public $parent_nav_id;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -54,17 +54,17 @@ class NavItem extends \yii\db\ActiveRecord implements GenericSearchInterface
         $this->on(self::EVENT_BEFORE_VALIDATE, [$this, 'validateAlias']);
         $this->on(self::EVENT_BEFORE_INSERT, [$this, 'beforeCreate']);
         $this->on(self::EVENT_BEFORE_UPDATE, [$this, 'eventBeforeUpdate']);
-        
+
         $this->on(self::EVENT_BEFORE_DELETE, [$this, 'eventLogger']);
         $this->on(self::EVENT_AFTER_INSERT, [$this, 'eventLogger']);
         $this->on(self::EVENT_AFTER_UPDATE, [$this, 'eventLogger']);
-        
+
         $this->on(self::EVENT_AFTER_DELETE, function ($event) {
             $type = $event->sender->getType();
             if ($type) {
                 $type->delete();
             }
-            
+
             foreach (NavItemPage::find()->where(['nav_item_id' => $event->sender->id])->all() as $version) {
                 $version->delete();
             }
@@ -73,10 +73,11 @@ class NavItem extends \yii\db\ActiveRecord implements GenericSearchInterface
 
     /**
      * Log the current event in a database to retrieve data in case of emergency. This method will be trigger
-     * on: EVENT_BEFORE_DELETE, EVENT_AFTER_INSERT & EVENT_AFTER_UPDATE
+     * on: EVENT_BEFORE_DELETE, EVENT_AFTER_INSERT & EVENT_AFTER_UPDATE.
      *
      * @param \yii\base\Event $event
-     * @return boolean
+     *
+     * @return bool
      */
     protected function eventLogger($event)
     {
@@ -91,15 +92,15 @@ class NavItem extends \yii\db\ActiveRecord implements GenericSearchInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
         return 'cms_nav_item';
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -110,13 +111,13 @@ class NavItem extends \yii\db\ActiveRecord implements GenericSearchInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributeLabels()
     {
         return [
-            'title' => Module::t('model_navitem_title_label'),
-            'alias' => Module::t('model_navitem_alias_label'),
+            'title'     => Module::t('model_navitem_title_label'),
+            'alias'     => Module::t('model_navitem_alias_label'),
             'title_tag' => Module::t('model_navitem_title_tag_label'),
         ];
     }
@@ -125,26 +126,27 @@ class NavItem extends \yii\db\ActiveRecord implements GenericSearchInterface
     {
         return $this->hasOne(User::class, ['id' => 'update_user_id']);
     }
-    
+
     public function slugifyAlias()
     {
         $this->alias = Inflector::slug($this->alias);
     }
-    
+
     private $_type;
-    
+
     /**
      * GET the type object based on the nav_item_type defintion and the nav_item_type_id which is the
      * primary key for the corresponding type table (page, module, redirect). This approach has been choosen
      * do dynamically extend type of pages whithout any limitation.
      *
-     * @return \luya\cms\models\NavItemPage|\luya\cms\models\NavItemModule|\luya\cms\models\NavItemRedirect Returns the object based on the type
      * @throws Exception
+     *
+     * @return \luya\cms\models\NavItemPage|\luya\cms\models\NavItemModule|\luya\cms\models\NavItemRedirect Returns the object based on the type
      */
     public function getType()
     {
         if ($this->_type === null) {
-            
+
             // what kind of item type are we looking for
             if ($this->nav_item_type == self::TYPE_PAGE) {
                 $this->_type = NavItemPage::findOne($this->nav_item_type_id);
@@ -153,16 +155,16 @@ class NavItem extends \yii\db\ActiveRecord implements GenericSearchInterface
             } elseif ($this->nav_item_type == self::TYPE_REDIRECT) {
                 $this->_type = NavItemRedirect::findOne($this->nav_item_type_id);
             }
-            
+
             if ($this->_type === null) {
                 $this->_type = false;
             }
-            
+
             // set context for the object
             /// 5.4.2016: Discontinue, as the type model does have getNavItem relation
             //$this->_type->setNavItem($this);
         }
-        
+
         return $this->_type;
     }
 
@@ -190,12 +192,14 @@ class NavItem extends \yii\db\ActiveRecord implements GenericSearchInterface
      * Update attributes of the current nav item type relation.
      *
      * @param array $postData
-     * @return boolean Whether the update has been successfull or not
+     *
+     * @return bool Whether the update has been successfull or not
      */
     public function updateType(array $postData)
     {
         $model = $this->getType();
         $model->setAttributes($postData);
+
         return $model->update();
     }
 
@@ -247,7 +251,7 @@ class NavItem extends \yii\db\ActiveRecord implements GenericSearchInterface
         $this->update_user_id = Module::getAuthorUserId();
         $this->slugifyAlias();
     }
-    
+
     public function eventBeforeUpdate()
     {
         $this->timestamp_update = time();
@@ -267,6 +271,7 @@ class NavItem extends \yii\db\ActiveRecord implements GenericSearchInterface
      * @todo fix me above!
      *
      * @param unknown $moduleName
+     *
      * @return array|\yii\db\ActiveRecord[]
      */
     public static function fromModule($moduleName)
@@ -278,15 +283,15 @@ class NavItem extends \yii\db\ActiveRecord implements GenericSearchInterface
     /* GenericSearchInterface */
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function genericSearchFields()
     {
         return ['title', 'container'];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function genericSearchHiddenFields()
     {
@@ -294,53 +299,53 @@ class NavItem extends \yii\db\ActiveRecord implements GenericSearchInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function genericSearch($searchQuery)
     {
         $data = [];
-        
+
         foreach (self::find()->select(['nav_id', 'title'])->orWhere(['like', 'title', $searchQuery])->with('nav')->distinct()->each() as $item) {
             if ($item->nav) {
                 $data[] = [
-                    'title' => $item->title,
-                    'nav_id' => $item->nav_id,
+                    'title'     => $item->title,
+                    'nav_id'    => $item->nav_id,
                     'container' => $item->nav->navContainer->name,
                 ];
             }
         }
-        
+
         return $data;
     }
-    
+
     /**
      * Return the angular state provider config for custom.cmsedit to handle the selection
      * and jump/linking in the search results container.
      *
-     * {@inheritDoc}
+     * {@inheritdoc}
      *
      * @see \admin\base\GenericSearchInterface::genericSearchStateProvider()
      */
     public function genericSearchStateProvider()
     {
         return [
-            'state' => 'custom.cmsedit',
+            'state'  => 'custom.cmsedit',
             'params' => [
                 'navId' => 'nav_id',
             ],
         ];
     }
-    
+
     public function getLang()
     {
         return $this->hasOne(Lang::className(), ['id' => 'lang_id']);
     }
 
     /**
-     *
-     * Copy content of type cms_nav_item_page to a target nav item. This will create a new entry in cms_nav_item_page and for every used block a new entry in cms_nav_item_page_block_item
+     * Copy content of type cms_nav_item_page to a target nav item. This will create a new entry in cms_nav_item_page and for every used block a new entry in cms_nav_item_page_block_item.
      *
      * @param $targetNavItem nav item object
+     *
      * @return bool
      */
     public function copyPageItem($targetNavItem)
@@ -367,7 +372,6 @@ class NavItem extends \yii\db\ActiveRecord implements GenericSearchInterface
             return false;
         }
 
-        
         // @TODO replace with NavItemPage::copyBlocks($sourcePageItem->id, $pageItem->id);
         $pageBlocks = NavItemPageBlockItem::findAll(['nav_item_page_id' => $sourcePageItem->id]);
 
@@ -394,10 +398,10 @@ class NavItem extends \yii\db\ActiveRecord implements GenericSearchInterface
     }
 
     /**
-     *
      * Copy content of type cms_nav_item_module to a target nav item. This will create a new entry in cms_nav_item_module.
      *
      * @param $targetNavItem
+     *
      * @return bool
      */
     public function copyModuleItem($targetNavItem)
@@ -418,14 +422,15 @@ class NavItem extends \yii\db\ActiveRecord implements GenericSearchInterface
         }
 
         $targetNavItem->nav_item_type_id = $moduleItem->id;
+
         return $targetNavItem->save();
     }
 
     /**
-     *
      * Copy content of type cms_nav_item_redirect to a target nav item. This will create a new entry in cms_nav_item_redirect.
      *
      * @param $targetNavItem
+     *
      * @return bool
      */
     public function copyRedirectItem($targetNavItem)
@@ -446,16 +451,18 @@ class NavItem extends \yii\db\ActiveRecord implements GenericSearchInterface
         }
 
         $targetNavItem->nav_item_type_id = $redirectItem->id;
+
         return $targetNavItem->save();
     }
 
     /**
-     *
      * Copy nav item type content.
      *
      * @param $targetNavItem
-     * @return bool
+     *
      * @throws Exception type not recognized (1,2,3)
+     *
+     * @return bool
      */
     public function copyTypeContent(ActiveRecordInterface $targetNavItem)
     {
@@ -468,6 +475,6 @@ class NavItem extends \yii\db\ActiveRecord implements GenericSearchInterface
                 return $this->copyRedirectItem($targetNavItem);
         }
 
-        throw new Exception("Unable to find nav item type.");
+        throw new Exception('Unable to find nav item type.');
     }
 }

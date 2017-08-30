@@ -25,8 +25,9 @@ trait SoftDeleteTrait
      * ```
      *
      * @todo rename to fieldStateDescriber!
+     *
      * @return array Returns an array with a key which desribes what field should be updated on delete and observed on find,
-     * the value for the corresponding field can be an array or a string/numeric
+     *               the value for the corresponding field can be an array or a string/numeric
      *
      * - array: The first value is the value for the delete command, the second for the find where
      * - string/nummeric: The value will be inverted with "!" opposite operator, this can lead into problems
@@ -34,12 +35,13 @@ trait SoftDeleteTrait
      * if you want to override the default implemenation to match your custom models you should always use the former type of state description.
      *
      * @todo rename to fieldStateDescriber
+     *
      * @deprecated remove in 1.0.0 replace with fieldStateDescriber
      */
     public static function FieldStateDescriber()
     {
         return [
-            'is_deleted' => [true, false]
+            'is_deleted' => [true, false],
         ];
     }
 
@@ -51,51 +53,55 @@ trait SoftDeleteTrait
     public static function internalAndWhere()
     {
         $query = [];
-        
+
         foreach (static::FieldStateDescriber() as $field => $value) {
             $query[$field] = (is_array($value)) ? $value[1] : !$value;
         }
-        
+
         return $query;
     }
 
     /**
-     * Overrides the ngRestFind() method of the ActiveRecord
+     * Overrides the ngRestFind() method of the ActiveRecord.
+     *
      * @return \yii\db\ActiveQuery
      */
     public static function ngRestFind()
     {
         $where = static::internalAndWhere();
+
         return empty($where) ? parent::ngRestFind() : parent::ngRestFind()->andWhere($where);
     }
-    
+
     /**
-     * Overrides the find() method of the ActiveRecord
+     * Overrides the find() method of the ActiveRecord.
+     *
      * @return \yii\db\ActiveQuery
      */
     public static function find()
     {
         $where = static::internalAndWhere();
+
         return (empty($where)) ? parent::find() : parent::find()->andWhere($where);
     }
 
     /**
      * Overrides the {{yii\db\ActiveRecord::delete}} method.
      *
-     * @return boolean
+     * @return bool
      */
     public function delete()
     {
         $result = false;
-        
+
         if ($this->beforeDelete()) {
             $this->updateAttributes(static::internalUpdateValues());
             $result = true;
         }
-        
+
         return $result;
     }
-    
+
     /**
      * Evalate the values to update.
      *
@@ -107,6 +113,7 @@ trait SoftDeleteTrait
         foreach (static::FieldStateDescriber() as $field => $value) {
             $update[$field] = (is_array($value)) ? $value[0] : $value;
         }
+
         return $update;
     }
 }

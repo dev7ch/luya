@@ -2,15 +2,16 @@
 
 namespace luya\web;
 
-use yii\helpers\ArrayHelper;
 use luya\base\AdminModuleInterface;
-use luya\TagParser;
 use luya\base\BaseBootstrap;
+use luya\TagParser;
+use yii\helpers\ArrayHelper;
 
 /**
  * LUYA base bootstrap class which will be called during the bootstraping process.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class Bootstrap extends BaseBootstrap
@@ -22,9 +23,9 @@ class Bootstrap extends BaseBootstrap
     private $_adminAssets = [];
 
     private $_adminMenus = [];
-    
+
     private $_jsTranslations = [];
-    
+
     /**
      * Before bootstrap run process.
      *
@@ -35,7 +36,7 @@ class Bootstrap extends BaseBootstrap
         foreach ($app->tags as $name => $config) {
             TagParser::inject($name, $config);
         }
-        
+
         foreach ($this->getModules() as $id => $module) {
             foreach ($module->urlRules as $key => $rule) {
                 if (is_string($key)) {
@@ -44,11 +45,11 @@ class Bootstrap extends BaseBootstrap
                     $this->_urlRules[] = $rule;
                 }
             }
-            
+
             foreach ($module->apis as $alias => $class) {
                 $this->_apis[$alias] = $class;
             }
-            
+
             foreach ($module->tags as $name => $config) {
                 TagParser::inject($name, $config);
             }
@@ -73,14 +74,14 @@ class Bootstrap extends BaseBootstrap
                         $this->_jsTranslations[$id] = $module->getJsTranslationMessages();
                     }
                 }
-                
+
                 $app->getModule('admin')->assets = $this->_adminAssets;
                 $app->getModule('admin')->controllerMap = $this->_apis;
                 $app->getModule('admin')->moduleMenus = $this->_adminMenus;
                 $app->getModule('admin')->setJsTranslations($this->_jsTranslations);
             }
         }
-        
+
         $app->getUrlManager()->addRules($this->_urlRules);
     }
 }

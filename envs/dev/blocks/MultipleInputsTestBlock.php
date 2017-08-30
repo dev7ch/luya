@@ -17,14 +17,14 @@ class MultipleInputsTestBlock extends PhpBlock
      * @var bool Choose whether a block can be cached trough the caching component. Be carefull with caching container blocks.
      */
     public $cacheEnabled = true;
-    
+
     /**
      * @var int The cache lifetime for this block in seconds (3600 = 1 hour), only affects when cacheEnabled is true
      */
     public $cacheExpiration = 3600;
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function blockGroup()
     {
@@ -32,23 +32,23 @@ class MultipleInputsTestBlock extends PhpBlock
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function name()
     {
         return 'Multiple Inputs Test';
     }
-    
+
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function icon()
     {
         return 'grid_on'; // see the list of icons on: https://design.google.com/icons/
     }
- 
+
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function config()
     {
@@ -67,26 +67,26 @@ class MultipleInputsTestBlock extends PhpBlock
     {
         $entries = [];
 
-        foreach($this->getVarValue('entries', []) as $entry) {
-            if( isset($entry['title']) && isset($entry['description']) && isset($entry['image']) ) {
+        foreach ($this->getVarValue('entries', []) as $entry) {
+            if (isset($entry['title']) && isset($entry['description']) && isset($entry['image'])) {
                 $entries[] = [
-                    'title' => $entry['title'],
+                    'title'       => $entry['title'],
                     'description' => $entry['description'],
-                    'image' => BlockHelper::imageUpload($entry['image'])
+                    'image'       => BlockHelper::imageUpload($entry['image']),
                 ];
             }
         }
 
         return [
-            'entries' => $entries
+            'entries' => $entries,
         ];
     }
-    
+
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      *
      * @param {{vars.color}}
-    */
+     */
     public function admin()
     {
         return '<div style="margin: -15px 0 0 -15px; display: block; width: 100%;">

@@ -13,28 +13,28 @@ use yii\web\UrlRule;
 class RouteBehaviorUrlRule extends \yii\web\UrlRule
 {
     public $pattern = '<module>/<controller>/<action>';
-    
+
     public $route = '<module>/<controller>/<action>';
-    
+
     public $defaults = ['controller' => 'default', 'action' => 'index'];
-    
+
     public $mode = UrlRule::PARSING_ONLY;
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function parseRequest($manager, $request)
     {
         // return the custom route
-        $parts = explode("/", $request->pathInfo);
-        
+        $parts = explode('/', $request->pathInfo);
+
         if (!isset($parts[0]) || !Yii::$app->hasModule($parts[0]) || $parts[0] === 'cms') {
             return false;
         }
-        
+
         // add trace info
-        Yii::info('LUYA-CMS RouteBehaviorUrlRule is parsing the Request for path info \'' . $request->pathInfo .'\'', __METHOD__);
-        
+        Yii::info('LUYA-CMS RouteBehaviorUrlRule is parsing the Request for path info \''.$request->pathInfo.'\'', __METHOD__);
+
         return parent::parseRequest($manager, $request);
     }
 }

@@ -2,10 +2,10 @@
 
 namespace luya\cms\frontend\blocks;
 
-use luya\TagParser;
-use luya\cms\frontend\Module;
-use luya\cms\frontend\blockgroups\TextGroup;
 use luya\cms\base\PhpBlock;
+use luya\cms\frontend\blockgroups\TextGroup;
+use luya\cms\frontend\Module;
+use luya\TagParser;
 
 /**
  * Paragraph Text Block.
@@ -15,25 +15,25 @@ use luya\cms\base\PhpBlock;
 final class TextBlock extends PhpBlock
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $module = 'cms';
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $cacheEnabled = true;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function blockGroup()
     {
         return TextGroup::className();
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function name()
     {
@@ -41,7 +41,7 @@ final class TextBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function icon()
     {
@@ -49,7 +49,7 @@ final class TextBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function config()
     {
@@ -64,7 +64,7 @@ final class TextBlock extends PhpBlock
             ],
             'cfgs' => [
                 ['var' => 'cssClass', 'label' => Module::t('block_cfg_additonal_css_class'), 'type' => 'zaa-text'],
-            ]
+            ],
         ];
     }
 
@@ -83,7 +83,7 @@ final class TextBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function extraVars()
     {
@@ -91,10 +91,10 @@ final class TextBlock extends PhpBlock
             'text' => $this->getText(),
         ];
     }
-    
+
     public function admin()
     {
-        return '<p>{% if vars.content is empty %}<span class="block__empty-text">' . Module::t('block_text_no_content') . '</span>'.
+        return '<p>{% if vars.content is empty %}<span class="block__empty-text">'.Module::t('block_text_no_content').'</span>'.
                 '{% elseif vars.content is not empty and vars.textType == 1 %}{{ extras.text }}{% elseif vars.content is not empty %}{{ extras.text }}{% endif %}</p>';
     }
 }

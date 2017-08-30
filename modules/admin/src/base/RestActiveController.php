@@ -2,13 +2,13 @@
 
 namespace luya\admin\base;
 
-use Yii;
 use luya\admin\components\Auth;
 use luya\admin\models\UserOnline;
+use luya\rest\ActiveController;
 use luya\rest\UserBehaviorInterface;
 use luya\traits\RestBehaviorsTrait;
+use Yii;
 use yii\web\ForbiddenHttpException;
-use luya\rest\ActiveController;
 
 /**
  * Wrapper for yii2 basic rest controller used with a model class. The wrapper is made to
@@ -30,7 +30,7 @@ class RestActiveController extends ActiveController implements UserBehaviorInter
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function checkAccess($action, $model = null, $params = [])
     {
@@ -49,12 +49,12 @@ class RestActiveController extends ActiveController implements UserBehaviorInter
                 $type = Auth::CAN_DELETE;
                 break;
             default:
-                throw new ForbiddenHttpException("Invalid RESPI Api action call.");
+                throw new ForbiddenHttpException('Invalid RESPI Api action call.');
                 break;
         }
 
         UserOnline::refreshUser($this->userAuthClass()->getIdentity()->id, $this->id);
-        
+
         if (!Yii::$app->auth->matchApi($this->userAuthClass()->getIdentity()->id, $this->id, $type)) {
             throw new ForbiddenHttpException('you are unable to access this controller due to access restrictions.');
         }

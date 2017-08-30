@@ -9,21 +9,23 @@ use ReflectionMethod;
  * Helper methods when dealing with Objects.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class ObjectHelper
 {
     /**
-     * Convert Object to Array
+     * Convert Object to Array.
      *
      * @param object $object
+     *
      * @return array
      */
     public static function toArray($object)
     {
         return (array) $object;
     }
-    
+
     /**
      * Call a method and ensure arguments.
      *
@@ -33,10 +35,12 @@ class ObjectHelper
      * ObjectHelper::callMethodSanitizeArguments(new MyClass(), 'methodToCall', ['paramName' => 'paramValue']);
      * ```
      *
-     * @param object $object The class object where the method must be found.
-     * @param string $method The class method to call inside the object.
+     * @param object $object        The class object where the method must be found.
+     * @param string $method        The class method to call inside the object.
      * @param array  $argumentsList A massiv assigned list of array items, where the key is bind to the method argument and the value to be passed in the method on call.
+     *
      * @throws \luya\Exception Throws an exception if a argument coult not be found.
+     *
      * @return object
      */
     public static function callMethodSanitizeArguments($object, $method, array $argumentsList = [])

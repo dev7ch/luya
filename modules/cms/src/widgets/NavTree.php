@@ -2,11 +2,11 @@
 
 namespace luya\cms\widgets;
 
+use luya\base\Widget;
+use luya\cms\menu\Item;
 use luya\cms\menu\QueryIteratorFilter;
 use luya\helpers\ArrayHelper;
 use Yii;
-use luya\base\Widget;
-use luya\cms\menu\Item;
 use yii\helpers\Html;
 
 /**
@@ -49,7 +49,9 @@ use yii\helpers\Html;
  * ```
  *
  * @property \luya\cms\menu\Item $startItem Get the start Item entry.
+ *
  * @author Marc Stampfli <kontakt@marcstampfli.guru>
+ *
  * @since 1.0.0
  */
 class NavTree extends Widget
@@ -65,7 +67,7 @@ class NavTree extends Widget
     private $_findQuery;
 
     /**
-     * @var null|integer If set the depth of the menu will be limited
+     * @var null|int If set the depth of the menu will be limited
      */
     public $maxDepth;
 
@@ -85,14 +87,14 @@ class NavTree extends Widget
     public $listDepthClassPrefix = 'nav__list--';
 
     /**
-     * @var boolean Decides whether the first <ul> tag will be outputted or not
+     * @var bool Decides whether the first <ul> tag will be outputted or not
      */
     public $ignoreFirstListTag = false;
 
     /**
      * @var null|array If set, a wrapper will be wrapped around the list
-     * - tag: The tag for the wrapper, e.g. `nav`
-     * - class: Class or classes for the wrapper
+     *                 - tag: The tag for the wrapper, e.g. `nav`
+     *                 - class: Class or classes for the wrapper
      *
      * You can set all possible html attributes as options
      */
@@ -100,36 +102,36 @@ class NavTree extends Widget
 
     /**
      * @var array Options for the lists that are generated
-     * - tag: The tag for the list, default is `ul`
-     * - class: Class or classes for the list
+     *            - tag: The tag for the list, default is `ul`
+     *            - class: Class or classes for the list
      *
      * You can set all possible html attributes as options
      */
     public $listOptions = [
-        'class' => 'nav__list'
+        'class' => 'nav__list',
     ];
 
     /**
      * @var array Options for the items that are generated
-     * - tag: The tag for the item, default is `li`
-     * - class: Class or classes for the item
+     *            - tag: The tag for the item, default is `li`
+     *            - class: Class or classes for the item
      *
      * You can set all possible html attributes as options
      */
     public $itemOptions = [
-        'class' => 'nav__item nav__item--{{alias}}'
+        'class' => 'nav__item nav__item--{{alias}}',
     ];
 
     /**
      * @var array Options for the links that are generated
-     * - tag: The tag for the link, default is `a`
-     * - class: Class or classes for the link
+     *            - tag: The tag for the link, default is `a`
+     *            - class: Class or classes for the link
      *
      * You can set all possible html attributes as options
      * **Note: href and content will be set regardless of the options**
      */
     public $linkOptions = [
-        'class' => 'nav__link'
+        'class' => 'nav__link',
     ];
 
     /**
@@ -148,7 +150,7 @@ class NavTree extends Widget
     private $_linkTag;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -168,7 +170,7 @@ class NavTree extends Widget
      */
     public function run()
     {
-        $html = "";
+        $html = '';
 
         if ($this->startItem === null) {
             $html = $this->buildList($this->findQuery);
@@ -185,30 +187,31 @@ class NavTree extends Widget
     }
 
     /**
-     * Builds the list for the given Iterator and recursively calls itself to also generate the menu for all children
+     * Builds the list for the given Iterator and recursively calls itself to also generate the menu for all children.
      *
      * @param QueryIteratorFilter $iterator The iterator used to build the list
-     * @param int $i The counter that is used to set the list depth
+     * @param int                 $i        The counter that is used to set the list depth
+     *
      * @return string Part of the menu
      */
     private function buildList(QueryIteratorFilter $iterator, $i = 1)
     {
         // Abort if maxDepth is set & reached
         if ($this->maxDepth !== null && $i >= ($this->maxDepth + 1)) {
-            return "";
+            return '';
         }
 
         // Add the listDepthClassPrefix manually
         $listOptions = $this->listOptions;
 
         if (!isset($listOptions['class'])) {
-            $listOptions['class'] = "";
+            $listOptions['class'] = '';
         }
 
-        $listOptions['class'] .= " " . $this->listDepthClassPrefix . $i;
+        $listOptions['class'] .= ' '.$this->listDepthClassPrefix.$i;
 
         // <ul>
-        $html = "";
+        $html = '';
 
         if ($this->ignoreFirstListTag && $i !== 1 || !$this->ignoreFirstListTag) {
             $html = Html::beginTag($this->_listTag, $listOptions);
@@ -220,8 +223,8 @@ class NavTree extends Widget
 
             // Set the active classes if item is active
             if ($item->isActive) {
-                $itemOptions['class'] .= $this->itemActiveClass !== null ? ' ' . $this->itemActiveClass : '';
-                $linkOptions['class'] .= $this->linkActiveClass !== null ? ' ' . $this->linkActiveClass : '';
+                $itemOptions['class'] .= $this->itemActiveClass !== null ? ' '.$this->itemActiveClass : '';
+                $linkOptions['class'] .= $this->linkActiveClass !== null ? ' '.$this->linkActiveClass : '';
             }
 
             // <li>
@@ -249,10 +252,11 @@ class NavTree extends Widget
 
     /**
      * Replaces the placeholders, for example {{alias}}, with the value stored in $item
-     * If the placeholder name isn't found as a property, it will be returned (e.g. alias)
+     * If the placeholder name isn't found as a property, it will be returned (e.g. alias).
      *
      * @param Item|null $item
-     * @param array $options
+     * @param array     $options
+     *
      * @return array
      */
     private function compileOption(Item $item, array $options)
@@ -261,6 +265,7 @@ class NavTree extends Widget
             $options[$key] = preg_replace_callback('/{{([^}]*)}}/', function ($match) use ($item) {
                 if ($item && $item->hasProperty($match[1])) {
                     $f = $match[1];
+
                     return $item->$f;
                 }
 

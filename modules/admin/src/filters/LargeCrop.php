@@ -5,7 +5,7 @@ namespace luya\admin\filters;
 use luya\admin\base\Filter;
 
 /**
- * Admin Module default Filter: Large Crop (800x800)
+ * Admin Module default Filter: Large Crop (800x800).
  *
  * @author Basil Suter <basil@nadar.io>
  */
@@ -25,7 +25,7 @@ class LargeCrop extends Filter
     {
         return [
             [self::EFFECT_THUMBNAIL, [
-                'width' => 800,
+                'width'  => 800,
                 'height' => 800,
             ]],
         ];

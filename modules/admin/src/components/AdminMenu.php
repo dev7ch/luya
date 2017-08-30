@@ -2,9 +2,9 @@
 
 namespace luya\admin\components;
 
-use Yii;
 use Exception;
 use luya\helpers\ArrayHelper;
+use Yii;
 
 /**
  * Admin Menu Data.
@@ -12,10 +12,11 @@ use luya\helpers\ArrayHelper;
  * Collect informations from the menu data based on the admin modules in order to generate the different admin menu levels and containers.
  *
  * @property array $menu Returns an array with all menu elements.
- * @property integer $userId Returns the current admin user id.
+ * @property int $userId Returns the current admin user id.
  * @property array $adminModuleMenus An array with \luya\admin\components\AdminMenuBuilderInterface objects.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class AdminMenu extends \yii\base\Component
@@ -23,13 +24,13 @@ class AdminMenu extends \yii\base\Component
     /**
      * Get current admin user id.
      *
-     * @return integer
+     * @return int
      */
     public function getUserId()
     {
         return Yii::$app->adminuser->getId();
     }
-    
+
     /**
      * Get the module menus.
      *
@@ -39,7 +40,7 @@ class AdminMenu extends \yii\base\Component
     {
         return Yii::$app->getModule('admin')->moduleMenus;
     }
-    
+
     private $_menu;
 
     /**
@@ -100,18 +101,18 @@ class AdminMenu extends \yii\base\Component
         if ($this->_menu !== null) {
             return $this->_menu;
         }
-        
+
         $menu = [];
         foreach ($this->getAdminModuleMenus() as $menuBuilder) {
             // removed legacy support, menu must be instance of AdminmenuBuilderInterface
             if (!$menuBuilder instanceof AdminMenuBuilderInterface) {
-                throw new Exception("admin menu must be instance of AdminMenuBuilderInterface");
+                throw new Exception('admin menu must be instance of AdminMenuBuilderInterface');
             }
             // call the interface menu method returns the array for the given Module.
             $data = $menuBuilder->menu();
             $menu = ArrayHelper::merge($data, $menu);
         }
-        
+
         $this->_menu = $menu;
 
         return $menu;
@@ -120,20 +121,21 @@ class AdminMenu extends \yii\base\Component
     /**
      * Get the node for a given array key.
      *
-     * @param integer $id
-     * @return boolean|array
+     * @param int $id
+     *
+     * @return bool|array
      */
     public function getNodeData($id)
     {
         if (!isset($this->getMenu()[$id])) {
             return false;
         }
-        
+
         return $this->getMenu()[$id];
     }
 
     private $_modules;
-    
+
     /**
      * Returns an Array with modules and checks the permission for those.
      *
@@ -152,6 +154,7 @@ class AdminMenu extends \yii\base\Component
      * ```
      *
      * @throws \Exception
+     *
      * @return array Returns an array with all modules you have permission for.
      */
     public function getModules()
@@ -159,7 +162,7 @@ class AdminMenu extends \yii\base\Component
         if ($this->_modules !== null) {
             return $this->_modules;
         }
-        
+
         $responseData = [];
         foreach ($this->getMenu() as $item) {
             // check if this is an entrie with a permission
@@ -178,7 +181,7 @@ class AdminMenu extends \yii\base\Component
 
                 // see if the groups has items
                 foreach ($item['groups'] as $groupName => $groupItem) {
-                    if (count($groupItem['items'])  > 0) {
+                    if (count($groupItem['items']) > 0) {
                         if ($permissionGranted) {
                             continue;
                         }
@@ -209,21 +212,21 @@ class AdminMenu extends \yii\base\Component
                     continue;
                 }
             }
-            
+
             try {
                 $alias = Yii::t($item['moduleId'], $item['alias'], [], Yii::$app->language);
             } catch (\Exception $err) {
                 $alias = $item['alias'];
             }
-            
+
             // ok we have passed all the tests, lets make an entry
             $responseData[] = [
-                'moduleId' => $item['moduleId'],
-                'id' => $item['id'],
-                'template' => $item['template'],
-                'routing' => $item['routing'],
-                'alias' => $alias,
-                'icon' => $item['icon'],
+                'moduleId'         => $item['moduleId'],
+                'id'               => $item['id'],
+                'template'         => $item['template'],
+                'routing'          => $item['routing'],
+                'alias'            => $alias,
+                'icon'             => $item['icon'],
                 'searchModelClass' => $item['searchModelClass'],
             ];
         }
@@ -232,15 +235,16 @@ class AdminMenu extends \yii\base\Component
 
         return $responseData;
     }
-    
-    
+
     private $_nodeItems = [];
 
     /**
      * Returns the node with a groups array where each groups contains an items array with the item.
      *
-     * @param integer $nodeId
+     * @param int $nodeId
+     *
      * @throws \Exception
+     *
      * @return array If there are not groups, or not items for a group an empty array will be returned.
      */
     public function getModuleItems($nodeId)
@@ -248,9 +252,9 @@ class AdminMenu extends \yii\base\Component
         if (isset($this->_nodeItems[$nodeId])) {
             return $this->_nodeItems[$nodeId];
         }
-        
+
         $data = $this->getNodeData($nodeId);
-        
+
         if (isset($data['groups'])) {
             foreach ($data['groups'] as $groupName => $groupItem) {
                 // translate the group names
@@ -273,22 +277,23 @@ class AdminMenu extends \yii\base\Component
                     } else {
                         throw new \Exception('Menu item detected without permission entry');
                     }
+
                     try {
                         $alias = Yii::t($data['moduleId'], $data['groups'][$groupName]['items'][$groupItemKey]['alias'], [], Yii::$app->language);
                     } catch (Exception $err) {
                         $alias = $data['groups'][$groupName]['items'][$groupItemKey]['alias'];
                     }
-                    
+
                     $data['groups'][$groupName]['items'][$groupItemKey]['hiddenInMenu'] = AdminMenuBuilder::getOptionValue($groupItemEntry, 'hiddenInMenu', false);
                     $data['groups'][$groupName]['items'][$groupItemKey]['alias'] = $alias;
                 }
-                
+
                 // if there are no items for this group, unset the group from the data array
                 if (count($data['groups'][$groupName]['items']) == 0) {
                     unset($data['groups'][$groupName]);
                 }
             }
-            
+
             // if there are no groups reset the array to an empty array
             if (empty($data['groups'])) {
                 $data = [];
@@ -304,7 +309,7 @@ class AdminMenu extends \yii\base\Component
     }
 
     private $_items;
-    
+
     /**
      * Get all items for all nodes.
      *
@@ -315,7 +320,7 @@ class AdminMenu extends \yii\base\Component
         if ($this->_items !== null) {
             return $this->_items;
         }
-        
+
         $data = [];
         foreach ($this->getModules() as $node) {
             foreach (ArrayHelper::getValue($this->getModuleItems($node['id']), 'groups', []) as $groupValue) {
@@ -327,7 +332,7 @@ class AdminMenu extends \yii\base\Component
         }
 
         $this->_items = $data;
-        
+
         return $data;
     }
 
@@ -335,18 +340,19 @@ class AdminMenu extends \yii\base\Component
      * Return all informations about a menu point based on the api endpoint name.
      *
      * @param string $api The Api Endpoint
-     * @return array|boolean
+     *
+     * @return array|bool
      */
     public function getApiDetail($api)
     {
         $items = $this->getItems();
-        
+
         $key = array_search($api, array_column($items, 'permssionApiEndpoint'));
-        
+
         if ($key !== false) {
             return $items[$key];
         }
-        
+
         return false;
     }
 }

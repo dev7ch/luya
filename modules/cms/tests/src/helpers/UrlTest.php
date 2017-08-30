@@ -11,7 +11,7 @@ class UrlTest extends CmsFrontendTestCase
     {
         $this->assertSame('foobar', Url::toModule('foobar'));
     }
-    
+
     public function testToModuleRoute()
     {
         $this->expectException('luya\cms\Exception');

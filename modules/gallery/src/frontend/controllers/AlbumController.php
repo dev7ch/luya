@@ -6,9 +6,10 @@ use luya\gallery\models\Album;
 use yii\web\NotFoundHttpException;
 
 /**
- * Get all images from a collection (album)
+ * Get all images from a collection (album).
  *
  * @todo rename to
+ *
  * @author Basil Suter <basil@nadar.io>
  */
 class AlbumController extends \luya\web\Controller
@@ -18,11 +19,11 @@ class AlbumController extends \luya\web\Controller
         $model = Album::find()->where(['id' => $albumId])->one();
 
         if (!$model) {
-            throw new NotFoundHttpException("Unable to find requested gallery collection.");
+            throw new NotFoundHttpException('Unable to find requested gallery collection.');
         }
-        
+
         $this->view->registerMetaTag([
-            'name' => 'description',
+            'name'    => 'description',
             'content' => $model->description,
         ]);
 

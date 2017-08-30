@@ -2,10 +2,10 @@
 
 namespace luya\admin\ngrest\plugins;
 
-use yii\helpers\Json;
-use luya\admin\ngrest\base\Plugin;
 use luya\admin\image\Query;
+use luya\admin\ngrest\base\Plugin;
 use luya\helpers\ArrayHelper;
+use yii\helpers\Json;
 
 /**
  * Type Multiple Image Upload.
@@ -33,17 +33,17 @@ use luya\helpers\ArrayHelper;
 class ImageArray extends Plugin
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $i18nEmptyValue = [];
-    
+
     /**
-     * @var boolean Whether to return a {{luya\admin\image\Iterator}} instead of an array with image ids value from the database.
+     * @var bool Whether to return a {{luya\admin\image\Iterator}} instead of an array with image ids value from the database.
      */
     public $imageIterator = false;
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderList($id, $ngModel)
     {
@@ -51,7 +51,7 @@ class ImageArray extends Plugin
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderCreate($id, $ngModel)
     {
@@ -59,7 +59,7 @@ class ImageArray extends Plugin
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderUpdate($id, $ngModel)
     {
@@ -67,34 +67,36 @@ class ImageArray extends Plugin
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function onBeforeSave($event)
     {
         // if its not i18n casted field we have to serialize the the image array as json and abort further event excution.
         if (!$this->i18n) {
             $event->sender->setAttribute($this->name, Json::encode($event->sender->getAttribute($this->name)));
+
             return false;
         }
-    
+
         return true;
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function onBeforeExpandFind($event)
     {
         if (!$this->i18n) {
             $event->sender->setAttribute($this->name, $this->jsonDecode($event->sender->getAttribute($this->name)));
+
             return false;
         }
-        
+
         return true;
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function onBeforeFind($event)
     {
@@ -103,14 +105,15 @@ class ImageArray extends Plugin
             if ($this->imageIterator) {
                 $event->sender->setAttribute($this->name, $this->parseImageIteration($event->sender->getAttribute($this->name)));
             }
+
             return false;
         }
-        
+
         return true;
     }
-    
+
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function onAfterFind($event)
     {
@@ -118,11 +121,12 @@ class ImageArray extends Plugin
             $event->sender->setAttribute($this->name, $this->parseImageIteration($event->sender->getAttribute($this->name)));
         }
     }
-    
+
     /**
      * Parse an array with imageId and caption into an \luya\admin\image\Iterator object.
      *
      * @param array $values The array with key 'imageId' like `[['imageId' => 1, 'caption' => 'test']]`.
+     *
      * @return \luya\admin\image\Iterator The iterator object from the parsed values or an empty array if empty.
      */
     protected function parseImageIteration(array $values)
@@ -130,6 +134,7 @@ class ImageArray extends Plugin
         if (empty($values)) {
             return [];
         }
+
         return (new Query())->where(['in', 'id', ArrayHelper::getColumn($values, 'imageId')])->all();
     }
 }

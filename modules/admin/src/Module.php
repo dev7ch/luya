@@ -2,20 +2,19 @@
 
 namespace luya\admin;
 
-use Yii;
-
-use luya\console\interfaces\ImportControllerInterface;
-use luya\base\CoreModuleInterface;
 use luya\admin\components\AdminLanguage;
-use luya\admin\components\AdminUser;
 use luya\admin\components\AdminMenu;
-use luya\admin\components\StorageContainer;
-use luya\admin\components\Auth;
 use luya\admin\components\AdminMenuBuilder;
+use luya\admin\components\AdminUser;
+use luya\admin\components\Auth;
+use luya\admin\components\StorageContainer;
 use luya\admin\importers\AuthImporter;
 use luya\admin\importers\FilterImporter;
 use luya\admin\importers\PropertyImporter;
 use luya\admin\importers\StorageImporter;
+use luya\base\CoreModuleInterface;
+use luya\console\interfaces\ImportControllerInterface;
+use Yii;
 
 /**
  * Admin Module.
@@ -42,13 +41,13 @@ final class Module extends \luya\admin\base\Module implements CoreModuleInterfac
      * @var string Event Name
      */
     const EVENT_BEFORE_FILE_DOWNLOAD = 'EVENT_BEFORE_FILE_DOWNLOAD';
-    
+
     /**
      * @var string The default language for the admin interrace (former known as luyaLanguage).
-     * Currently supported: "en", "de", "fr", "es", "ru", "it", "ua", "el".
+     *             Currently supported: "en", "de", "fr", "es", "ru", "it", "ua", "el".
      */
     public $interfaceLanguage = 'en';
-    
+
     /**
      * @var array Available translation messages.
      */
@@ -64,63 +63,63 @@ final class Module extends \luya\admin\base\Module implements CoreModuleInterfac
         'vi' => 'Việt Nam',
         'pt' => 'Português',
     ];
-    
+
     /**
      * @array Provide dashboard objects from last user logins.
      */
     public $dashboardObjects = [
         [
-               'template' => '<table class="table"><tr ng-repeat="item in data"><td>{{item.user.firstname}} {{item.user.lastname}}</td><td>{{item.maxdate * 1000 | date:\'short\'}}</td></tr></table>',
+               'template'   => '<table class="table"><tr ng-repeat="item in data"><td>{{item.user.firstname}} {{item.user.lastname}}</td><td>{{item.maxdate * 1000 | date:\'short\'}}</td></tr></table>',
                'dataApiUrl' => 'admin/api-admin-common/last-logins',
-               'title' => ['admin', 'dashboard_lastlogin_title'],
+               'title'      => ['admin', 'dashboard_lastlogin_title'],
         ],
     ];
-    
+
     /**
-     * @var boolean Enables a two-way factor auth system before logging into the admin
-     * panel. If the system is not able to send mails (No configuration or missconfiguration)
-     * then you are not able to login anymore. You should test the mail system before enabling
-     * secureLogin. To test your smtp connection you can use `./vendor/bin/luya health/mailer`
+     * @var bool Enables a two-way factor auth system before logging into the admin
+     *           panel. If the system is not able to send mails (No configuration or missconfiguration)
+     *           then you are not able to login anymore. You should test the mail system before enabling
+     *           secureLogin. To test your smtp connection you can use `./vendor/bin/luya health/mailer`
      */
     public $secureLogin = false;
-    
+
     /**
-     * @var integer The number of rows which should be transferd for each request.
+     * @var int The number of rows which should be transferd for each request.
      */
     public $proxyRowsPerRequest = 100;
 
     /**
-     * @var integer The expiration timeout for a proxy build in seconds. Default value is 1800 seconds which is 30 minutes.
+     * @var int The expiration timeout for a proxy build in seconds. Default value is 1800 seconds which is 30 minutes.
      */
     public $proxyExpirationTime = 6200;
-    
+
     /**
      * @var array A configuration array with all tags shipped by default with the admin module.
      */
     public $tags = [
         'file' => ['class' => 'luya\admin\tags\FileTag'],
     ];
-    
+
     /**
      * @var array The available api endpoints within the admin module.
      */
     public $apis = [
-        'api-admin-logger' => 'luya\admin\apis\LoggerController',
-        'api-admin-common' => 'luya\admin\apis\CommonController',
-        'api-admin-remote' => 'luya\admin\apis\RemoteController',
-        'api-admin-storage' => 'luya\admin\apis\StorageController',
-        'api-admin-menu' => 'luya\admin\apis\MenuController',
-        'api-admin-timestamp' => 'luya\admin\apis\TimestampController',
-        'api-admin-search' => 'luya\admin\apis\SearchController',
-        'api-admin-user' => 'luya\admin\apis\UserController',
-        'api-admin-group' => 'luya\admin\apis\GroupController',
-        'api-admin-lang' => 'luya\admin\apis\LangController',
-        'api-admin-effect' => 'luya\admin\apis\EffectController',
-        'api-admin-filter' => 'luya\admin\apis\FilterController',
-        'api-admin-tag' => 'luya\admin\apis\TagController',
+        'api-admin-logger'       => 'luya\admin\apis\LoggerController',
+        'api-admin-common'       => 'luya\admin\apis\CommonController',
+        'api-admin-remote'       => 'luya\admin\apis\RemoteController',
+        'api-admin-storage'      => 'luya\admin\apis\StorageController',
+        'api-admin-menu'         => 'luya\admin\apis\MenuController',
+        'api-admin-timestamp'    => 'luya\admin\apis\TimestampController',
+        'api-admin-search'       => 'luya\admin\apis\SearchController',
+        'api-admin-user'         => 'luya\admin\apis\UserController',
+        'api-admin-group'        => 'luya\admin\apis\GroupController',
+        'api-admin-lang'         => 'luya\admin\apis\LangController',
+        'api-admin-effect'       => 'luya\admin\apis\EffectController',
+        'api-admin-filter'       => 'luya\admin\apis\FilterController',
+        'api-admin-tag'          => 'luya\admin\apis\TagController',
         'api-admin-proxymachine' => 'luya\admin\apis\ProxyMachineController',
-        'api-admin-proxybuild' => 'luya\admin\apis\ProxyBuildController',
-        'api-admin-proxy' => 'luya\admin\apis\ProxyController',
+        'api-admin-proxybuild'   => 'luya\admin\apis\ProxyBuildController',
+        'api-admin-proxy'        => 'luya\admin\apis\ProxyController',
     ];
 
     /**
@@ -137,25 +136,25 @@ final class Module extends \luya\admin\base\Module implements CoreModuleInterfac
      * @var array This property is used by the {{luya\web\Bootstrap::run()}} method in order to set the collected asset files to assign.
      */
     public $assets = [];
-    
+
     /**
      * @var array This property is used by the {{luya\web\Bootstrap::run()}} method in order to set the collected menu items from all admin modules and build the menu.
      */
     public $moduleMenus = [];
-    
+
     /**
      * @var array Registering translation files for the admin module.
      */
     public $translations = [
         [
-            'prefix' => 'admin*',
+            'prefix'   => 'admin*',
             'basePath' => '@admin/messages',
-            'fileMap' => [
+            'fileMap'  => [
                 'admin' => 'admin.php',
             ],
         ],
     ];
-    
+
     /**
      * Returns all Asset files to registered in the administration interfaces.
      *
@@ -209,9 +208,9 @@ final class Module extends \luya\admin\base\Module implements CoreModuleInterfac
             'ngrest_select_no_selection', 'js_ngrest_toggler_success', 'js_filemanager_count_files_overlay', 'js_link_set_value', 'js_link_change_value', 'aws_changepassword_succes', 'js_account_update_profile_success', 'layout_filemanager_remove_dir_not_empty',
         ];
     }
-    
+
     private $_jsTranslations = [];
-    
+
     /**
      * Getter method for the js translations array.
      *
@@ -225,9 +224,10 @@ final class Module extends \luya\admin\base\Module implements CoreModuleInterfac
                 $translations[$key] = Yii::t($module, $key, [], Yii::$app->language);
             }
         }
+
         return $translations;
     }
-    
+
     /**
      * Setter for js translations files.
      *
@@ -239,11 +239,12 @@ final class Module extends \luya\admin\base\Module implements CoreModuleInterfac
     {
         $this->_jsTranslations = $translations;
     }
-    
+
     /**
      * Get the admin module interface menu.
      *
      * @see \luya\admin\base\Module::getMenu()
+     *
      * @return \luya\admin\components\AdminMenuBuilderInterface Get the menu builder object.
      */
     public function getMenu()
@@ -278,7 +279,7 @@ final class Module extends \luya\admin\base\Module implements CoreModuleInterfac
                 'class' => AdminLanguage::className(),
             ],
             'adminuser' => [
-                'class' => AdminUser::className(),
+                'class'           => AdminUser::className(),
                 'defaultLanguage' => $this->interfaceLanguage,
             ],
             'adminmenu' => [
@@ -297,6 +298,7 @@ final class Module extends \luya\admin\base\Module implements CoreModuleInterfac
      * Setup the admin importer classes.
      *
      * @param \uya\console\interfaces\ImportControllerInterface $import The import controller interface.
+     *
      * @return array An array with all importer classes.
      */
     public function import(ImportControllerInterface $import)
@@ -308,12 +310,13 @@ final class Module extends \luya\admin\base\Module implements CoreModuleInterfac
             StorageImporter::class,
         ];
     }
-    
+
     /**
      * Admin Module translation helper.
      *
      * @param string $message The message key to translation
-     * @param array $params Optional parameters to pass to the translation.
+     * @param array  $params  Optional parameters to pass to the translation.
+     *
      * @return string The translated message.
      */
     public static function t($message, array $params = [], $language = null)

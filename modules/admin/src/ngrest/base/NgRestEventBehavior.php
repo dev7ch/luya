@@ -2,10 +2,10 @@
 
 namespace luya\admin\ngrest\base;
 
-use yii\base\Behavior;
-use yii\db\ActiveRecord;
 use luya\admin\ngrest\NgRest;
+use yii\base\Behavior;
 use yii\base\Event;
+use yii\db\ActiveRecord;
 
 /**
  * NgRest Event Behavior.
@@ -17,11 +17,11 @@ use yii\base\Event;
 class NgRestEventBehavior extends Behavior
 {
     public $plugins = [];
-    
+
     private static $_pluginInstances = [];
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function events()
     {
@@ -29,7 +29,7 @@ class NgRestEventBehavior extends Behavior
             ActiveRecord::EVENT_INIT => 'bindPluginEvents',
         ];
     }
-    
+
     /**
      * Bing all plugin Events to the corresponding Owner Object.
      *
@@ -44,13 +44,14 @@ class NgRestEventBehavior extends Behavior
             }
         }
     }
-    
+
     /**
      * Singleton Container for Plugin Objects.
      *
      * @param string $field
-     * @param array $plugin
+     * @param array  $plugin
      * @param string $tableName
+     *
      * @return \luya\admin\ngrest\base\Plugin
      */
     private static function findPluginInstance($field, array $plugin, $tableName)
@@ -58,7 +59,7 @@ class NgRestEventBehavior extends Behavior
         if (!isset(self::$_pluginInstances[$tableName][$field])) {
             self::$_pluginInstances[$tableName][$field] = NgRest::createPluginObject($plugin['type']['class'], $plugin['name'], $plugin['alias'], $plugin['i18n'], $plugin['type']['args']);
         }
-    
+
         return self::$_pluginInstances[$tableName][$field];
     }
 }

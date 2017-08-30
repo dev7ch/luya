@@ -2,11 +2,11 @@
 
 namespace luya\admin\apis;
 
-use Yii;
+use luya\admin\models\UserOnline;
 use luya\Boot;
 use luya\Exception;
-use luya\admin\models\UserOnline;
 use luya\rest\Controller;
+use Yii;
 
 /**
  * Remove API, allows to collect system data with a valid $token.
@@ -20,7 +20,7 @@ class RemoteController extends Controller
     /**
      * Disabled the auth methods.
      *
-     * @return boolean When false the authentication is disabled.
+     * @return bool When false the authentication is disabled.
      */
     public function userAuthClass()
     {
@@ -31,8 +31,10 @@ class RemoteController extends Controller
      * Retrieve administration informations if the token is valid.
      *
      * @param string $token The sha1 encrypted access token.
-     * @return array If invalid token.
+     *
      * @throws Exception
+     *
+     * @return array If invalid token.
      */
     public function actionIndex($token)
     {
@@ -41,14 +43,14 @@ class RemoteController extends Controller
         }
 
         return [
-            'yii_version' => Yii::getVersion(),
-            'luya_version' => Boot::VERSION,
-            'app_title' => Yii::$app->siteTitle,
-            'app_debug' => (int) YII_DEBUG,
-            'app_env' => YII_ENV,
+            'yii_version'             => Yii::getVersion(),
+            'luya_version'            => Boot::VERSION,
+            'app_title'               => Yii::$app->siteTitle,
+            'app_debug'               => (int) YII_DEBUG,
+            'app_env'                 => YII_ENV,
             'app_transfer_exceptions' => (int) Yii::$app->errorHandler->transferException,
-            'admin_online_count' => UserOnline::getCount(),
-            'app_elapsed_time' => Yii::getLogger()->getElapsedTime(),
+            'admin_online_count'      => UserOnline::getCount(),
+            'app_elapsed_time'        => Yii::getLogger()->getElapsedTime(),
         ];
     }
 }

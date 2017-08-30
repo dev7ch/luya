@@ -2,11 +2,11 @@
 
 namespace luya\cms\frontend\blocks;
 
-use luya\TagParser;
-use luya\cms\frontend\Module;
-use luya\cms\frontend\blockgroups\MediaGroup;
-use luya\cms\helpers\BlockHelper;
 use luya\cms\base\PhpBlock;
+use luya\cms\frontend\blockgroups\MediaGroup;
+use luya\cms\frontend\Module;
+use luya\cms\helpers\BlockHelper;
+use luya\TagParser;
 
 /**
  * Image with Text block.
@@ -16,25 +16,25 @@ use luya\cms\base\PhpBlock;
 final class ImageTextBlock extends PhpBlock
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $module = 'cms';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $cacheEnabled = true;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function name()
     {
         return Module::t('block_image_text_name');
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function blockGroup()
     {
@@ -42,7 +42,7 @@ final class ImageTextBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function icon()
     {
@@ -50,7 +50,7 @@ final class ImageTextBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function config()
     {
@@ -66,12 +66,12 @@ final class ImageTextBlock extends PhpBlock
             ],
             'cfgs' => [
                 ['var' => 'margin', 'label' => Module::t('block_image_text_margin_label'), 'type' => 'zaa-select', 'initvalue' => '20px', 'options' => [
-                        ['value' => '5px', 'label' => '0 ' . Module::t('block_image_text_margin_pixel')],
-                        ['value' => '10px', 'label' => '10 ' . Module::t('block_image_text_margin_pixel')],
-                        ['value' => '20px', 'label' => '20 ' . Module::t('block_image_text_margin_pixel')],
-                        ['value' => '30px', 'label' => '30 ' . Module::t('block_image_text_margin_pixel')],
-                        ['value' => '40px', 'label' => '40 ' . Module::t('block_image_text_margin_pixel')],
-                        ['value' => '50px', 'label' => '50 ' . Module::t('block_image_text_margin_pixel')],
+                        ['value' => '5px', 'label' => '0 '.Module::t('block_image_text_margin_pixel')],
+                        ['value' => '10px', 'label' => '10 '.Module::t('block_image_text_margin_pixel')],
+                        ['value' => '20px', 'label' => '20 '.Module::t('block_image_text_margin_pixel')],
+                        ['value' => '30px', 'label' => '30 '.Module::t('block_image_text_margin_pixel')],
+                        ['value' => '40px', 'label' => '40 '.Module::t('block_image_text_margin_pixel')],
+                        ['value' => '50px', 'label' => '50 '.Module::t('block_image_text_margin_pixel')],
                     ],
                 ],
                 ['var' => 'textType', 'label' => Module::t('block_image_text_texttype_label'), 'initvalue' => 0, 'type' => 'zaa-select', 'options' => [
@@ -89,7 +89,7 @@ final class ImageTextBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getFieldHelp()
     {
@@ -111,30 +111,30 @@ final class ImageTextBlock extends PhpBlock
             return TagParser::convertWithMarkdown($text);
         }
 
-        return empty($text) ? null : '<p>' . nl2br($text) . '</p>';
+        return empty($text) ? null : '<p>'.nl2br($text).'</p>';
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function extraVars()
     {
         return [
             'image' => BlockHelper::imageUpload($this->getVarValue('imageId')),
-            'text' => $this->getText(),
+            'text'  => $this->getText(),
         ];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function admin()
     {
         return  '{% if not extras.image.source %}'.
-                    '<span class="block__empty-text">' . Module::t('block_image_text_no_image') . '</span>'.
+                    '<span class="block__empty-text">'.Module::t('block_image_text_no_image').'</span>'.
                 '{% endif %}'.
                 '{% if not extras.text %}'.
-                    '<span class="block__empty-text">' . Module::t('block_image_text_no_text') . '</span>'.
+                    '<span class="block__empty-text">'.Module::t('block_image_text_no_text').'</span>'.
                 '{% endif %}'.
                 '{% if extras.image.source and extras.text %}'.
                     '<img src="{{ extras.image.source }}"{% if cfgs.width %} width="{{cfgs.width}}"{% endif %}{% if cfgs.height %} height="{{cfgs.height}}"{% endif %} border="0" style="{% if vars.imagePosition == "left" %}float:left;{% else %}float:right{% endif %};{% if vars.imagePosition == "right" %}margin-left:{{ cfgs.margin }}{% else %}margin-right:{{ cfgs.margin }}{% endif %};margin-bottom:{{ cfgs.margin }}; max-width: 50%;"">'.

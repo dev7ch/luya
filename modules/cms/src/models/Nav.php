@@ -2,19 +2,16 @@
 
 namespace luya\cms\models;
 
+use luya\admin\models\Group;
+use luya\cms\admin\Module;
+use luya\cms\models\Property as CmsProperty;
 use Yii;
-use yii\db\Query;
 use yii\db\ActiveRecord;
+use yii\db\Query;
 use yii\helpers\ArrayHelper;
 
-use luya\admin\models\Group;
-use luya\cms\models\Property as CmsProperty;
-
-
-use luya\cms\admin\Module;
-
 /**
- * CMS Nav Model ActiveRecord
+ * CMS Nav Model ActiveRecord.
  *
  * This is the main class for the cms navigation/menu structure. The Nav item contains information about the state of the page like visibility,
  * sort-index, online or offline. It also contains information about its a child of another nav element, but it does **NOT** contain informations
@@ -22,15 +19,15 @@ use luya\cms\admin\Module;
  * language. So basically the Nav contains the structure and state of the menu/navigation put not content, or titles cause those are related to a language.
  *
  * @property \luya\cms\models\NavItem $activeLanguageItem Returns the NavItem for the current active user language with with the context object nav id.
- * @property integer $id
- * @property integer $nav_container_id
- * @property integer $parent_nav_id
- * @property integer $sort_index
- * @property integer $is_deleted
- * @property integer $is_hidden
- * @property integer $is_offline
- * @property integer $is_home
- * @property integer $is_draft
+ * @property int $id
+ * @property int $nav_container_id
+ * @property int $parent_nav_id
+ * @property int $sort_index
+ * @property int $is_deleted
+ * @property int $is_hidden
+ * @property int $is_offline
+ * @property int $is_home
+ * @property int $is_draft
  * @property string $layout_file
  * @property \luya\cms\models\NavContainer $navContainer Returns the nav container model
  *
@@ -39,7 +36,7 @@ use luya\cms\admin\Module;
 class Nav extends ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -47,7 +44,7 @@ class Nav extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -59,7 +56,7 @@ class Nav extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -90,9 +87,8 @@ class Nav extends ActiveRecord
     {
         return $this->hasMany(NavItem::className(), ['nav_id' => 'id']);
     }
-    
+
     /**
-     *
      * @return \luya\cms\models\NavContainer
      */
     public function getNavContainer()
@@ -115,19 +111,16 @@ class Nav extends ActiveRecord
             return $model;
         }
     }
-    
-    /**
-     *
-     */
+
     public function getProperties()
     {
         return $this->hasMany(CmsProperty::class, ['nav_id' => 'id'])->with('adminProperty');
     }
-    
+
     /**
-     *
      * @param string $varName
-     * @return boolean
+     *
+     * @return bool
      */
     public function getProperty($varName)
     {
@@ -136,47 +129,47 @@ class Nav extends ActiveRecord
                 return $prop->getObject();
             }
         }
-        
+
         return false;
     }
-    
+
     public function hasGroupPermission(Group $group)
     {
-        $definitions = (new Query())->select("nav_id")->from("cms_nav_permission")->where(['group_id' => $group->id])->all();
-        
+        $definitions = (new Query())->select('nav_id')->from('cms_nav_permission')->where(['group_id' => $group->id])->all();
+
         // the group has no permission defined, this means he can access ALL cms pages
         if (count($definitions) == 0) {
             return true;
         }
-        
+
         foreach ($definitions as $permission) {
             if ($this->id == $permission['nav_id']) {
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
     public function hasGroupPermissionSelected(Group $group)
     {
-        $definition = (new Query())->select("inheritance")->from("cms_nav_permission")->where(['group_id' => $group->id, 'nav_id' => $this->id])->one();
-        
+        $definition = (new Query())->select('inheritance')->from('cms_nav_permission')->where(['group_id' => $group->id, 'nav_id' => $this->id])->one();
+
         if ($definition) {
             return true;
         }
-        
+
         return false;
     }
-    
+
     public function isGroupPermissionInheritNode(Group $group)
     {
-        $definition = (new Query())->select("inheritance")->from("cms_nav_permission")->where(['group_id' => $group->id, 'nav_id' => $this->id])->one();
-        
+        $definition = (new Query())->select('inheritance')->from('cms_nav_permission')->where(['group_id' => $group->id, 'nav_id' => $this->id])->one();
+
         if ($definition) {
             return (bool) $definition['inheritance'];
         }
-        
+
         return false;
     }
 
@@ -187,7 +180,7 @@ class Nav extends ActiveRecord
     {
         $item = self::find()->where([
             'nav_container_id' => $this->nav_container_id,
-            'parent_nav_id' => $this->parent_nav_id
+            'parent_nav_id'    => $this->parent_nav_id,
         ])->orderBy('sort_index DESC')->limit(1)->asArray()->one();
         if (!$item) {
             $this->sort_index = 1;
@@ -201,7 +194,7 @@ class Nav extends ActiveRecord
         $i = 1;
         foreach (self::find()->where([
             'nav_container_id' => $this->nav_container_id,
-            'parent_nav_id' => $this->parent_nav_id
+            'parent_nav_id' => $this->parent_nav_id,
         ])->orderBy('sort_index ASC')->asArray()->all() as $model) {
             Yii::$app->db->createCommand()->update(
                 self::tableName(),
@@ -224,7 +217,7 @@ class Nav extends ActiveRecord
                 break;
         }
     }
-    
+
     /**
      * Get an array of all childrens of the current item recursivly.
      *
@@ -235,9 +228,10 @@ class Nav extends ActiveRecord
     {
         $data = [];
         $this->internalGetRecursiveChildren($data, $this->id);
+
         return $data;
     }
-    
+
     private function internalGetRecursiveChildren(&$array, $parentNavId)
     {
         foreach (self::find()->where(['parent_nav_id' => $parentNavId])->all() as $item) {
@@ -259,7 +253,7 @@ class Nav extends ActiveRecord
         foreach ($move->getRecursiveChildren() as $child) {
             $child->updateAttributes(['nav_container_id' => $toCatId]);
         }
-        
+
         return true;
     }
 
@@ -269,7 +263,8 @@ class Nav extends ActiveRecord
      *
      * @param $currentNavId
      * @param $parentNavId
-     * @return boolean|mixed returns `true` if no duplication has been found, otherwhise returns an array with the duplicated existing item.
+     *
+     * @return bool|mixed returns `true` if no duplication has been found, otherwhise returns an array with the duplicated existing item.
      */
     public static function checkDuplicateAlias($currentNavId, $parentNavId)
     {
@@ -282,6 +277,7 @@ class Nav extends ActiveRecord
                 }
             }
         }
+
         return true;
     }
 
@@ -293,9 +289,9 @@ class Nav extends ActiveRecord
         if (!$move || !$to) {
             return false;
         }
-        
+
         $response = self::checkDuplicateAlias($move->id, $to->parent_nav_id);
-        
+
         if ($response !== true) {
             return $response;
         }
@@ -310,7 +306,7 @@ class Nav extends ActiveRecord
         foreach ($move->getRecursiveChildren() as $child) {
             $child->updateAttributes(['nav_container_id' => $to->nav_container_id]);
         }
-        
+
         return true;
     }
 
@@ -322,9 +318,9 @@ class Nav extends ActiveRecord
         if (!$move || !$to) {
             return false;
         }
-        
+
         $response = self::checkDuplicateAlias($move->id, $to->parent_nav_id);
-        
+
         if ($response !== true) {
             return $response;
         }
@@ -339,7 +335,7 @@ class Nav extends ActiveRecord
         foreach ($move->getRecursiveChildren() as $child) {
             $child->updateAttributes(['nav_container_id' => $to->nav_container_id]);
         }
-        
+
         return true;
     }
 
@@ -347,13 +343,13 @@ class Nav extends ActiveRecord
     {
         $move = self::findOne($moveNavId);
         $on = self::findOne($droppedOnItemId);
-        
+
         if (!$move || !$on) {
             return false;
         }
 
         $response = self::checkDuplicateAlias($move->id, $on->id);
-        
+
         if ($response !== true) {
             return $response;
         }
@@ -365,13 +361,13 @@ class Nav extends ActiveRecord
         foreach ($move->getRecursiveChildren() as $child) {
             $child->updateAttributes(['nav_container_id' => $on->nav_container_id]);
         }
-        
+
         return true;
     }
 
     public function moveUpstairs()
     {
-        $startIndex = (int)$this->sort_index;
+        $startIndex = (int) $this->sort_index;
         foreach (self::find()->where('sort_index >= :index', ['index' => $startIndex])->andWhere(['nav_container_id' => $this->nav_container_id, 'parent_nav_id' => $this->parent_nav_id])->orderBy('sort_index ASC')->asArray()->all() as $item) {
             ++$startIndex;
             Yii::$app->db->createCommand()->update(self::tableName(), ['sort_index' => $startIndex], 'id=:id', ['id' => $item['id']])->execute();
@@ -380,7 +376,7 @@ class Nav extends ActiveRecord
 
     public function moveDownstairs()
     {
-        $startIndex = (int)$this->sort_index;
+        $startIndex = (int) $this->sort_index;
         foreach (self::find()->where('sort_index >= :index', ['index' => $startIndex])->andWhere(['nav_container_id' => $this->nav_container_id, 'parent_nav_id' => $this->parent_nav_id])->orderBy('sort_index ASC')->asArray()->all() as $item) {
             --$startIndex;
             Yii::$app->db->createCommand()->update(self::tableName(), ['sort_index' => $startIndex], 'id=:id', ['id' => $item['id']])->execute();
@@ -388,10 +384,10 @@ class Nav extends ActiveRecord
     }
 
     /**
-     *
      * @param unknown $title
      * @param unknown $langId
-     * @return boolean
+     *
+     * @return bool
      */
     public function createDraft($title, $langId)
     {
@@ -400,22 +396,22 @@ class Nav extends ActiveRecord
         // nav
         $nav = $this; // @todo use new self and make static method instead
         $nav->attributes = [
-            'parent_nav_id' => 0,
+            'parent_nav_id'    => 0,
             'nav_container_id' => 0,
-            'sort_index' => 0,
-            'is_draft' => true,
-            'is_hidden' => true,
-            'is_offline' => true,
+            'sort_index'       => 0,
+            'is_draft'         => true,
+            'is_hidden'        => true,
+            'is_offline'       => true,
         ];
         // nav item
         $navItem = new NavItem();
         $navItem->parent_nav_id = 0;
         $navItem->attributes = [
-            'lang_id' => $langId,
-            'nav_item_type' => 4,
+            'lang_id'          => $langId,
+            'nav_item_type'    => 4,
             'nav_item_type_id' => 0,
-            'title' => $title,
-            'alias' => time()
+            'title'            => $title,
+            'alias'            => time(),
         ];
 
         if (!$nav->validate()) {
@@ -432,11 +428,11 @@ class Nav extends ActiveRecord
 
         $nav->save();
         $navItem->nav_id = $nav->id;
+
         return $navItem->save();
     }
 
     /**
-     *
      * Create a new nav item with a specific language, title and alias based on a given nav item id.
      * All content of the source nav item will be copied dependent on the nav item type (page content, module link, redirect informations).
      *
@@ -444,6 +440,7 @@ class Nav extends ActiveRecord
      * @param $langId (new) target language
      * @param $title title of nav item
      * @param $alias alias of nav item
+     *
      * @return bool
      */
     public function createItemLanguageCopy($navItemId, $langId, $title, $alias)
@@ -474,12 +471,11 @@ class Nav extends ActiveRecord
         if (empty($sourceNavItem->nav_item_type_id)) {
             return true;
         }
-        
+
         return $sourceNavItem->copyTypeContent($navItem);
     }
 
     /**
-     *
      * @param unknown $parentNavId
      * @param unknown $navContainerId
      * @param unknown $langId
@@ -487,8 +483,9 @@ class Nav extends ActiveRecord
      * @param unknown $alias
      * @param unknown $description
      * @param unknown $fromDraftNavId
-     * @param string $isDraft
-     * @return boolean
+     * @param string  $isDraft
+     *
+     * @return bool
      */
     public function createPageFromDraft($parentNavId, $navContainerId, $langId, $title, $alias, $description, $fromDraftNavId, $isDraft = false)
     {
@@ -500,21 +497,21 @@ class Nav extends ActiveRecord
         // nav
         $nav = $this;
         $nav->attributes = [
-            'parent_nav_id' => $parentNavId,
+            'parent_nav_id'    => $parentNavId,
             'nav_container_id' => $navContainerId,
-            'is_hidden' => true,
-            'is_offline' => true,
-            'is_draft' => $isDraft
+            'is_hidden'        => true,
+            'is_offline'       => true,
+            'is_draft'         => $isDraft,
         ];
         // nav item
         $navItem = new NavItem();
         $navItem->parent_nav_id = $parentNavId;
         $navItem->attributes = [
-            'lang_id' => $langId,
-            'title' => $title,
-            'alias' => $alias,
-            'description' => $description,
-            'nav_item_type' => 1
+            'lang_id'       => $langId,
+            'title'         => $title,
+            'alias'         => $alias,
+            'description'   => $description,
+            'nav_item_type' => 1,
         ];
 
         if (!$nav->validate()) {
@@ -523,7 +520,7 @@ class Nav extends ActiveRecord
         if (!$navItem->validate()) {
             $errors = ArrayHelper::merge($navItem->getErrors(), $errors);
         }
-        
+
         if (empty($fromDraftNavId)) {
             $errors['from_draft_id'] = [Module::t('model_navitempage_empty_draft_id')];
         }
@@ -547,13 +544,13 @@ class Nav extends ActiveRecord
         $navItemPage->version_alias = Module::VERSION_INIT_LABEL;
         $navItemPage->create_user_id = Module::getAuthorUserId();
         $navItemPage->nav_item_id = 0;
-        
+
         if (!$navItemPage->validate()) {
             return $navItemPage->getErrors();
         }
-        
+
         $navItemPage->save();
-        
+
         foreach ($pageBlocks as $block) {
             $i = new NavItemPageBlockItem();
             $i->attributes = $block->toArray();
@@ -565,14 +562,13 @@ class Nav extends ActiveRecord
         $navItem->nav_item_type_id = $navItemPage->id;
 
         $navItem->save();
-        
+
         $navItemPage->updateAttributes(['nav_item_id' => $navItem->id]);
-        
+
         return true;
     }
 
     /**
-     *
      * @param unknown $parentNavId
      * @param unknown $navContainerId
      * @param unknown $langId
@@ -580,8 +576,9 @@ class Nav extends ActiveRecord
      * @param unknown $alias
      * @param unknown $layoutId
      * @param unknown $description
-     * @param string $isDraft
-     * @return boolean
+     * @param string  $isDraft
+     *
+     * @return bool
      */
     public function createPage($parentNavId, $navContainerId, $langId, $title, $alias, $layoutId, $description, $isDraft = false)
     {
@@ -597,18 +594,18 @@ class Nav extends ActiveRecord
         }
 
         $nav->attributes = [
-            'parent_nav_id' => $parentNavId,
+            'parent_nav_id'    => $parentNavId,
             'nav_container_id' => $navContainerId,
-            'is_hidden' => true,
-            'is_offline' => true,
-            'is_draft' => $isDraft
+            'is_hidden'        => true,
+            'is_offline'       => true,
+            'is_draft'         => $isDraft,
         ];
         $navItem->attributes = [
-            'lang_id' => $langId,
-            'title' => $title,
-            'alias' => $alias,
-            'description' => $description,
-            'nav_item_type' => 1
+            'lang_id'       => $langId,
+            'title'         => $title,
+            'alias'         => $alias,
+            'description'   => $description,
+            'nav_item_type' => 1,
         ];
         $navItemPage->attributes = ['nav_item_id' => 0, 'layout_id' => $layoutId, 'create_user_id' => Module::getAuthorUserId(), 'timestamp_create' => time(), 'version_alias' => Module::VERSION_INIT_LABEL];
 
@@ -634,19 +631,19 @@ class Nav extends ActiveRecord
         $navItemId = $navItem->save();
 
         $navItemPage->updateAttributes(['nav_item_id' => $navItem->id]);
-        
+
         return $navItemId;
     }
 
     /**
-     *
      * @param unknown $navId
      * @param unknown $langId
      * @param unknown $title
      * @param unknown $alias
      * @param unknown $layoutId
      * @param unknown $description
-     * @return boolean
+     *
+     * @return bool
      */
     public function createPageItem($navId, $langId, $title, $alias, $layoutId, $description)
     {
@@ -657,12 +654,12 @@ class Nav extends ActiveRecord
         $navItemPage = new NavItemPage();
 
         $navItem->attributes = [
-            'nav_id' => $navId,
-            'lang_id' => $langId,
-            'title' => $title,
-            'alias' => $alias,
-            'description' => $description,
-            'nav_item_type' => 1
+            'nav_id'        => $navId,
+            'lang_id'       => $langId,
+            'title'         => $title,
+            'alias'         => $alias,
+            'description'   => $description,
+            'nav_item_type' => 1,
         ];
         $navItemPage->attributes = ['nav_item_id' => 0, 'layout_id' => $layoutId, 'create_user_id' => Module::getAuthorUserId(), 'timestamp_create' => time(), 'version_alias' => Module::VERSION_INIT_LABEL];
 
@@ -683,12 +680,11 @@ class Nav extends ActiveRecord
         $navItemId = $navItem->save();
 
         $navItemPage->updateAttributes(['nav_item_id' => $navItem->id]);
-        
+
         return $navItemId;
     }
 
     /**
-     *
      * @param unknown $parentNavId
      * @param unknown $navContainerId
      * @param unknown $langId
@@ -696,7 +692,8 @@ class Nav extends ActiveRecord
      * @param unknown $alias
      * @param unknown $moduleName
      * @param unknown $description
-     * @return boolean
+     *
+     * @return bool
      */
     public function createModule($parentNavId, $navContainerId, $langId, $title, $alias, $moduleName, $description)
     {
@@ -708,17 +705,17 @@ class Nav extends ActiveRecord
         $navItemModule = new NavItemModule();
 
         $nav->attributes = [
-            'parent_nav_id' => $parentNavId,
+            'parent_nav_id'    => $parentNavId,
             'nav_container_id' => $navContainerId,
-            'is_hidden' => true,
-            'is_offline' => true,
+            'is_hidden'        => true,
+            'is_offline'       => true,
         ];
         $navItem->attributes = [
-            'lang_id' => $langId,
-            'title' => $title,
-            'alias' => $alias,
-            'description' => $description,
-            'nav_item_type' => 2
+            'lang_id'       => $langId,
+            'title'         => $title,
+            'alias'         => $alias,
+            'description'   => $description,
+            'nav_item_type' => 2,
         ];
         $navItemModule->attributes = ['module_name' => $moduleName];
 
@@ -747,16 +744,16 @@ class Nav extends ActiveRecord
     }
 
     /**
-     *
      * @param unknown $parentNavId
      * @param unknown $navContainerId
      * @param unknown $langId
      * @param unknown $title
      * @param unknown $alias
-     * @param unknown $redirectType The type of redirect (1 = page, 2 = URL, 3 = Link to File)
+     * @param unknown $redirectType      The type of redirect (1 = page, 2 = URL, 3 = Link to File)
      * @param unknown $redirectTypeValue Depending on the type (1 = cms_nav.id, 2 = http://luya.io)
      * @param unknown $description
-     * @return boolean
+     *
+     * @return bool
      */
     public function createRedirect($parentNavId, $navContainerId, $langId, $title, $alias, $redirectType, $redirectTypeValue, $description)
     {
@@ -768,17 +765,17 @@ class Nav extends ActiveRecord
         $navItemRedirect = new NavItemRedirect();
 
         $nav->attributes = [
-            'parent_nav_id' => $parentNavId,
+            'parent_nav_id'    => $parentNavId,
             'nav_container_id' => $navContainerId,
-            'is_hidden' => true,
-            'is_offline' => true,
+            'is_hidden'        => true,
+            'is_offline'       => true,
         ];
         $navItem->attributes = [
-            'lang_id' => $langId,
-            'title' => $title,
-            'alias' => $alias,
-            'description' => $description,
-            'nav_item_type' => 3
+            'lang_id'       => $langId,
+            'title'         => $title,
+            'alias'         => $alias,
+            'description'   => $description,
+            'nav_item_type' => 3,
         ];
         $navItemRedirect->attributes = ['type' => $redirectType, 'value' => $redirectTypeValue];
 
@@ -807,14 +804,14 @@ class Nav extends ActiveRecord
     }
 
     /**
-     *
      * @param unknown $navId
      * @param unknown $langId
      * @param unknown $title
      * @param unknown $alias
      * @param unknown $moduleName
      * @param unknown $description
-     * @return boolean
+     *
+     * @return bool
      */
     public function createModuleItem($navId, $langId, $title, $alias, $moduleName, $description)
     {
@@ -825,12 +822,12 @@ class Nav extends ActiveRecord
         $navItemModule = new NavItemModule();
 
         $navItem->attributes = [
-            'nav_id' => $navId,
-            'lang_id' => $langId,
-            'title' => $title,
-            'alias' => $alias,
-            'description' => $description,
-            'nav_item_type' => 2
+            'nav_id'        => $navId,
+            'lang_id'       => $langId,
+            'title'         => $title,
+            'alias'         => $alias,
+            'description'   => $description,
+            'nav_item_type' => 2,
         ];
         $navItemModule->attributes = ['module_name' => $moduleName];
 
@@ -854,15 +851,15 @@ class Nav extends ActiveRecord
     }
 
     /**
-     *
      * @param unknown $navId
      * @param unknown $langId
      * @param unknown $title
      * @param unknown $alias
-     * @param unknown $redirectType The type of redirect (1 = page, 2 = URL, 3 = Link to File)
+     * @param unknown $redirectType      The type of redirect (1 = page, 2 = URL, 3 = Link to File)
      * @param unknown $redirectTypeValue Depending on the type (1 = cms_nav.id, 2 = http://luya.io)
      * @param unknown $description
-     * @return boolean
+     *
+     * @return bool
      */
     public function createRedirectItem($navId, $langId, $title, $alias, $redirectType, $redirectTypeValue, $description)
     {
@@ -873,12 +870,12 @@ class Nav extends ActiveRecord
         $navItemRedirect = new NavItemRedirect();
 
         $navItem->attributes = [
-            'nav_id' => $navId,
-            'lang_id' => $langId,
-            'title' => $title,
-            'alias' => $alias,
-            'description' => $description,
-            'nav_item_type' => 3
+            'nav_id'        => $navId,
+            'lang_id'       => $langId,
+            'title'         => $title,
+            'alias'         => $alias,
+            'description'   => $description,
+            'nav_item_type' => 3,
         ];
         $navItemRedirect->attributes = ['type' => $redirectType, 'value' => $redirectTypeValue];
 

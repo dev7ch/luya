@@ -1,12 +1,11 @@
 <?php
 /**
- * @var $className
+ * @var
  * @var $namespace
  * @var $luya
  * @var $moduleId
  * @var $alias
  */
-
 echo "<?php\n";
 ?>
 

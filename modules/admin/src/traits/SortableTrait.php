@@ -19,6 +19,7 @@ namespace luya\admin\traits;
  * to sort the GRID by the end-user.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 trait SortableTrait
@@ -32,29 +33,31 @@ trait SortableTrait
     {
         return 'sortindex';
     }
-    
+
     /**
-     * Overrides the ngRestFind() method of the ActiveRecord
+     * Overrides the ngRestFind() method of the ActiveRecord.
+     *
      * @return \yii\db\ActiveQuery
      */
     public static function ngRestFind()
     {
         return parent::ngRestFind()->orderBy([self::sortableField() => SORT_ASC]);
     }
-    
+
     /**
-     * Overrides the find() method of the ActiveRecord
+     * Overrides the find() method of the ActiveRecord.
+     *
      * @return \yii\db\ActiveQuery
      */
     public static function find()
     {
         return parent::find()->orderBy([self::sortableField() => SORT_ASC]);
     }
-    
+
     /**
      * Disable the list ordering.
      *
-     * @return boolean
+     * @return bool
      */
     public function ngRestListOrder()
     {

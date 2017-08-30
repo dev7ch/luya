@@ -5,7 +5,7 @@ namespace luya\admin\filters;
 use luya\admin\base\Filter;
 
 /**
- * Admin Module default Filter: Medium Crop (300x300)
+ * Admin Module default Filter: Medium Crop (300x300).
  *
  * @author Basil Suter <basil@nadar.io>
  */
@@ -25,7 +25,7 @@ class MediumCrop extends Filter
     {
         return [
             [self::EFFECT_THUMBNAIL, [
-                'width' => 300,
+                'width'  => 300,
                 'height' => 300,
             ]],
         ];

@@ -35,7 +35,7 @@ use Yii;
 abstract class ImageProperty extends Property
 {
     /**
-     * Type Image
+     * Type Image.
      *
      * @see \luya\admin\base\Property::type()
      */
@@ -43,7 +43,7 @@ abstract class ImageProperty extends Property
     {
         return self::TYPE_IMAGEUPLOAD;
     }
-    
+
     /**
      * In order to auto apply a filter to each image override this mehotd returning the identifier of your Filter.
      *
@@ -54,23 +54,24 @@ abstract class ImageProperty extends Property
      * }
      * ```
      *
-     * @return boolean|string
+     * @return bool|string
      */
     public function filterName()
     {
         return false;
     }
-    
+
     /**
      * Get the source of the image, if not available the method returns false.
      *
-     * @return string|boolean Returns the path to the file, otherwise false.
+     * @return string|bool Returns the path to the file, otherwise false.
+     *
      * @see \luya\admin\base\Property::getValue()
      */
     public function getValue()
     {
         $value = parent::getValue();
-        
+
         if ($value) {
             $image = Yii::$app->storage->getImage($value);
             /* @var $image \luya\admin\image\Item */
@@ -78,10 +79,11 @@ abstract class ImageProperty extends Property
                 if ($this->filterName()) {
                     return $image->applyFilter($this->filterName())->source;
                 }
+
                 return $image->source;
             }
         }
-        
+
         return false;
     }
 }

@@ -16,19 +16,19 @@ use yii\base\Object;
 abstract class BlockGroup extends Object
 {
     /**
-     * The unique identifier of the block group
+     * The unique identifier of the block group.
      *
      * @return string
      */
     abstract public function identifier();
-    
+
     /**
-     * The label used in the administration are for this group
+     * The label used in the administration are for this group.
      *
      * @return string
      */
     abstract public function label();
-    
+
     /**
      * The position index, lower will be a the top, higher will be at the bottom of the blocks list.
      *

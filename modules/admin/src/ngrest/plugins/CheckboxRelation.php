@@ -2,12 +2,12 @@
 
 namespace luya\admin\ngrest\plugins;
 
-use Yii;
+use luya\admin\helpers\I18n;
 use luya\admin\ngrest\base\NgRestModel;
 use luya\admin\ngrest\base\Plugin;
-use luya\rest\ActiveController;
 use luya\helpers\ArrayHelper;
-use luya\admin\helpers\I18n;
+use luya\rest\ActiveController;
+use Yii;
 
 /**
  * Checkbox Selector via relation table.
@@ -66,6 +66,7 @@ use luya\admin\helpers\I18n;
  *
  * @property \luya\admin\ngrest\base\NgRestModel $model The model object
  * @property string $modelPrimaryKey The primary key string.
+ *
  * @author Basil Suter <basil@nadar.io>
  */
 class CheckboxRelation extends Plugin
@@ -102,41 +103,41 @@ class CheckboxRelation extends Plugin
     public $labelTemplate;
 
     /**
-     * @var boolean Whether the checkbox plugin should only trigger for the restcreate and restupdate events or for all SAVE/UPDATE events.
+     * @var bool Whether the checkbox plugin should only trigger for the restcreate and restupdate events or for all SAVE/UPDATE events.
      */
     public $onlyRestScenarios = false;
 
     /**
-     * @var boolean Whether the admin request should be retrived as admin or not, by default its an admin query as this is more performat but
-     * you only have an array within the labelField closure.
+     * @var bool Whether the admin request should be retrived as admin or not, by default its an admin query as this is more performat but
+     *           you only have an array within the labelField closure.
      */
     public $asArray = true;
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
         parent::init();
-        
+
         $this->addEvent(NgRestModel::EVENT_AFTER_INSERT, [$this, 'afterSaveEvent']);
         $this->addEvent(NgRestModel::EVENT_AFTER_UPDATE, [$this, 'afterSaveEvent']);
     }
-    
+
     private $_modelPrimaryKey;
-    
+
     public function getModelPrimaryKey()
     {
         if ($this->_modelPrimaryKey === null) {
             $pkname = $this->model->primaryKey();
             $this->_modelPrimaryKey = reset($pkname);
         }
-    
+
         return $this->_modelPrimaryKey;
     }
-    
+
     private $_model;
-    
+
     /**
      * Setter method for the model.
      *
@@ -157,12 +158,12 @@ class CheckboxRelation extends Plugin
         if (!is_object($this->_model)) {
             $this->_model = Yii::createObject(['class' => $this->_model]);
         }
-        
+
         return $this->_model;
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderList($id, $ngModel)
     {
@@ -170,7 +171,7 @@ class CheckboxRelation extends Plugin
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderCreate($id, $ngModel)
     {
@@ -181,7 +182,7 @@ class CheckboxRelation extends Plugin
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderUpdate($id, $ngModel)
     {
@@ -196,7 +197,7 @@ class CheckboxRelation extends Plugin
     private function getOptionsData($event)
     {
         $items = [];
-        
+
         foreach ($this->model->find()->asArray($this->asArray)->all() as $item) {
             if (is_callable($this->labelField, false)) {
                 $label = call_user_func($this->labelField, $item);
@@ -205,24 +206,24 @@ class CheckboxRelation extends Plugin
                     $this->labelField = array_keys($item);
                 }
                 $array = ArrayHelper::filter($item, $this->labelField);
-                
+
                 foreach ($array as $key => $value) {
                     if ($event->sender->isI18n($key)) {
                         $array[$key] = I18n::decodeActive($value);
                     }
                 }
-                
+
                 $label = $this->labelTemplate ? vsprintf($this->labelTemplate, $array) : implode(', ', $array);
             }
-        
+
             $items[] = ['value' => (int) $item[$this->modelPrimaryKey], 'label' => $label];
         }
-        
+
         return ['items' => $items];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function serviceData($event)
     {
@@ -230,7 +231,7 @@ class CheckboxRelation extends Plugin
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function onBeforeExpandFind($event)
     {
@@ -244,22 +245,22 @@ class CheckboxRelation extends Plugin
         }
         $event->sender->{$this->name} = $data;
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function onBeforeFind($event)
     {
         $event->sender->{$this->name} = $this->getRelationData($event);
     }
-    
+
     private function getRelationData($event)
     {
         $relation = $event->sender->getRelation($this->name, false);
         if ($relation) {
             return $relation;
         }
-        
+
         return $this->model->find()->leftJoin($this->refJoinTable, $this->model->tableName().'.id='.$this->refJoinTable.'.'.$this->refJoinPkId)->where([$this->refJoinTable.'.'.$this->refModelPkId => $event->sender->id])->all();
     }
 
@@ -283,15 +284,16 @@ class CheckboxRelation extends Plugin
             $this->setRelation($event->sender->{$this->name}, $this->refJoinTable, $this->refModelPkId, $this->refJoinPkId, $event->sender->id);
         }
     }
-    
+
     /**
      * Set the relation data based on the configuration.
      *
-     * @param array $value The valued which is provided from the setter method
-     * @param string $viaTableName Example viaTable name: news_article_tag
-     * @param string $localTableId The name of the field inside the viaTable which represents the match against the local table, example: article_id
+     * @param array  $value          The valued which is provided from the setter method
+     * @param string $viaTableName   Example viaTable name: news_article_tag
+     * @param string $localTableId   The name of the field inside the viaTable which represents the match against the local table, example: article_id
      * @param string $foreignTableId The name of the field inside the viaTable which represents the match against the foreign table, example: tag_id
-     * @return boolean Whether updating the database was successfull or not.
+     *
+     * @return bool Whether updating the database was successfull or not.
      */
     protected function setRelation(array $value, $viaTableName, $localTableId, $foreignTableId, $activeRecordId)
     {

@@ -15,21 +15,22 @@ interface NgRestModelInterface
      * Defines the base inline configuration for the current Model.
      *
      * @param \luya\admin\ngrest\ConfigBuilder $config ConfigBuilder Object
+     *
      * @return \luya\admin\ngrest\ConfigBuilder
      */
     public function ngRestConfig($config);
-    
+
     /**
      * Defines the Api Endpoint for the current Active Record model.
      *
      * @return string
      */
     public static function ngRestApiEndpoint();
-    
+
     /**
-     * Whether current model is in ngrest context or not
+     * Whether current model is in ngrest context or not.
      *
-     * @return boolean
+     * @return bool
      */
     public function getIsNgRestContext();
 }

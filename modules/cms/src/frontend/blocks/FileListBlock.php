@@ -2,9 +2,9 @@
 
 namespace luya\cms\frontend\blocks;
 
+use luya\cms\base\PhpBlock;
 use luya\cms\frontend\Module;
 use luya\cms\helpers\BlockHelper;
-use luya\cms\base\PhpBlock;
 
 /**
  * File list block.
@@ -14,17 +14,17 @@ use luya\cms\base\PhpBlock;
 final class FileListBlock extends PhpBlock
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $module = 'cms';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $cacheEnabled = true;
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function name()
     {
@@ -32,7 +32,7 @@ final class FileListBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function icon()
     {
@@ -40,26 +40,26 @@ final class FileListBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function config()
     {
         return [
             'vars' => [
-                ['var' => 'files', 'label' => Module::t("block_file_list_files_label"), 'type' => 'zaa-file-array-upload'],
+                ['var' => 'files', 'label' => Module::t('block_file_list_files_label'), 'type' => 'zaa-file-array-upload'],
             ],
             'cfgs' => [
-                ['var' => 'showType', 'label' => Module::t("block_file_list_files_showtype_label"), 'initvalue' => 0, 'type' => 'zaa-select', 'options' => [
-                        ['value' => '1', 'label' => Module::t("block_file_list_showtype_yes")],
-                        ['value' => '0', 'label' => Module::t("block_file_list_showtype_no")],
+                ['var' => 'showType', 'label' => Module::t('block_file_list_files_showtype_label'), 'initvalue' => 0, 'type' => 'zaa-select', 'options' => [
+                        ['value' => '1', 'label' => Module::t('block_file_list_showtype_yes')],
+                        ['value' => '0', 'label' => Module::t('block_file_list_showtype_no')],
                     ],
                 ],
             ],
         ];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function extraVars()
     {
@@ -69,7 +69,7 @@ final class FileListBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function admin()
     {

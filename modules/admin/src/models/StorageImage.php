@@ -2,10 +2,9 @@
 
 namespace luya\admin\models;
 
-use Yii;
-
-use yii\db\ActiveRecord;
 use luya\helpers\FileHelper;
+use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * StorageImage Model.
@@ -15,7 +14,7 @@ use luya\helpers\FileHelper;
 final class StorageImage extends ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -23,7 +22,7 @@ final class StorageImage extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -32,25 +31,26 @@ final class StorageImage extends ActiveRecord
             [['filter_id', 'resolution_width', 'resolution_height'], 'safe'],
         ];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeDelete()
     {
         if (parent::beforeDelete()) {
             $this->deleteSource();
+
             return true;
         } else {
             return false;
         }
     }
-    
+
     public function getFile()
     {
         return $this->hasOne(StorageFile::className(), ['id' => 'file_id']);
     }
-    
+
     public function deleteSource()
     {
         $image = Yii::$app->storage->getImage($this->id);
@@ -61,7 +61,7 @@ final class StorageImage extends ActiveRecord
         } else {
             return false; // image not even found
         }
-        
+
         return true;
     }
 }

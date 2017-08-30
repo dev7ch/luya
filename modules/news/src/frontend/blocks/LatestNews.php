@@ -2,9 +2,9 @@
 
 namespace luya\news\frontend\blocks;
 
+use luya\cms\base\PhpBlock;
 use luya\cms\models\NavItem;
 use luya\news\models\Article;
-use luya\cms\base\PhpBlock;
 
 class LatestNews extends PhpBlock
 {

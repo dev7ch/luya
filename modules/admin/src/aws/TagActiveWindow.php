@@ -38,6 +38,7 @@ use luya\admin\ngrest\base\ActiveWindow;
  * ```
  *
  * @property string $tableName Define a table name if not automaticaly alocated from model.
+ *
  * @author Basil Suter <basil@nadar.io>
  */
 class TagActiveWindow extends ActiveWindow
@@ -48,32 +49,31 @@ class TagActiveWindow extends ActiveWindow
     public $module = 'admin';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $alias = 'Tags';
-    
+
     /**
      * @var string The icon name from goolges material icon set (https://material.io/icons/)
      */
-    public $icon = "view_list";
+    public $icon = 'view_list';
 
     private $_tableName;
-    
+
     public function getTableName()
     {
         if ($this->_tableName === null) {
             $this->_tableName = $this->model->tableName();
-            ;
         }
-        
+
         return $this->_tableName;
     }
-    
+
     public function setTableName($tableName)
     {
         $this->_tableName = $tableName;
     }
-    
+
     /**
      * The default action which is going to be requested when clicking the ActiveWindow.
      *
@@ -100,15 +100,17 @@ class TagActiveWindow extends ActiveWindow
 
         if ($find) {
             TagRelation::deleteAll(['tag_id' => $tagId, 'table_name' => $this->tableName, 'pk_id' => $this->getItemId()]);
+
             return 0;
         } else {
             $model = new TagRelation();
             $model->setAttributes([
-                'tag_id' => $tagId,
+                'tag_id'     => $tagId,
                 'table_name' => $this->tableName,
-                'pk_id' => $this->getItemId(),
+                'pk_id'      => $this->getItemId(),
             ]);
             $model->insert(false);
+
             return 1;
         }
     }

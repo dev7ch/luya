@@ -5,7 +5,7 @@ namespace luya\admin\ngrest\render;
 use luya\admin\ngrest\ConfigInterface;
 
 /**
- * NgRest Render Interface
+ * NgRest Render Interface.
  *
  * @author Basil Suter <basil@nadar.io>
  */

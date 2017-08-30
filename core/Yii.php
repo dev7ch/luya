@@ -18,5 +18,5 @@ class Yii extends \yii\BaseYii
 }
 
 spl_autoload_register(['Yii', 'autoload'], true, true);
-Yii::$classMap = require(LUYA_YII_VENDOR . '/classes.php');
+Yii::$classMap = require LUYA_YII_VENDOR.'/classes.php';
 Yii::$container = new yii\di\Container();

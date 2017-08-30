@@ -9,12 +9,13 @@ use yii\db\ActiveQuery;
  * ActiveRecord object model.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 trait NextPrevModel
 {
     /**
-     * Get the next actrive record of the current id
+     * Get the next actrive record of the current id.
      *
      * @return ActiveQuery
      */
@@ -22,9 +23,9 @@ trait NextPrevModel
     {
         return self::find()->where(['>', 'id', $this->id])->limit(1)->one();
     }
-    
+
     /**
-     * Get the previous record of a current id
+     * Get the previous record of a current id.
      *
      * @return ActiveQuery
      */

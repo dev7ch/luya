@@ -5,7 +5,7 @@ namespace luya\admin\ngrest\plugins;
 use luya\admin\ngrest\base\Plugin;
 
 /**
- * Date and Time input field
+ * Date and Time input field.
  *
  * When dealing with empty datetime values you can configure `emptyMessage` in order to change the display default text in
  * the list view.
@@ -22,12 +22,12 @@ class Datetime extends Plugin
 {
     /**
      * @var string This text will be displayed in the list overview when no date has been slected
-     * or date is null/empty.
+     *             or date is null/empty.
      */
     public $emptyMessage = '-';
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderList($id, $ngModel)
     {
@@ -38,7 +38,7 @@ class Datetime extends Plugin
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderCreate($id, $ngModel)
     {
@@ -46,7 +46,7 @@ class Datetime extends Plugin
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderUpdate($id, $ngModel)
     {

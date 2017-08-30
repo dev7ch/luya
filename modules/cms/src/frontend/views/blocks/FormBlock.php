@@ -1,13 +1,13 @@
 <?php
 /**
- * @var $this \luya\cms\base\PhpBlockView
-*/
+ * @var \luya\cms\base\PhpBlockView
+ */
 $hideForm = false;
 ?>
 <?php if ($this->varValue('emailAddress')): ?>
 <?= $this->varValue('headline', null, '<h3>{{headline}}</h3>'); ?>
 <?php if ($this->extraValue('name') && $this->extraValue('email') && $this->extraValue('message')): ?>
-    <?php if ($this->extraValue('mailerResponse') == 'success'): $hideForm = true;?>
+    <?php if ($this->extraValue('mailerResponse') == 'success'): $hideForm = true; ?>
         <div class="alert alert-success"><?= $this->extraValue('sendSuccess'); ?></div>
     <?php else: ?>
         <div class="alert alert-danger"><?= $this->extraValue('sendError'); ?></div>

@@ -2,11 +2,11 @@
 
 namespace luya\cms\menu;
 
-use Yii;
 use luya\cms\Exception;
-use yii\helpers\Inflector;
 use luya\cms\Menu;
+use Yii;
 use yii\base\Object;
+use yii\helpers\Inflector;
 
 /**
  * An item inject gives a module the possibility to add items into the menu Container.
@@ -72,134 +72,144 @@ use yii\base\Object;
 class InjectItem extends Object implements InjectItemInterface
 {
     /**
-     * @var integer The user id who created this page.
+     * @var int The user id who created this page.
      */
     public $createUserId = 0;
-    
+
     /**
      * @var integerThe user id who updated this page as last person.
      */
     public $updateUserId = 0;
-    
+
     /**
-     * @var integer The number which is used to sort the injected item. Lower is at the top.
+     * @var int The number which is used to sort the injected item. Lower is at the top.
      */
     public $sortIndex = 0;
-    
+
     /**
-     * @var boolean Whether this page is hidden or not.
+     * @var bool Whether this page is hidden or not.
      */
     public $isHidden = false;
-    
+
     // Getter & Setter
-    
+
     private $_item;
 
     /**
      * Returns the evalutead menu item whether from the childOf property or set from the setter method.
-     * @return Item
+     *
      * @throws Exception
+     *
+     * @return Item
      */
     public function getItem()
     {
         if ($this->_item === null) {
             $this->_item = Yii::$app->menu->find()->where(['id' => $this->childOf])->with('hidden')->one();
-            
+
             if (!$this->_item) {
-                throw new Exception("Unable to find item with id " . $this->childOf);
+                throw new Exception('Unable to find item with id '.$this->childOf);
             }
         }
-        
+
         return $this->_item;
     }
-    
+
     /**
      * Setter method for the item property.
      *
      * @param \luya\cms\menu\Item $item
+     *
      * @return \luya\cms\menu\InjectItem
      */
     public function setItem(Item $item)
     {
         $this->childOf = $item->id;
         $this->_item = $item;
-        
+
         return $this;
     }
-    
+
     private $_childOf;
-    
+
     /**
      * Setter method for childOf property.
      *
-     * @param integer $id
+     * @param int $id
+     *
      * @return \luya\cms\menu\InjectItem
      */
     public function setChildOf($id)
     {
         $this->_childOf = (int) $id;
-        
+
         return $this;
     }
-    
+
     /**
      * Getter method for the childOf property.
      *
      * @throws Exception
+     *
      * @return number
      */
     public function getChildOf()
     {
         if ($this->_childOf === null) {
-            throw new Exception("In order to inject an item, you have to set the `childOf` property.");
+            throw new Exception('In order to inject an item, you have to set the `childOf` property.');
         }
+
         return $this->_childOf;
     }
-    
+
     private $_alias;
-    
+
     /**
      * Setter methdo for the item alias.
      *
      * @param string $alias A slugable alias string will be parsed by the inflector::slug method.
+     *
      * @return \luya\cms\menu\InjectItem
      */
     public function setAlias($alias)
     {
         $this->_alias = Inflector::slug($alias);
-        
+
         return $this;
     }
 
     /**
      * Getter method for the alias.
-     * @return string The alias with the parent childOf alias prefixed.
+     *
      * @throws Exception
+     *
+     * @return string The alias with the parent childOf alias prefixed.
      */
     public function getAlias()
     {
         if ($this->_alias === null) {
             throw new Exception('The $alias property can not be null and must be set.');
         }
-        
-        return $this->item->alias . '/' . $this->_alias;
+
+        return $this->item->alias.'/'.$this->_alias;
     }
-    
+
     private $_link;
-    
+
     /**
      * Setter method fro the link.
      *
      * @param string $url
+     *
      * @return \luya\cms\menu\InjectItem
      */
     public function setLink($url)
     {
         $this->_link = $url;
-        
+
         return $this;
     }
-    
+
     /**
      * Getter method for the menu link.
      *
@@ -209,13 +219,14 @@ class InjectItem extends Object implements InjectItemInterface
     {
         return ($this->_link === null) ? Yii::$app->menu->buildItemLink($this->alias, $this->getLang()) : $this->_link;
     }
-    
+
     private $_title;
-    
+
     /**
      * Setter method for the menu title.
      *
      * @param string $title The menu item title.
+     *
      * @return \luya\cms\menu\InjectItem
      */
     public function setTitle($title)
@@ -224,16 +235,17 @@ class InjectItem extends Object implements InjectItemInterface
         if ($this->_alias === null) {
             $this->setAlias($title);
         }
-        
+
         $this->_title = $title;
-        
+
         return $this;
     }
-    
+
     /**
      * Getter method for the menu title.
      *
      * @throws Exception
+     *
      * @return string
      */
     public function getTitle()
@@ -241,25 +253,26 @@ class InjectItem extends Object implements InjectItemInterface
         if ($this->_title === null) {
             throw new Exception('The $title property can not be null and must be set.');
         }
-        
+
         return $this->_title;
     }
-    
+
     private $_description;
-    
+
     /**
      * Setter method for menu page description.
      *
      * @param string $description Description for the menu item.
+     *
      * @return \luya\cms\menu\InjectItem
      */
     public function setDescription($description)
     {
         $this->_description = $description;
-        
+
         return $this;
     }
-    
+
     /**
      * Getter method for the menu page description.
      *
@@ -269,19 +282,19 @@ class InjectItem extends Object implements InjectItemInterface
     {
         return $this->_description;
     }
-    
+
     // Getters
-    
+
     /**
      * Getter method for the container from the child of item.
      *
-     * @return integer
+     * @return int
      */
     public function getContainer()
     {
         return $this->item->container;
     }
-    
+
     /**
      * Returns the depth number based on the alias paths.
      *
@@ -291,7 +304,7 @@ class InjectItem extends Object implements InjectItemInterface
     {
         return count(explode('/', $this->alias));
     }
-    
+
     /**
      * Returns the language from the childOf item.
      *
@@ -301,19 +314,17 @@ class InjectItem extends Object implements InjectItemInterface
     {
         return $this->item->lang;
     }
-    
-    
-    
+
     /**
      * Getter method for the parent nav id from the childOf item.
      *
-     * @return integer
+     * @return int
      */
     public function getParentNavId()
     {
         return $this->item->navId;
     }
-    
+
     /**
      * Getter method for the create item timestamp.
      *
@@ -323,7 +334,7 @@ class InjectItem extends Object implements InjectItemInterface
     {
         return time();
     }
-    
+
     /**
      * Getter method for the update item timestamp.
      *
@@ -333,16 +344,17 @@ class InjectItem extends Object implements InjectItemInterface
     {
         return time();
     }
-    
+
     /**
      * Getter method for the isHhome item, which is false by default.
+     *
      * @return number
      */
     public function getIsHome()
     {
         return (int) false;
     }
-    
+
     /**
      * Getter method for the type which is by default a page.
      *
@@ -352,7 +364,7 @@ class InjectItem extends Object implements InjectItemInterface
     {
         return Menu::ITEM_TYPE_PAGE;
     }
-    
+
     /**
      * Getter method for the redirect content if its a redirect page, by default 0.
      *
@@ -364,33 +376,33 @@ class InjectItem extends Object implements InjectItemInterface
     }
 
     private $_id;
-    
+
     /**
      * Setter methdo for the id (unique id).
      *
-     * @param integer $id
+     * @param int $id
      */
     public function setId($id)
     {
         $this->_id = $id;
     }
-    
+
     /**
      * Getter method for the unique id.
      *
-     * @return string|integer
+     * @return string|int
      */
     public function getId()
     {
         if ($this->_id === null) {
             $this->_id = rand(10000, 1000000);
         }
-        
+
         return $this->_id;
     }
-    
+
     private $_navId;
-    
+
     /**
      * Setter method for the navId.
      *
@@ -400,7 +412,7 @@ class InjectItem extends Object implements InjectItemInterface
     {
         $this->_navId = $navId;
     }
-    
+
     /**
      * Getter method for the navId.
      *
@@ -411,9 +423,10 @@ class InjectItem extends Object implements InjectItemInterface
         if ($this->_navId === null) {
             $this->_navId = rand(10000, 1000000);
         }
+
         return $this->_navId;
     }
-    
+
     /**
      * Parse the injected item to an array.
      *
@@ -422,27 +435,27 @@ class InjectItem extends Object implements InjectItemInterface
     public function toArray()
     {
         return [
-            'id' => $this->getId(),
-            'nav_id' => $this->getNavId(),
-            'lang' => $this->getLang(),
-            'link' => $this->getLink(),
-            'title' => $this->title,
-            'title_tag' => $this->title,
-            'alias' => $this->getAlias(),
-            'description' => $this->description,
-            'keywords' => null,
-            'create_user_id' => $this->createUserId,
-            'update_user_id' => $this->updateUserId,
+            'id'               => $this->getId(),
+            'nav_id'           => $this->getNavId(),
+            'lang'             => $this->getLang(),
+            'link'             => $this->getLink(),
+            'title'            => $this->title,
+            'title_tag'        => $this->title,
+            'alias'            => $this->getAlias(),
+            'description'      => $this->description,
+            'keywords'         => null,
+            'create_user_id'   => $this->createUserId,
+            'update_user_id'   => $this->updateUserId,
             'timestamp_create' => $this->getTimestampCreate(),
             'timestamp_update' => $this->getTimestampUpdate(),
-            'is_home' => $this->getIsHome(),
-            'parent_nav_id' => $this->getParentNavId(),
-            'sort_index' => $this->sortIndex,
-            'is_hidden' => (bool) $this->isHidden,
-            'type' => $this->getType(),
-            'redirect' => $this->getRedirect(),
-            'container' => $this->getContainer(),
-            'depth' => $this->getDept(),
+            'is_home'          => $this->getIsHome(),
+            'parent_nav_id'    => $this->getParentNavId(),
+            'sort_index'       => $this->sortIndex,
+            'is_hidden'        => (bool) $this->isHidden,
+            'type'             => $this->getType(),
+            'redirect'         => $this->getRedirect(),
+            'container'        => $this->getContainer(),
+            'depth'            => $this->getDept(),
         ];
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 return [
     'kickstarter_success' => '<h1>Installazione effettuata!</h1>
     <p>Si, hai installato <i>LUYA</i> nel tuo Sistema. Puoi effettuare il login nell\'area di amministrazione per creare le tue pagine.</p>

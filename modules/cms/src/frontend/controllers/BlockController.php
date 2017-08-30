@@ -2,12 +2,12 @@
 
 namespace luya\cms\frontend\controllers;
 
-use Yii;
-use yii\helpers\Inflector;
-use yii\base\Exception;
-use luya\helpers\ObjectHelper;
 use luya\cms\models\Block;
 use luya\cms\models\NavItemPageBlockItem;
+use luya\helpers\ObjectHelper;
+use Yii;
+use yii\base\Exception;
+use yii\helpers\Inflector;
 
 /**
  * CMS Ajax-Block Controller Responder.
@@ -17,21 +17,21 @@ use luya\cms\models\NavItemPageBlockItem;
 class BlockController extends \cms\base\Controller
 {
     public $enableCsrfValidation = false;
-    
+
     public function actionIndex($callback, $id)
     {
         $model = NavItemPageBlockItem::findOne($id);
-        
+
         if (!$model) {
-            throw new Exception("Unable to find item id.");
+            throw new Exception('Unable to find item id.');
         }
-        
+
         $block = Block::objectId($model->block_id, $model->id, 'callback');
 
         if (!$block) {
-            throw new Exception("Unable to find block object.");
+            throw new Exception('Unable to find block object.');
         }
-        
+
         return ObjectHelper::callMethodSanitizeArguments($block, 'callback'.Inflector::id2camel($callback), Yii::$app->request->get());
     }
 }

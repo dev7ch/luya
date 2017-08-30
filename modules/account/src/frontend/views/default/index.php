@@ -1,6 +1,6 @@
 <h1>Login</h1>
 <?php $form = \yii\widgets\ActiveForm::begin([
-    'id' => 'login-form',
+    'id'      => 'login-form',
     'options' => ['class' => 'form-horizontal'],
 ]) ?>
 <?php echo $form->field($model, 'email') ?>
@@ -8,4 +8,4 @@
 
 <button type="submit">Submit</button>
 
-<?php \yii\widgets\ActiveForm::end();?>
+<?php \yii\widgets\ActiveForm::end(); ?>

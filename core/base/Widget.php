@@ -13,21 +13,23 @@ use yii\helpers\Inflector;
  * view files and the widget only contains logic informations like a capsulated controller without views.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class Widget extends \yii\base\Widget
 {
     /**
-     * @var boolean Whether to find view files inside the `@app/views` folder or the original widget implementation.
+     * @var bool Whether to find view files inside the `@app/views` folder or the original widget implementation.
      */
     public $useAppViewPath = false;
-    
+
     /**
      * Find view paths in application folder.
      *
-     * {@inheritDoc}
+     * {@inheritdoc}
      *
      * @see \yii\base\Widget::getViewPath()
+     *
      * @return string
      */
     public function getViewPath()
@@ -35,10 +37,10 @@ class Widget extends \yii\base\Widget
         if (!$this->useAppViewPath) {
             return parent::getViewPath();
         }
-        
+
         // get reflection
         $class = new ReflectionClass($this);
         // get path with alias
-        return '@app/views/widgets/' . Inflector::camel2id($class->getShortName());
+        return '@app/views/widgets/'.Inflector::camel2id($class->getShortName());
     }
 }

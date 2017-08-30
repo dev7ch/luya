@@ -3,7 +3,7 @@
 namespace luya\admin\base;
 
 /**
- * Filter Interface
+ * Filter Interface.
  *
  * @author Basil Suter <basil@nadar.io>
  */

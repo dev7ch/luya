@@ -2,13 +2,14 @@
 
 namespace luya\admin\ngrest\aw;
 
-use yii\base\Object;
 use luya\admin\helpers\Angular;
+use yii\base\Object;
 
 /**
- * ActiveWindow ActiveField Configration
+ * ActiveWindow ActiveField Configration.
  *
  * @since 1.0.0-beta7
+ *
  * @author Basil Sutert <basil@nadar.io>
  */
 class ActiveField extends Object
@@ -17,31 +18,32 @@ class ActiveField extends Object
      * @var \luya\admin\ngrest\aw\CallbackFormWidget The form widget object
      */
     public $form;
-    
+
     /**
      * @var string The attribute name of the field is isued as identifier to send the post data.
      */
     public $attribute;
-    
+
     /**
      * @var string Pre defined value of the option
      */
     public $value;
-    
+
     /**
-     * @var string|boolean A label which is used when no label is provided from class creation config
+     * @var string|bool A label which is used when no label is provided from class creation config
      */
     public $label = false;
-    
+
     protected $parts = [];
-    
+
     protected $element;
-    
+
     /**
      * Define a label for this field. If false, no label will be used, if a label is provided from the configration
      * object (form) this will be overritten by this method.
      *
      * @param string $label The label of the element
+     *
      * @return \admin\ngrest\aw\ActiveField
      */
     public function label($label)
@@ -51,19 +53,20 @@ class ActiveField extends Object
         } else {
             $this->parts['{label}'] = $label;
         }
-        
+
         return $this;
     }
-    
+
     protected function getNgModel()
     {
         return 'params.'.$this->attribute;
     }
-    
+
     /**
-     * Text input field
+     * Text input field.
      *
      * @param array $options Optional data for the text input array.
+     *
      * @return \luya\admin\ngrest\aw\ActiveField
      */
     public function textInput(array $options = [])
@@ -71,14 +74,15 @@ class ActiveField extends Object
         $this->element = Angular::text($this->getNgModel(), '{label}', [
             'fieldid' => $this->form->getFieldId($this->attribute),
         ]);
-        
+
         return $this;
     }
-    
+
     /**
-     * Passwword input field
+     * Passwword input field.
      *
      * @param array $options Optional data for the text input array.
+     *
      * @return \luya\admin\ngrest\aw\ActiveField
      */
     public function passwordInput(array $options = [])
@@ -86,14 +90,15 @@ class ActiveField extends Object
         $this->element = Angular::password($this->getNgModel(), '{label}', [
             'fieldid' => $this->form->getFieldId($this->attribute),
         ]);
-        
+
         return $this;
     }
-    
+
     /**
-     * Create text area
+     * Create text area.
      *
      * @param array $options Optional data for the textarea input
+     *
      * @return \luya\admin\ngrest\aw\ActiveField
      */
     public function textarea(array $options = [])
@@ -101,9 +106,10 @@ class ActiveField extends Object
         $this->element = Angular::textarea($this->getNgModel(), '{label}', [
             'fieldid' => $this->form->getFieldId($this->attribute),
         ]);
+
         return $this;
     }
-    
+
     /**
      * Render the template based on input values of $parts.
      *
@@ -114,18 +120,18 @@ class ActiveField extends Object
         if (empty($this->element)) {
             $this->textInput();
         }
-        
+
         if (!isset($this->parts['{label}'])) {
             $this->label($this->label);
         }
-    
+
         return str_replace([
             '{label}',
         ], [
             $this->parts['{label}'],
         ], $this->element);
     }
-    
+
     /**
      * When the element is directly forced to echo its output this method is called and the template will be
      * render with the `render()` method.

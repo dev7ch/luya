@@ -2,15 +2,16 @@
 
 namespace luya\admin\models;
 
-use Yii;
-use yii\helpers\Url;
 use luya\admin\Module;
+use Yii;
 use yii\base\Model;
+use yii\helpers\Url;
 
 /**
  * Admin Login Form Model.
  *
  * @property \luya\admin\models\User $user The user model.
+ *
  * @author Basil Suter <basil@nadar.io>
  */
 final class LoginForm extends Model
@@ -18,11 +19,11 @@ final class LoginForm extends Model
     private $_user = false;
 
     public $email;
-    
+
     public $password;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -34,12 +35,12 @@ final class LoginForm extends Model
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributeLabels()
     {
         return [
-            'email' => Module::t('model_loginform_email_label'),
+            'email'    => Module::t('model_loginform_email_label'),
             'password' => Module::t('model_loginform_password_label'),
         ];
     }
@@ -62,14 +63,14 @@ final class LoginForm extends Model
     /**
      * Send the secure token by mail.
      *
-     * @return boolean
+     * @return bool
      */
     public function sendSecureLogin()
     {
         $token = $this->getUser()->getAndStoreToken();
 
         Yii::$app->mail->compose(Module::t('login_securetoken_mail_subject'), Module::t('login_securetoken_mail', [
-            'url' => Url::base(true),
+            'url'   => Url::base(true),
             'token' => $token,
         ]))->address($this->user->email)->send();
 
@@ -80,17 +81,18 @@ final class LoginForm extends Model
      * Validate the secure token.
      *
      * @param string $token
-     * @param integer $userId
-     * @return boolean|\luya\admin\models\User
+     * @param int    $userId
+     *
+     * @return bool|\luya\admin\models\User
      */
     public function validateSecureToken($token, $userId)
     {
         $user = User::findOne($userId);
-        
+
         if (!$user) {
             return false;
         }
-        
+
         if ($user->secure_token == sha1($token)) {
             return $user;
         }
@@ -101,7 +103,7 @@ final class LoginForm extends Model
     /**
      * Login the current user if valid.
      *
-     * @return boolean|\luya\admin\models\User|boolean
+     * @return bool|\luya\admin\models\User|bool
      */
     public function login()
     {
@@ -115,10 +117,11 @@ final class LoginForm extends Model
 
             $login = new UserLogin([
                 'auth_token' => $user->auth_token,
-                'user_id' => $user->id,
+                'user_id'    => $user->id,
             ]);
             $login->save();
             UserOnline::refreshUser($user->id, 'login');
+
             return $user;
         } else {
             return false;
@@ -126,7 +129,7 @@ final class LoginForm extends Model
     }
 
     /**
-     * @return boolean|\luya\admin\models\User
+     * @return bool|\luya\admin\models\User
      */
     public function getUser()
     {

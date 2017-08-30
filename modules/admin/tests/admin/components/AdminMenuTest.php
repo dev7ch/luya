@@ -8,18 +8,17 @@ use luya\admin\components\AdminMenu;
 class AdminMenuTest extends AdminTestCase
 {
     /**
-     *
      * @return \luya\admin\components\AdminMenu
      */
     private function getAdminMenuComponent()
     {
-        return (new AdminMenu());
+        return new AdminMenu();
     }
-    
+
     public function testGetMenu()
     {
         $menu = $this->getAdminMenuComponent()->getMenu();
-     
+
         foreach ($menu as $item) {
             $this->assertArrayHasKey('id', $item);
             $this->assertArrayHasKey('moduleId', $item);
@@ -32,7 +31,7 @@ class AdminMenuTest extends AdminTestCase
             $this->assertArrayHasKey('searchModelClass', $item);
         }
     }
-    
+
     public function testGetNode()
     {
         $m = $this->getAdminMenuComponent();
@@ -49,18 +48,18 @@ class AdminMenuTest extends AdminTestCase
             $this->assertArrayHasKey('searchModelClass', $item);
         }
     }
-    
+
     public function testGetModules()
     {
         $m = $this->getAdminMenuComponent();
-        
+
         // As currently there is no user logged in an empty array will be returned. Means no permissions
         $this->assertSame([], $m->getModules());
-        
+
         // add tests for logged in users with permissions
         // todo
     }
-    
+
     public function testGetModuleItems()
     {
         $m = $this->getAdminMenuComponent();
@@ -68,30 +67,30 @@ class AdminMenuTest extends AdminTestCase
             $items = $m->getModuleItems($node['id']);
             // As currently there is no user logged in an empty array will be returned. Means no permissions
             $this->assertSame([], $items);
-            
+
             // add tests for logged in users with permissions
             // todo
         }
     }
-    
+
     public function testGetItems()
     {
         $m = $this->getAdminMenuComponent();
 
         // As currently there is no user logged in an empty array will be returned. Means no permissions
         $this->assertSame([], $m->getItems());
-        
+
         // add tests for logged in users with permissions
         // todo
     }
-    
+
     public function testApiDetail()
     {
         $m = $this->getAdminMenuComponent();
-        
+
         // As currently there is no user logged in an empty array will be returned. Means no permissions
         $this->assertFalse($m->getApiDetail('api-admin-user'));
-        
+
         // add tests for logged in users with permissions
         // todo
     }

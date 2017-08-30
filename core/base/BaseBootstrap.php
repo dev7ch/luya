@@ -9,6 +9,7 @@ use yii\base\BootstrapInterface;
  * Base class for luya bootsrapping proccess.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 abstract class BaseBootstrap implements BootstrapInterface
@@ -28,12 +29,12 @@ abstract class BaseBootstrap implements BootstrapInterface
     {
         // add trace
         Yii::beginProfile('LUYA Boostrap process profiling', __METHOD__);
-        
+
         $this->extractModules($app);
         $this->beforeRun($app);
         $this->registerComponents($app);
         $this->run($app);
-        
+
         // end trace
         Yii::trace('End of the LUYA bootstraping process', __METHOD__);
         Yii::endProfile('LUYA Boostrap process profiling');
@@ -66,6 +67,7 @@ abstract class BaseBootstrap implements BootstrapInterface
      * Check if a Module exists in the module list `getModules()`.
      *
      * @param string $module The name of the Module
+     *
      * @return bool
      */
     public function hasModule($module)
@@ -97,7 +99,7 @@ abstract class BaseBootstrap implements BootstrapInterface
             // see if the module has a registerComponents method
             foreach ($module->registerComponents() as $componentId => $definition) {
                 if (!$app->has($componentId)) {
-                    Yii::trace('Register component ' . $componentId, __METHOD__);
+                    Yii::trace('Register component '.$componentId, __METHOD__);
                     $app->set($componentId, $definition);
                 }
             }

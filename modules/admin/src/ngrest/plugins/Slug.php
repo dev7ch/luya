@@ -15,7 +15,7 @@ use luya\admin\ngrest\base\Plugin;
 class Slug extends Plugin
 {
     /**
-     * @var integer Html field placeholder
+     * @var int Html field placeholder
      */
     public $placeholder;
 

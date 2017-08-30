@@ -2,13 +2,13 @@
 
 namespace luya\cms\frontend\blocks;
 
-use Yii;
-use luya\cms\frontend\Module;
-use luya\TagParser;
-use luya\cms\frontend\blockgroups\MediaGroup;
-use luya\cms\helpers\BlockHelper;
 use luya\cms\base\PhpBlock;
+use luya\cms\frontend\blockgroups\MediaGroup;
+use luya\cms\frontend\Module;
+use luya\cms\helpers\BlockHelper;
+use luya\TagParser;
 use luya\web\ExternalLink;
+use Yii;
 
 /**
  * Image Block.
@@ -18,25 +18,25 @@ use luya\web\ExternalLink;
 final class ImageBlock extends PhpBlock
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $module = 'cms';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $cacheEnabled = true;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function name()
     {
         return Module::t('block_image_name');
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function blockGroup()
     {
@@ -44,7 +44,7 @@ final class ImageBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function icon()
     {
@@ -52,7 +52,7 @@ final class ImageBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function config()
     {
@@ -90,50 +90,50 @@ final class ImageBlock extends PhpBlock
             return TagParser::convertWithMarkdown($text);
         }
 
-        return empty($text) ? null : '<p>' . nl2br($text) . '</p>';
+        return empty($text) ? null : '<p>'.nl2br($text).'</p>';
     }
-    
+
     /**
      * Get the Link Object.
      *
      * Linkable resources must implement {{luya\web\LinkInterface}}.
      *
-     * @return \luya\web\ExternalLink|\luya\cms\menu\Item|boolean
+     * @return \luya\web\ExternalLink|\luya\cms\menu\Item|bool
      */
     public function getLinkObject()
     {
         if ($this->getCfgValue('externalLink', false)) {
             return new ExternalLink(['href' => $this->getCfgValue('externalLink', false)]);
         }
-        
+
         if ($this->getCfgValue('internalLink', false)) {
             return Yii::$app->menu->find()->where(['nav_id' => $this->getCfgValue('internalLink')])->one();
         }
-        
+
         return false;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function extraVars()
     {
         return [
-            'image' => BlockHelper::imageUpload($this->getVarValue('imageId')),
+            'image'      => BlockHelper::imageUpload($this->getVarValue('imageId')),
             'imageAdmin' => BlockHelper::imageUpload($this->getVarValue('imageId', 'medium-thumbnail')),
-            'text' => $this->getText(),
-            'link' => $this->getLinkObject(),
+            'text'       => $this->getText(),
+            'link'       => $this->getLinkObject(),
         ];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function admin()
     {
         $image = '{% if extras.imageAdmin.source %}<p><img src="{{extras.imageAdmin.source}}"{% if cfgs.width %} width="{{cfgs.width}}"{% endif %}{% if cfgs.height %} height="{{cfgs.height}}"{% endif %} border="0" style="max-width: 100%;"></p>';
-        $image.= '{% else %}<span class="block__empty-text">' . Module::t('block_image_no_image') . '</span>{% endif %}';
-        $image.= '{% if vars.caption is not empty %}{{extras.text}}{% endif %}';
+        $image .= '{% else %}<span class="block__empty-text">'.Module::t('block_image_no_image').'</span>{% endif %}';
+        $image .= '{% if vars.caption is not empty %}{{extras.text}}{% endif %}';
 
         return $image;
     }

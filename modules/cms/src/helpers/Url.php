@@ -2,8 +2,8 @@
 
 namespace luya\cms\helpers;
 
-use Yii;
 use luya\cms\Exception;
+use Yii;
 
 /**
  * CMS Url Helper class extends luya\helpers\Url by CMS routing methods.
@@ -13,6 +13,7 @@ use luya\cms\Exception;
  * your project application.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class Url extends \luya\helpers\Url
@@ -61,17 +62,20 @@ class Url extends \luya\helpers\Url
      * ```
      *
      *
-     * @param string $moduleName The ID of the module, which should be found inside the nav items.
-     * @param string|array $route The route of the module `module/controller/action` or an array like in Url::to with param infos `['/module/controller/action', 'foo' => 'bar']`.
-     * @param array  $params The parameters for the url rule. If the route is provided as an array with params the further defined params or overwritten by the array_merge process.
+     * @param string       $moduleName The ID of the module, which should be found inside the nav items.
+     * @param string|array $route      The route of the module `module/controller/action` or an array like in Url::to with param infos `['/module/controller/action', 'foo' => 'bar']`.
+     * @param array        $params     The parameters for the url rule. If the route is provided as an array with params the further defined params or overwritten by the array_merge process.
+     *
      * @throws Exception
+     *
      * @return string
+     *
      * @see \luya\helpers\Url::toModule()
      */
     public static function toModuleRoute($moduleName, $route, array $params = [])
     {
         $item = Yii::$app->menu->find()->where(['module_name' => $moduleName])->with(['hidden'])->one();
-        
+
         if ($item) {
             return static::toMenuItem($item->id, $route, $params);
         }
@@ -82,9 +86,9 @@ class Url extends \luya\helpers\Url
     /**
      * create an url based on a context nav item informaiton inside the urlManager.
      *
-     * @param integer $navItemId The menu item Id where the url should be created from
-     * @param string|array $route Can be a string `module/controller/action` or an array like in the Yii Url helpers::to methods `['/module/controller/action', 'param' => 'bar]`.
-     * @param array $params An array with params which are going to be attached to the route.
+     * @param int          $navItemId The menu item Id where the url should be created from
+     * @param string|array $route     Can be a string `module/controller/action` or an array like in the Yii Url helpers::to methods `['/module/controller/action', 'param' => 'bar]`.
+     * @param array        $params    An array with params which are going to be attached to the route.
      *
      * @return string
      */

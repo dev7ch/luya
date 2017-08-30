@@ -2,12 +2,12 @@
 
 namespace luya\cms\admin\apis;
 
-use Yii;
-use luya\helpers\ArrayHelper;
-use luya\cms\admin\helpers\MenuHelper;
-use yii\db\Query;
 use luya\admin\models\Group;
+use luya\cms\admin\helpers\MenuHelper;
 use luya\cms\models\NavContainer;
+use luya\helpers\ArrayHelper;
+use Yii;
+use yii\db\Query;
 
 /**
  * Menu Api provides commont tasks to retrieve cmsadmin menu data and cms group permissions setting tasks.
@@ -19,10 +19,10 @@ class MenuController extends \luya\admin\base\RestController
     public function actionDataMenu()
     {
         return [
-            'items' => ArrayHelper::typeCast(MenuHelper::getItems()),
-            'drafts' => ArrayHelper::typeCast(MenuHelper::getDrafts()),
+            'items'      => ArrayHelper::typeCast(MenuHelper::getItems()),
+            'drafts'     => ArrayHelper::typeCast(MenuHelper::getDrafts()),
             'containers' => ArrayHelper::typeCast(MenuHelper::getContainers()),
-            'hiddenCats' => ArrayHelper::typeCast(Yii::$app->adminuser->identity->setting->get("togglecat", [])),
+            'hiddenCats' => ArrayHelper::typeCast(Yii::$app->adminuser->identity->setting->get('togglecat', [])),
         ];
     }
 
@@ -39,14 +39,14 @@ class MenuController extends \luya\admin\base\RestController
 
             $data['containers'][] = [
                 'containerInfo' => $container,
-                'items' => isset(self::$_permissionItemData[$container->id]) ? self::$_permissionItemData[$container->id] : [],
+                'items'         => isset(self::$_permissionItemData[$container->id]) ? self::$_permissionItemData[$container->id] : [],
             ];
         }
         // collect group informations
         foreach ($this->getGroups() as $group) {
             $data['groups'][] = [
-                'name' => $group->name,
-                'id' => $group->id,
+                'name'           => $group->name,
+                'id'             => $group->id,
                 'fullPermission' => $this->groupHasFullPermission($group),
             ];
         }
@@ -56,7 +56,7 @@ class MenuController extends \luya\admin\base\RestController
 
     private function groupHasFullPermission(Group $group)
     {
-        $count = (new Query())->select("*")->from("cms_nav_permission")->where(['group_id' => $group->id])->count();
+        $count = (new Query())->select('*')->from('cms_nav_permission')->where(['group_id' => $group->id])->count();
 
         if ($count > 0) {
             return false;
@@ -102,12 +102,12 @@ class MenuController extends \luya\admin\base\RestController
                 }
 
                 $array['groups'][$key] = [
-                    'id' => $group->id,
+                    'id'                           => $group->id,
                     'isGroupPermissionInheritNode' => $nav->isGroupPermissionInheritNode($group),
-                    'hasGroupPermission' => $nav->hasGroupPermission($group),
-                    'isInheritedFromParent' => $isInheritedFromParent,
-                    'permissionCheckbox' => $nav->hasGroupPermissionSelected($group),
-                    'groupFullPermission' => $this->groupHasFullPermission($group),
+                    'hasGroupPermission'           => $nav->hasGroupPermission($group),
+                    'isInheritedFromParent'        => $isInheritedFromParent,
+                    'permissionCheckbox'           => $nav->hasGroupPermissionSelected($group),
+                    'groupFullPermission'          => $this->groupHasFullPermission($group),
                 ];
             }
 
@@ -115,7 +115,7 @@ class MenuController extends \luya\admin\base\RestController
 
             self::$_permissionItemData[$container->id][] = $array;
 
-            $this->getItems($container, $nav->id, $array['groups'], $index+1);
+            $this->getItems($container, $nav->id, $array['groups'], $index + 1);
 
             //$data[] = $array;
         }
@@ -149,7 +149,7 @@ class MenuController extends \luya\admin\base\RestController
         $groupId = Yii::$app->request->getBodyParam('groupId');
 
         if (!empty($navId) && !empty($groupId)) {
-            $one = (new Query())->select("*")->from("cms_nav_permission")->where(['group_id' => $groupId, 'nav_id' => $navId])->one();
+            $one = (new Query())->select('*')->from('cms_nav_permission')->where(['group_id' => $groupId, 'nav_id' => $navId])->one();
 
             if ($one) {
                 Yii::$app->db->createCommand()->delete('cms_nav_permission', ['group_id' => $groupId, 'nav_id' => $navId])->execute();
@@ -165,7 +165,7 @@ class MenuController extends \luya\admin\base\RestController
         $groupId = Yii::$app->request->getBodyParam('groupId');
 
         if (!empty($navId) && !empty($groupId)) {
-            $one = (new Query())->select("*")->from("cms_nav_permission")->where(['group_id' => $groupId, 'nav_id' => $navId])->one();
+            $one = (new Query())->select('*')->from('cms_nav_permission')->where(['group_id' => $groupId, 'nav_id' => $navId])->one();
 
             if ($one) {
                 Yii::$app->db->createCommand()->delete('cms_nav_permission', ['group_id' => $groupId, 'nav_id' => $navId])->execute();

@@ -2,9 +2,9 @@
 
 namespace luya\cms\frontend\blocks;
 
-use luya\cms\frontend\Module;
-use luya\cms\frontend\blockgroups\DevelopmentGroup;
 use luya\cms\base\PhpBlock;
+use luya\cms\frontend\blockgroups\DevelopmentGroup;
+use luya\cms\frontend\Module;
 
 /**
  * Development Block in order to print data.
@@ -14,20 +14,20 @@ use luya\cms\base\PhpBlock;
 final class DevBlock extends PhpBlock
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $module = 'cms';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function blockGroup()
     {
         return DevelopmentGroup::className();
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function name()
     {
@@ -35,7 +35,7 @@ final class DevBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function icon()
     {
@@ -43,7 +43,7 @@ final class DevBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function config()
     {
@@ -51,15 +51,15 @@ final class DevBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function admin()
     {
-        return '<p>' . Module::t('block_dev_name') . '</p>';
+        return '<p>'.Module::t('block_dev_name').'</p>';
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getIsDirtyDialogEnabled()
     {

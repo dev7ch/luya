@@ -2,14 +2,13 @@
 
 namespace luya\admin\ngrest\plugins;
 
-;
-use yii\db\ActiveRecordInterface;
 use luya\helpers\ArrayHelper;
 use luya\helpers\StringHelper;
 use yii\db\ActiveQuery;
+use yii\db\ActiveRecordInterface;
 
 /**
- * DropDown Select
+ * DropDown Select.
  *
  * Create a selection dropdown based on an ActiveRecord Model.
  *
@@ -44,10 +43,10 @@ class SelectModel extends Select
 {
     /**
      * @var string The className of the ActiveRecord or NgRestModel in order to build the ActiveQuery find methods. This is the Model with the related data
-     * where the value from the field where you register the plugin with the field {{luya\admin\ngrest\plugins::$valueField}} value.
+     *             where the value from the field where you register the plugin with the field {{luya\admin\ngrest\plugins::$valueField}} value.
      */
     public $modelClass;
-    
+
     /**
      * @var string|array|callable An array or string to select the data from, this data will be returned in the select overview.
      *
@@ -66,9 +65,9 @@ class SelectModel extends Select
      * ```
      */
     public $labelField;
-    
+
     /**
-     * @var boolean|string If enabled you can defined how the placed variables should be strucutred. For example in combination with array labels:
+     * @var bool|string If enabled you can defined how the placed variables should be strucutred. For example in combination with array labels:
      *
      * An example of how to use the template with multiple fields:
      *
@@ -80,9 +79,9 @@ class SelectModel extends Select
      * The above example woudl print `John Doe (john@example.com)`.
      */
     public $labelTemplate;
- 
+
     /**
-     * @var boolean|array An array with where conditions to provide for the active query. The value will be used like this in the conditions:
+     * @var bool|array An array with where conditions to provide for the active query. The value will be used like this in the conditions:
      *
      * ```php
      * $data = $modelClass::find()->where($where)->all();
@@ -95,14 +94,15 @@ class SelectModel extends Select
      * ```
      */
     public $where;
-    
+
     private static $_dataInstance = [];
 
     /**
      * Data DI Container for relation data.
      *
-     * @param string $class
+     * @param string       $class
      * @param string|array $where
+     *
      * @return mixed
      */
     private static function getDataInstance(ActiveQuery $query)
@@ -112,21 +112,21 @@ class SelectModel extends Select
             $queryData = $query->all();
             static::$_dataInstance[$class] = $queryData;
         }
-        
+
         return static::$_dataInstance[$class];
     }
-    
+
     /**
-     * Flush Instances
+     * Flush Instances.
      */
     private static function flushDataInstances()
     {
         static::$_dataInstance = [];
     }
-    
+
     /**
-     *
      * @param ActiveRecordInterface $model
+     *
      * @return mixed|unknown
      */
     private function generateLabelField(ActiveRecordInterface $model)
@@ -138,29 +138,29 @@ class SelectModel extends Select
         if ($this->labelField === null) {
             $this->labelField = $model->attributes();
         }
-        
+
         $defintion = (array) $this->labelField;
-        
+
         $values = [];
         foreach ($defintion as $field) {
             $data = $model->$field;
-            
+
             if (is_array($data)) {
                 $data = reset($data);
             }
-            
+
             $values[] = $data;
         }
-         
+
         if ($this->labelTemplate) {
             return vsprintf($this->labelTemplate, $values);
         }
-        
-        return implode(" ", $values);
+
+        return implode(' ', $values);
     }
-    
+
     private $_valueField;
-    
+
     /**
      * Getter Method for valueField.
      *
@@ -172,32 +172,32 @@ class SelectModel extends Select
     {
         if ($this->_valueField === null) {
             $class = $this->modelClass;
-            $this->_valueField = implode("", $class::primaryKey());
+            $this->_valueField = implode('', $class::primaryKey());
         }
-        
+
         return $this->_valueField;
     }
-    
+
     /**
      * Setter method for valueField.
      *
      * @param string $value The field name which should represent the value of the data array. This value will be stored in the database and is mostly the primary key
-     * of the $modelClass Model.
+     *                      of the $modelClass Model.
      */
     public function setValueField($value)
     {
         $this->_valueField = $value;
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getData()
     {
         $data = [];
-        
+
         $class = $this->modelClass;
-        
+
         $query = $class::find();
         if ($this->where) {
             $query->where($this->where);
@@ -205,21 +205,21 @@ class SelectModel extends Select
         if (is_array($this->labelField)) {
             $query->select(array_merge($this->labelField, [$this->valueField]));
         }
-        
+
         foreach (static::getDataInstance($query) as $item) {
             $data[] = [
                 'value' => StringHelper::typeCast($item->{$this->valueField}),
                 'label' => $this->generateLabelField($item),
             ];
         }
-        
+
         ArrayHelper::multisort($data, 'label');
-        
+
         return $data;
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderCreate($id, $ngModel)
     {
@@ -228,9 +228,9 @@ class SelectModel extends Select
             $this->createFormTag('zaa-select', $id, $ngModel, ['initvalue' => $this->initValue, 'options' => $this->getServiceName('selectdata')]),
         ];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function onAfterListFind($event)
     {
@@ -240,9 +240,9 @@ class SelectModel extends Select
             return parent::onAfterListFind($event);
         }
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __destruct()
     {

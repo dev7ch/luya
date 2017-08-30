@@ -2,8 +2,8 @@
 
 namespace luya\admin\ngrest\plugins;
 
-use Yii;
 use luya\admin\ngrest\base\Plugin;
+use Yii;
 
 /**
  * Create ability to select a CMS page.

@@ -2,19 +2,19 @@
 
 namespace luya\admin\models;
 
-use luya\admin\ngrest\base\NgRestModel;
 use luya\admin\Module;
+use luya\admin\ngrest\base\NgRestModel;
 
 /**
  * This is the model class for table "admin_tag".
  *
- * @property integer $id
+ * @property int $id
  * @property string $name
  */
 final class Tag extends NgRestModel
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -22,7 +22,7 @@ final class Tag extends NgRestModel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -31,9 +31,9 @@ final class Tag extends NgRestModel
             [['name'], 'unique'],
         ];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributeLabels()
     {
@@ -41,9 +41,9 @@ final class Tag extends NgRestModel
             'name' => Module::t('model_tag_name'),
         ];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function genericSearchFields()
     {
@@ -51,7 +51,7 @@ final class Tag extends NgRestModel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function ngRestApiEndpoint()
     {
@@ -59,7 +59,7 @@ final class Tag extends NgRestModel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function ngRestAttributeTypes()
     {
@@ -67,9 +67,9 @@ final class Tag extends NgRestModel
             'name' => 'text',
         ];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function ngRestConfig($config)
     {
@@ -82,18 +82,20 @@ final class Tag extends NgRestModel
      * Get all primary key assigned tags for a table name.
      *
      * @param string $tableName
-     * @param integer $pkId
+     * @param int    $pkId
+     *
      * @return \yii\db\ActiveRecord
      */
     public static function findRelations($tableName, $pkId)
     {
         return self::find()->innerJoin(TagRelation::tableName(), 'admin_tag_relation.tag_id=admin_tag.id')->where(['pk_id' => $pkId, 'table_name' => $tableName])->indexBy('name')->all();
     }
-    
+
     /**
      * Get all assigned tags for table name.
      *
      * @param string $tableName
+     *
      * @return \yii\db\ActiveRecord
      */
     public static function findRelationsTable($tableName)

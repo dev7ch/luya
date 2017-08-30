@@ -11,6 +11,6 @@ class LuyaConsoleTestCase extends ConsoleApplicationTestCase
 {
     public function getConfigArray()
     {
-        return include(__DIR__ .'/data/configs/console.php');
+        return include __DIR__.'/data/configs/console.php';
     }
 }

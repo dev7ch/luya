@@ -2,29 +2,29 @@
 
 namespace luya\cms\frontend\blocks;
 
-use luya\cms\frontend\Module;
-use luya\cms\frontend\blockgroups\MediaGroup;
 use luya\cms\base\PhpBlock;
+use luya\cms\frontend\blockgroups\MediaGroup;
+use luya\cms\frontend\Module;
 
 /**
- * Audio Block for Soundcloude Service
+ * Audio Block for Soundcloude Service.
  *
  * @author Basil Suter <basil@nadar.io>
  */
 final class AudioBlock extends PhpBlock
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $module = 'cms';
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $cacheEnabled = true;
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function name()
     {
@@ -32,15 +32,15 @@ final class AudioBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function blockGroup()
     {
         return MediaGroup::class;
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function icon()
     {
@@ -48,7 +48,7 @@ final class AudioBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function config()
     {
@@ -60,7 +60,7 @@ final class AudioBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getFieldHelp()
     {
@@ -70,7 +70,7 @@ final class AudioBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function admin()
     {

@@ -11,12 +11,12 @@ class ProjectGroup extends BlockGroup
     {
         return 'project-group';
     }
-    
+
     public function label()
     {
         return Module::t('block_group_project_elements');
     }
-    
+
     public function getPosition()
     {
         return 64;

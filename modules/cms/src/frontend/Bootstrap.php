@@ -2,18 +2,18 @@
 
 namespace luya\cms\frontend;
 
-use Yii;
-use yii\base\BootstrapInterface;
-use yii\web\HttpException;
-use luya\web\ErrorHandlerExceptionRenderEvent;
 use luya\cms\models\Config;
 use luya\web\Application;
 use luya\web\ErrorHandler;
+use luya\web\ErrorHandlerExceptionRenderEvent;
+use Yii;
+use yii\base\BootstrapInterface;
+use yii\web\HttpException;
 
 final class Bootstrap implements BootstrapInterface
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function bootstrap($app)
     {
@@ -25,7 +25,7 @@ final class Bootstrap implements BootstrapInterface
                 ]);
             }
         });
-    
+
         Yii::$app->errorHandler->on(ErrorHandler::EVENT_BEFORE_EXCEPTION_RENDER, function (ErrorHandlerExceptionRenderEvent $event) {
             if ($event->exception instanceof HttpException && !YII_DEBUG) {
                 // see whether a config value exists
