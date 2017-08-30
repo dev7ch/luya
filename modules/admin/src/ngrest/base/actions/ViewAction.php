@@ -2,8 +2,8 @@
 
 namespace luya\admin\ngrest\base\actions;
 
-use Yii;
 use luya\admin\models\UserOnline;
+use Yii;
 
 /**
  * IndexAction for REST implementation.
@@ -19,15 +19,15 @@ class ViewAction extends \yii\rest\ViewAction
     public function run($id)
     {
         $result = parent::run($id);
-        
+
         $modelClass = $this->modelClass;
 
         $table = $modelClass::tableName();
-        
+
         $alias = Yii::$app->adminmenu->getApiDetail($modelClass::ngRestApiEndpoint());
-        
+
         UserOnline::lock(Yii::$app->adminuser->id, $table, $id, 'lock_admin_edit_crud_item', ['table' => $alias['alias'], 'id' => $id, 'module' => $alias['module']['alias']]);
-        
+
         return $result;
     }
 }

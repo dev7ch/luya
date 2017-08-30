@@ -10,6 +10,7 @@ use luya\console\Importer;
  * Import Storage Filters.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class FilterImporter extends Importer
@@ -32,8 +33,8 @@ class FilterImporter extends Importer
     public function run()
     {
         $this->refresh('thumbnail', [
-            'name' => 'Thumbnail',
-            'imagine_name' => 'thumbnail',
+            'name'                => 'Thumbnail',
+            'imagine_name'        => 'thumbnail',
             'imagine_json_params' => json_encode(['vars' => [
                 ['var' => 'width', 'label' => 'Breit in Pixel'],
                 ['var' => 'height', 'label' => 'Hoehe in Pixel'],
@@ -41,10 +42,10 @@ class FilterImporter extends Importer
                 ['var' => 'saveOptions', 'label' => 'save options'],
             ]]),
         ]);
-        
+
         $this->refresh('crop', [
-            'name' => 'Crop',
-            'imagine_name' => 'crop',
+            'name'                => 'Crop',
+            'imagine_name'        => 'crop',
             'imagine_json_params' => json_encode(['vars' => [
                 ['var' => 'width', 'label' => 'Breit in Pixel'],
                 ['var' => 'height', 'label' => 'Hoehe in Pixel'],
@@ -53,7 +54,7 @@ class FilterImporter extends Importer
         ]);
 
         $list = [];
-        
+
         foreach ($this->getImporter()->getDirectoryFiles('filters') as $file) {
             $filterClassName = $file['ns'];
             if (class_exists($filterClassName)) {
@@ -66,9 +67,9 @@ class FilterImporter extends Importer
                 }
             }
         }
-        
+
         foreach (StorageFilter::find()->where(['not in', 'identifier', $list])->all() as $filter) {
-            $this->addLog('Remove image filter identifier: ' . $filter->identifier);
+            $this->addLog('Remove image filter identifier: '.$filter->identifier);
             $filter->delete();
         }
     }

@@ -2,26 +2,26 @@
 
 namespace luya\gallery\admin;
 
-use Yii;
 use luya\admin\components\AdminMenuBuilder;
+use Yii;
 
 final class Module extends \luya\admin\base\Module
 {
     public $apis = [
         'api-gallery-album' => 'luya\gallery\admin\apis\AlbumController',
-        'api-gallery-cat' => 'luya\gallery\admin\apis\CatController',
+        'api-gallery-cat'   => 'luya\gallery\admin\apis\CatController',
     ];
 
     public $translations = [
         [
-            'prefix' => 'galleryadmin*',
+            'prefix'   => 'galleryadmin*',
             'basePath' => '@galleryadmin/messages',
-            'fileMap' => [
+            'fileMap'  => [
                 'galleryadmin' => 'galleryadmin.php',
             ],
         ],
     ];
-    
+
     public function getMenu()
     {
         return (new AdminMenuBuilder($this))->node('gallery', 'photo_album')

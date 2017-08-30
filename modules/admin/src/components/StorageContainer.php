@@ -2,22 +2,22 @@
 
 namespace luya\admin\components;
 
-use Yii;
-use yii\db\Query;
-use yii\helpers\Inflector;
-use yii\base\Component;
+use luya\admin\filters\MediumThumbnail;
+use luya\admin\filters\TinyCrop;
+use luya\admin\helpers\Storage;
+use luya\admin\models\StorageFile;
+use luya\admin\models\StorageFilter;
+use luya\admin\models\StorageFolder;
+use luya\admin\models\StorageImage;
 use luya\Exception;
 use luya\helpers\FileHelper;
 use luya\helpers\Url;
-use luya\admin\helpers\Storage;
-use luya\admin\models\StorageFile;
-use luya\admin\models\StorageImage;
-use luya\admin\models\StorageFilter;
-use luya\admin\models\StorageFolder;
 use luya\traits\CacheableTrait;
 use luya\web\Request;
-use luya\admin\filters\TinyCrop;
-use luya\admin\filters\MediumThumbnail;
+use Yii;
+use yii\base\Component;
+use yii\db\Query;
+use yii\helpers\Inflector;
 
 /**
  * Storage Container for reading, saving and holding files.
@@ -98,7 +98,7 @@ use luya\admin\filters\MediumThumbnail;
 class StorageContainer extends Component
 {
     use CacheableTrait;
-    
+
     /**
      * @var array The mime types
      */
@@ -127,42 +127,42 @@ class StorageContainer extends Component
         'text/plain',
         'application/x-spss',
     ];
-    
+
     /**
      * @var \luya\web\Request Request object resolved by the Dependency Injector.
      */
     public $request;
-    
+
     private $_fileCacheKey = 'storage_fileCacheKey';
-    
+
     private $_imageCacheKey = 'storage_imageCacheKey';
-    
+
     private $_folderCacheKey = 'storage_folderCacheKey';
-    
+
     private $_filterCacheKey = 'storage_filterCacheKey';
-    
+
     /**
-     * @var boolean When enabled the storage component will try to recreated missing images when `getSource()` of an
-     * image is called but the `getFileExists()` does return false, which means that the source file has been deleted.
-     * So in those cases the storage component will automatiaccly try to recreated this image based on the filterId and
-     * fileId.
+     * @var bool When enabled the storage component will try to recreated missing images when `getSource()` of an
+     *           image is called but the `getFileExists()` does return false, which means that the source file has been deleted.
+     *           So in those cases the storage component will automatiaccly try to recreated this image based on the filterId and
+     *           fileId.
      */
     public $autoFixMissingImageSources = true;
-    
+
     /**
-     * Consturctor resolveds Request component from DI container
+     * Consturctor resolveds Request component from DI container.
      *
      * @param \luya\web\Request $request The request component class resolved by the Dependency Injector.
-     * @param array $config
+     * @param array             $config
      */
     public function __construct(Request $request, array $config = [])
     {
         $this->request = $request;
         parent::__construct($config);
     }
-    
+
     private $_httpPath;
-    
+
     /**
      * Setter for the http path in order to read online storage files.
      *
@@ -185,7 +185,7 @@ class StorageContainer extends Component
     {
         $this->_httpPath = $path;
     }
-    
+
     /**
      * Get the base path to the storage directory.
      *
@@ -194,14 +194,14 @@ class StorageContainer extends Component
     public function getHttpPath()
     {
         if ($this->_httpPath === null) {
-            $this->_httpPath = $this->request->baseUrl . '/storage';
+            $this->_httpPath = $this->request->baseUrl.'/storage';
         }
-        
+
         return $this->_httpPath;
     }
-    
+
     private $_absoluteHttpPath;
-    
+
     /**
      * Setter fro the absolute http path in order to read from another storage source.
      *
@@ -224,24 +224,25 @@ class StorageContainer extends Component
     {
         $this->_absoluteHttpPath = $path;
     }
-    
+
     /**
      * Get the base absolute base path to the storage directory.
      *
      * @return string Get the absolute http path to the storage folder if nothing is provided by the setter method `setAbsoluteHttpPath()`.
+     *
      * @since 1.0.0-beta7
      */
     public function getAbsoluteHttpPath()
     {
         if ($this->_absoluteHttpPath === null) {
-            $this->_absoluteHttpPath = Url::base(true) . '/storage';
+            $this->_absoluteHttpPath = Url::base(true).'/storage';
         }
 
         return $this->_absoluteHttpPath;
     }
-    
+
     private $_serverPath;
-    
+
     /**
      * Get the internal server path to the storage folder.
      *
@@ -252,14 +253,14 @@ class StorageContainer extends Component
     public function getServerPath()
     {
         if ($this->_serverPath === null) {
-            $this->_serverPath = Yii::getAlias('@webroot') . '/storage';
+            $this->_serverPath = Yii::getAlias('@webroot').'/storage';
         }
-        
+
         return $this->_serverPath;
     }
-    
+
     /**
-     * Setter method for $serverPath
+     * Setter method for $serverPath.
      *
      * The input path will be auomatically wrapped trough {{Yii::getAlias}}.
      *
@@ -269,9 +270,9 @@ class StorageContainer extends Component
     {
         $this->_serverPath = Yii::getAlias($path);
     }
-    
+
     private $_filesArray;
-    
+
     /**
      * Get all storage files as an array from database.
      *
@@ -284,23 +285,24 @@ class StorageContainer extends Component
         if ($this->_filesArray === null) {
             $this->_filesArray = $this->getQueryCacheHelper((new Query())->from('admin_storage_file')->select(['id', 'is_hidden', 'is_deleted', 'folder_id', 'name_original', 'name_new', 'name_new_compound', 'mime_type', 'extension', 'hash_name', 'hash_file', 'upload_timestamp', 'file_size', 'upload_user_id', 'caption'])->indexBy('id'), $this->_fileCacheKey);
         }
-        
+
         return $this->_filesArray;
     }
-    
+
     /**
      * Get a single file by file id from the files array.
      *
-     * @param integer $fileId The file id to find.
-     * @return boolean|array The file array or false if not found.
+     * @param int $fileId The file id to find.
+     *
+     * @return bool|array The file array or false if not found.
      */
     public function getFilesArrayItem($fileId)
     {
         return (isset($this->filesArray[$fileId])) ? $this->filesArray[$fileId] : false;
     }
-    
+
     private $_imagesArray;
-    
+
     /**
      * Get all storage images as an array from database.
      *
@@ -313,21 +315,22 @@ class StorageContainer extends Component
         if ($this->_imagesArray === null) {
             $this->_imagesArray = $this->getQueryCacheHelper((new Query())->from('admin_storage_image')->select(['id', 'file_id', 'filter_id', 'resolution_width', 'resolution_height'])->indexBy('id'), $this->_imageCacheKey);
         }
-        
+
         return $this->_imagesArray;
     }
-    
+
     /**
      * Get a single image by image id from the files array.
      *
-     * @param integer $imageId The image id to find.
-     * @return boolean|array The image array or false if not found.
+     * @param int $imageId The image id to find.
+     *
+     * @return bool|array The image array or false if not found.
      */
     public function getImagesArrayItem($imageId)
     {
         return (isset($this->imagesArray[$imageId])) ? $this->imagesArray[$imageId] : false;
     }
-    
+
     /**
      * Get an array with all files based on a where condition.
      *
@@ -336,13 +339,14 @@ class StorageContainer extends Component
      * See {{\luya\admin\storage\QueryTrait::where}} for condition informations.
      *
      * @param array $args An array with conditions to match e.g. `['is_hidden' => 1, 'is_deleted' => 0]`.
+     *
      * @return \luya\admin\file\Iterator An iterator object containing all files found for the condition provided.
      */
     public function findFiles(array $args = [])
     {
         return (new \luya\admin\file\Query())->where($args)->all();
     }
-    
+
     /**
      * Get a single file based on a where condition.
      *
@@ -351,20 +355,22 @@ class StorageContainer extends Component
      * See {{\luya\admin\storage\QueryTrait::where}} for condition informations.
      *
      * @param array $args An array with conditions to match e.g. `['is_hidden' => 1, 'is_deleted' => 0]`.
+     *
      * @return \luya\admin\file\Item The file item object.
      */
     public function findFile(array $args)
     {
         return (new \luya\admin\file\Query())->where($args)->one();
     }
-    
+
     /**
      * Get a single file based on the the ID.
      *
      * If not found false is returned.
      *
-     * @param integer $fileId The requested storage file id.
-     * @return \luya\admin\file\Item|boolean The file object or false if not found.
+     * @param int $fileId The requested storage file id.
+     *
+     * @return \luya\admin\file\Item|bool The file object or false if not found.
      */
     public function getFile($fileId)
     {
@@ -386,45 +392,47 @@ class StorageContainer extends Component
      * ```
      *
      * @param string $fileSource Path to the file source where the file should be created from
-     * @param string $fileName The name of this file (must contain data type suffix).
-     * @param integer $folderId The id of the folder where the file should be stored in.
-     * @param boolean $isHidden Should the file visible in the filemanager or not.
-     * @return bool|\luya\admin\file\Item|Exception Returns the item object, if an error happens an exception is thrown.
+     * @param string $fileName   The name of this file (must contain data type suffix).
+     * @param int    $folderId   The id of the folder where the file should be stored in.
+     * @param bool   $isHidden   Should the file visible in the filemanager or not.
+     *
      * @throws Exception
+     *
+     * @return bool|\luya\admin\file\Item|Exception Returns the item object, if an error happens an exception is thrown.
      */
     public function addFile($fileSource, $fileName, $folderId = 0, $isHidden = false)
     {
         if (empty($fileSource) || empty($fileName)) {
-            throw new Exception("Unable to create file where file source and/or file name is empty.");
+            throw new Exception('Unable to create file where file source and/or file name is empty.');
         }
-        
+
         if ($fileName == 'blob') {
             $ext = FileHelper::getExtensionsByMimeType(FileHelper::getMimeType($fileSource));
-            $fileName = 'paste-'.date("Y-m-d-H-i").'.'.$ext[0];
+            $fileName = 'paste-'.date('Y-m-d-H-i').'.'.$ext[0];
         }
-        
+
         $fileInfo = FileHelper::getFileInfo($fileName);
-        
+
         $baseName = Inflector::slug($fileInfo->name, '-');
-        
+
         $fileHashName = Storage::createFileHash($fileName);
-        
+
         $fileHash = FileHelper::md5sum($fileSource);
-        
+
         $mimeType = FileHelper::getMimeType($fileSource);
-        
+
         if (empty($mimeType)) {
             $mimeType = FileHelper::getMimeType($fileName);
         }
-        
+
         if (in_array($mimeType, $this->dangerousMimeTypes)) {
-            throw new Exception("This files is in the dangrous types list and can not be stored.");
+            throw new Exception('This files is in the dangrous types list and can not be stored.');
         }
-        
+
         $newName = implode([$baseName.'_'.$fileHashName, $fileInfo->extension], '.');
-        
-        $savePath = $this->serverPath . '/' . $newName;
-        
+
+        $savePath = $this->serverPath.'/'.$newName;
+
         if (is_uploaded_file($fileSource)) {
             if (!@move_uploaded_file($fileSource, $savePath)) {
                 throw new Exception("error while moving uploaded file from $fileSource to $savePath");
@@ -434,33 +442,35 @@ class StorageContainer extends Component
                 throw new Exception("error while copy file from $fileSource to $savePath.");
             }
         }
-        
+
         $model = new StorageFile();
         $model->setAttributes([
-            'name_original' => $fileName,
-            'name_new' => $baseName,
+            'name_original'     => $fileName,
+            'name_new'          => $baseName,
             'name_new_compound' => $newName,
-            'mime_type' => $mimeType,
-            'extension' => strtolower($fileInfo->extension),
-            'folder_id' => (int) $folderId,
-            'hash_file' => $fileHash,
-            'hash_name' => $fileHashName,
-            'is_hidden' => ($isHidden) ? true : false,
-            'is_deleted' => false,
-            'file_size' => @filesize($savePath),
-            'caption' => null,
+            'mime_type'         => $mimeType,
+            'extension'         => strtolower($fileInfo->extension),
+            'folder_id'         => (int) $folderId,
+            'hash_file'         => $fileHash,
+            'hash_name'         => $fileHashName,
+            'is_hidden'         => ($isHidden) ? true : false,
+            'is_deleted'        => false,
+            'file_size'         => @filesize($savePath),
+            'caption'           => null,
         ]);
-        
+
         if ($model->validate()) {
             if ($model->save()) {
                 $this->deleteHasCache($this->_fileCacheKey);
                 $this->_filesArray[$model->id] = $model->toArray();
+
                 return $this->getFile($model->id);
             }
         }
+
         return false;
     }
-    
+
     /**
      * Get an array with all images based on a where condition.
      *
@@ -469,13 +479,14 @@ class StorageContainer extends Component
      * See {{\luya\admin\storage\QueryTrait::where()}} for condition informations.
      *
      * @param array $args An array with conditions to match e.g. `['is_hidden' => 1, 'is_deleted' => 0]`.
+     *
      * @return \luya\admin\image\Iterator An iterator object containing all image found for the condition provided.
      */
     public function findImages(array $args = [])
     {
         return (new \luya\admin\image\Query())->where($args)->all();
     }
-    
+
     /**
      * Get a single image based on a where condition.
      *
@@ -484,20 +495,22 @@ class StorageContainer extends Component
      * See {{\luya\admin\storage\QueryTrait::where()}} for condition informations.
      *
      * @param array $args An array with conditions to match e.g. `['is_hidden' => 1, 'is_deleted' => 0]`.
+     *
      * @return \luya\admin\image\Item The file item object.
      */
     public function findImage(array $args = [])
     {
         return (new \luya\admin\image\Query())->where($args)->one();
     }
-    
+
     /**
      * Get a single image based on the the ID.
      *
      * If not found false is returned.
      *
-     * @param integer $imageId The requested storage image id.
-     * @return \luya\admin\image\Item|boolean The image object or false if not found.
+     * @param int $imageId The requested storage image id.
+     *
+     * @return \luya\admin\image\Item|bool The image object or false if not found.
      */
     public function getImage($imageId)
     {
@@ -517,11 +530,13 @@ class StorageContainer extends Component
      * Yii::$app->storage->addImage(123, 0); // create an image from file object id 123 without filter.
      * ```
      *
-     * @param integer $fileId The id of the file where image should be created from.
-     * @param integer $filterId The id of the filter which should be applied to, if filter is 0, no filter will be added. Filter can new also be the string name of the filter like `tiny-crop`.
-     * @param boolean $throwException Whether the addImage should throw an exception or just return boolean
-     * @return bool|\luya\admin\image\Item|Exception Returns the item object, if an error happens and $throwException is off `false` is returned otherwhise an exception is thrown.
+     * @param int  $fileId         The id of the file where image should be created from.
+     * @param int  $filterId       The id of the filter which should be applied to, if filter is 0, no filter will be added. Filter can new also be the string name of the filter like `tiny-crop`.
+     * @param bool $throwException Whether the addImage should throw an exception or just return boolean
+     *
      * @throws \Exception
+     *
+     * @return bool|\luya\admin\image\Item|Exception Returns the item object, if an error happens and $throwException is off `false` is returned otherwhise an exception is thrown.
      */
     public function addImage($fileId, $filterId = 0, $throwException = false)
     {
@@ -530,83 +545,83 @@ class StorageContainer extends Component
             if (is_string($filterId) && !is_numeric($filterId)) {
                 $filterLookup = $this->getFiltersArrayItem($filterId);
                 if (!$filterLookup) {
-                    throw new Exception("The provided filter name " . $filterId . " does not exist.");
+                    throw new Exception('The provided filter name '.$filterId.' does not exist.');
                 }
                 $filterId = $filterLookup['id'];
             }
-            
+
             $query = (new \luya\admin\image\Query())->where(['file_id' => $fileId, 'filter_id' => $filterId])->one();
-            
+
             if ($query && $query->fileExists) {
                 return $query;
             }
-            
+
             $fileQuery = $this->getFile($fileId);
-            
+
             if (!$fileQuery || !$fileQuery->fileExists) {
                 if ($fileQuery !== false) {
                     throw new Exception("Unable to create image, the base file source '{$fileQuery->serverSource}' does not exist.");
                 }
-                
+
                 throw new Exception("Unable to find the file with id '{$fileId}', image can not be created.");
             }
-            
+
             $fileName = $filterId.'_'.$fileQuery->systemFileName;
-            $fileSavePath = $this->serverPath . '/' . $fileName;
-            
+            $fileSavePath = $this->serverPath.'/'.$fileName;
+
             if (empty($filterId)) {
                 $save = @copy($fileQuery->serverSource, $fileSavePath);
             } else {
                 $model = StorageFilter::find()->where(['id' => $filterId])->one();
-                
+
                 if (!$model) {
                     throw new Exception("Could not find the provided filter id '$filterId'.");
                 }
-                
+
                 if (!$model->applyFilterChain($fileQuery, $fileSavePath)) {
                     throw new Exception("Unable to create and save image '".$fileSavePath."'.");
                 }
             }
-            
+
             $resolution = Storage::getImageResolution($fileSavePath);
-            
+
             // ensure the existing of the model
             $model = StorageImage::find()->where(['file_id' => $fileId, 'filter_id' => $filterId])->one();
-            
+
             if ($model) {
                 $model->updateAttributes([
-                    'resolution_width' => $resolution['width'],
+                    'resolution_width'  => $resolution['width'],
                     'resolution_height' => $resolution['height'],
                 ]);
             } else {
                 $model = new StorageImage();
                 $model->setAttributes([
-                    'file_id' => $fileId,
-                    'filter_id' => $filterId,
-                    'resolution_width' => $resolution['width'],
+                    'file_id'           => $fileId,
+                    'filter_id'         => $filterId,
+                    'resolution_width'  => $resolution['width'],
                     'resolution_height' => $resolution['height'],
                 ]);
-                
+
                 if (!$model->save()) {
-                    throw new Exception("Unable to save storage image, fatal database exception.");
+                    throw new Exception('Unable to save storage image, fatal database exception.');
                 }
             }
-            
+
             $this->_imagesArray[$model->id] = $model->toArray();
             $this->deleteHasCache($this->_imageCacheKey);
-            
+
             return $this->getImage($model->id);
         } catch (\Exception $err) {
             if ($throwException) {
                 throw $err;
             }
         }
-        
+
         return false;
     }
-    
+
     private $_foldersArray;
-    
+
     /**
      * Get all storage folders as an array from database.
      *
@@ -619,21 +634,22 @@ class StorageContainer extends Component
         if ($this->_foldersArray === null) {
             $this->_foldersArray = $this->getQueryCacheHelper((new Query())->from('admin_storage_folder')->select(['id', 'name', 'parent_id', 'timestamp_create'])->where(['is_deleted' => false])->orderBy(['name' => 'ASC'])->indexBy('id'), $this->_folderCacheKey);
         }
-        
+
         return $this->_foldersArray;
     }
-    
+
     /**
      * Get a single folder by folder id from the folders array.
      *
-     * @param integer $folderId The folder id to find.
-     * @return boolean|array The folder array or false if not found.
+     * @param int $folderId The folder id to find.
+     *
+     * @return bool|array The folder array or false if not found.
      */
     public function getFoldersArrayItem($folderId)
     {
         return (isset($this->foldersArray[$folderId])) ? $this->foldersArray[$folderId] : false;
     }
-    
+
     /**
      * Get an array with all folders based on a where condition.
      *
@@ -642,13 +658,14 @@ class StorageContainer extends Component
      * See {{\luya\admin\storage\QueryTrait::where()}} for condition informations.
      *
      * @param array $args An array with conditions to match e.g. `['is_hidden' => 1, 'is_deleted' => 0]`.
+     *
      * @return \luya\admin\folder\Iterator An iterator object containing all image found for the condition provided.
      */
     public function findFolders(array $args = [])
     {
         return (new \luya\admin\folder\Query())->where($args)->all();
     }
-    
+
     /**
      * Get a single folder based on a where condition.
      *
@@ -657,32 +674,35 @@ class StorageContainer extends Component
      * See {{\luya\admin\storage\QueryTrait::where()}} for condition informations.
      *
      * @param array $args An array with conditions to match e.g. `['is_hidden' => 1, 'is_deleted' => 0]`.
+     *
      * @return \luya\admin\folder\Item The folder item object.
      */
     public function findFolder(array $args = [])
     {
         return (new \luya\admin\folder\Query())->where($args)->one();
     }
-    
+
     /**
      * Get a single folder based on the the ID.
      *
      * If not found false is returned.
      *
-     * @param integer $folderId The requested storage folder id.
-     * @return \luya\admin\folder\Item|boolean The folder object or false if not found.
+     * @param int $folderId The requested storage folder id.
+     *
+     * @return \luya\admin\folder\Item|bool The folder object or false if not found.
      */
     public function getFolder($folderId)
     {
         return (new \luya\admin\folder\Query())->where(['id' => $folderId])->one();
     }
-    
+
     /**
      * Add new folder to the storage system.
      *
-     * @param string $folderName The name of the new folder
-     * @param integer $parentFolderId If its a subfolder the id of the parent folder must be provided.
-     * @return boolean|integer Returns the folder id or false if something went wrong.
+     * @param string $folderName     The name of the new folder
+     * @param int    $parentFolderId If its a subfolder the id of the parent folder must be provided.
+     *
+     * @return bool|int Returns the folder id or false if something went wrong.
      */
     public function addFolder($folderName, $parentFolderId = 0)
     {
@@ -694,12 +714,12 @@ class StorageContainer extends Component
         if ($model->save(false)) {
             return $model->id;
         }
-        
+
         return false;
     }
-    
+
     private $_filtersArray;
-    
+
     /**
      * Get all storage filters as an array from database.
      *
@@ -712,42 +732,44 @@ class StorageContainer extends Component
         if ($this->_filtersArray === null) {
             $this->_filtersArray = $this->getQueryCacheHelper((new Query())->from('admin_storage_filter')->select(['id', 'identifier', 'name'])->indexBy('identifier'), $this->_filterCacheKey);
         }
-        
+
         return $this->_filtersArray;
     }
-    
+
     /**
      * Get a single filter by filter identifier from the filters array.
      *
-     * @param integer $filterIdentifier The filter identifier to find use {{luya\admin\base\Filter::identifier()}} method.
-     * @return boolean|array The filter array or false if not found.
+     * @param int $filterIdentifier The filter identifier to find use {{luya\admin\base\Filter::identifier()}} method.
+     *
+     * @return bool|array The filter array or false if not found.
      */
     public function getFiltersArrayItem($filterIdentifier)
     {
         return (isset($this->filtersArray[$filterIdentifier])) ? $this->filtersArray[$filterIdentifier] : false;
     }
-    
+
     /**
      * Caching helper method.
      *
      * @param \yii\db\Query $query
-     * @param string|array $key
-     * @return mixed|boolean
+     * @param string|array  $key
+     *
+     * @return mixed|bool
      */
     private function getQueryCacheHelper(\yii\db\Query $query, $key)
     {
         $data = $this->getHasCache($key);
-        
+
         if ($data === false) {
             $data = $query->all();
             $this->setHasCache($key, $data);
         }
-        
+
         return $data;
     }
-    
+
     /**
-     * Will force to refresh all container arrays and clean up the cache
+     * Will force to refresh all container arrays and clean up the cache.
      *
      * @since 1.0.0-beta5
      */
@@ -762,12 +784,13 @@ class StorageContainer extends Component
         $this->deleteHasCache($this->_folderCacheKey);
         $this->deleteHasCache($this->_filterCacheKey);
     }
-    
+
     /**
      * This method allwos you to generate all thumbnails for the file manager, you can trigger this process when
-     * importing or creating several images at once, so the user does not have to create the thumbnails
+     * importing or creating several images at once, so the user does not have to create the thumbnails.
      *
      * @return void
+     *
      * @since 1.0.0-beta6
      */
     public function processThumbnails()
@@ -779,16 +802,16 @@ class StorageContainer extends Component
                 $this->addImage($file->id, MediumThumbnail::identifier());
             }
         }
-        
+
         // force auto fix
         $this->autoFixMissingImageSources = true;
-        
+
         foreach ($this->findImages() as $image) {
             if (!empty($image->file) && !$image->file->isHidden && !$image->file->isDeleted) {
                 $image->source; // which forces to recreate missing sources.
             }
         }
-        
+
         return true;
     }
 }

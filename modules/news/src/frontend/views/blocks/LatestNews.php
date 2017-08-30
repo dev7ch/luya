@@ -1,7 +1,7 @@
 <?php
 /**
- * @var $this \luya\cms\base\PhpBlockView
-*/
+ * @var \luya\cms\base\PhpBlockView
+ */
 ?>
 <ul>
 <?php foreach ($this->extraValue('items', []) as $item): ?>

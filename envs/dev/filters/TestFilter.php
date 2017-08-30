@@ -2,8 +2,8 @@
 
 namespace app\filters;
 
-use luya\admin\base\Filter;
 use Imagine\Image\ManipulatorInterface;
+use luya\admin\base\Filter;
 
 class TestFilter extends Filter
 {
@@ -11,12 +11,12 @@ class TestFilter extends Filter
     {
         return 'test-filter';
     }
-    
+
     public function name()
     {
         return 'Test Filter';
     }
-    
+
     public function chain()
     {
         return [

@@ -2,8 +2,8 @@
 
 namespace luya\admin\ngrest\base\actions;
 
-use Yii;
 use luya\admin\models\UserOnline;
+use Yii;
 
 /**
  * UpdateAction for REST implementation.
@@ -15,9 +15,9 @@ class UpdateAction extends \yii\rest\UpdateAction
     public function run($id)
     {
         $response = parent::run($id);
-        
+
         UserOnline::unlock(Yii::$app->adminuser->id);
-        
+
         return $response;
     }
 }

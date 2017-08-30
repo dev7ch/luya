@@ -2,8 +2,8 @@
 
 namespace luya\cms\frontend\blocks;
 
-use luya\cms\frontend\Module;
 use luya\cms\base\PhpBlock;
+use luya\cms\frontend\Module;
 use luya\cms\helpers\BlockHelper;
 
 /**
@@ -14,15 +14,15 @@ use luya\cms\helpers\BlockHelper;
 final class SpacingBlock extends PhpBlock
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $module = 'cms';
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $cacheEnabled = true;
-    
+
     protected function getSpacings()
     {
         return [
@@ -31,17 +31,17 @@ final class SpacingBlock extends PhpBlock
             3 => Module::t('block_spacing_large_space'),
         ];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function name()
     {
         return Module::t('block_spacing_name');
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getIsDirtyDialogEnabled()
     {
@@ -49,7 +49,7 @@ final class SpacingBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function icon()
     {
@@ -57,25 +57,25 @@ final class SpacingBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function config()
     {
         return [
             'vars' => [
                 [
-                    'var' => 'spacing',
-                    'label' => Module::t('block_spacing_spacing_label'),
+                    'var'       => 'spacing',
+                    'label'     => Module::t('block_spacing_spacing_label'),
                     'initvalue' => 1,
-                    'type' => self::TYPE_SELECT,
-                    'options' => BlockHelper::selectArrayOption($this->getSpacings()),
+                    'type'      => self::TYPE_SELECT,
+                    'options'   => BlockHelper::selectArrayOption($this->getSpacings()),
                 ],
             ],
         ];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function extraVars()
     {
@@ -85,7 +85,7 @@ final class SpacingBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function admin()
     {

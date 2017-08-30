@@ -22,17 +22,17 @@ final class Module extends \luya\base\Module
      * @var string defined your custom RegisterForm validation model must impelement `account\RegisterInterface`.
      */
     public $registerFormClass = 'luya\account\models\RegisterForm';
-    
+
     /**
-     * @var boolean Whether the email must be confirmet on registration with an activation link (double opt-in) or not.
+     * @var bool Whether the email must be confirmet on registration with an activation link (double opt-in) or not.
      */
     public $registerConfirmEmail = false;
-    
+
     /**
-     * @var boolean Whether each registration must be activated/validated by the page administrator in the administration area or not.
+     * @var bool Whether each registration must be activated/validated by the page administrator in the administration area or not.
      */
     public $validateRegistration = false;
-    
+
     public function getUserIdentity()
     {
         return Yii::createObject(['class' => $this->userIdentity]);

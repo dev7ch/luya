@@ -31,8 +31,8 @@ class Cat extends \luya\admin\ngrest\base\NgRestModel
     public function attributeLabels()
     {
         return [
-            'title' => Module::t('cat_title'),
-            'description' => Module::t('cat_description'),
+            'title'          => Module::t('cat_title'),
+            'description'    => Module::t('cat_description'),
             'cover_image_id' => Module::t('cat_cover_image_id'),
         ];
     }
@@ -69,8 +69,8 @@ class Cat extends \luya\admin\ngrest\base\NgRestModel
     public function ngRestAttributeTypes()
     {
         return [
-            'title' => 'text',
-            'description' => 'text',
+            'title'          => 'text',
+            'description'    => 'text',
             'cover_image_id' => 'image',
         ];
     }

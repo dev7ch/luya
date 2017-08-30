@@ -2,9 +2,9 @@
 
 namespace luya\account\frontend\properties;
 
-use Yii;
-use luya\cms\helpers\Url;
 use luya\admin\base\Property;
+use luya\cms\helpers\Url;
+use Yii;
 
 class IsProtectedAreaProperty extends Property
 {
@@ -18,6 +18,7 @@ class IsProtectedAreaProperty extends Property
         if ($this->value == 1) {
             if (Yii::$app->getModule('account')->getUserIdentity()->isGuest) {
                 $event->isValid = false;
+
                 return Yii::$app->response->redirect(Url::toModuleRoute('account', 'account/default/index', ['ref' => Yii::$app->request->url]));
             }
         }

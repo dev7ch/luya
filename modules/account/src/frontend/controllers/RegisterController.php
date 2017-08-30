@@ -2,10 +2,10 @@
 
 namespace luya\account\frontend\controllers;
 
-use Yii;
 use Exception;
-use luya\helpers\Url;
 use luya\account\frontend\base\Controller;
+use luya\helpers\Url;
+use Yii;
 
 class RegisterController extends Controller
 {
@@ -13,37 +13,38 @@ class RegisterController extends Controller
     {
         return [
             [
-                'allow' => true,
+                'allow'   => true,
                 'actions' => ['index', 'activate'],
-                'roles' => ['?'],
+                'roles'   => ['?'],
             ],
         ];
     }
 
     /**
      * @todo implementation
+     *
      * @param unknown $hash
      */
     public function actionActivate($hash)
     {
         // activation process
     }
-    
+
     public function actionIndex()
     {
         $model = Yii::createObject(['class' => $this->module->registerFormClass]);
-        
+
         if (!$model instanceof \account\RegisterInterface) {
-            throw new Exception("Register form class must be instance of register interface.");
+            throw new Exception('Register form class must be instance of register interface.');
         }
-        
+
         $state = false;
-        
+
         if (Yii::$app->request->post()) {
             $model->load(Yii::$app->request->post());
             if (($user = $model->register()) !== false) {
                 $state = null;
-                
+
                 if ($this->module->registerConfirmEmail) {
                     // send mail
                     $hashKey = Yii::$app->security->generateRandomString();
@@ -51,8 +52,8 @@ class RegisterController extends Controller
                     $user->update(false);
                     $mail = $this->renderPartial('mail/_validationlink.php', [
                         'hashKey' => $hashKey,
-                        'user' => $user,
-                        'link' => Url::to(['/account/register/activate', 'hash' => $hashKey], true),
+                        'user'    => $user,
+                        'link'    => Url::to(['/account/register/activate', 'hash' => $hashKey], true),
                     ]);
                     $state = 1;
                 }
@@ -62,7 +63,7 @@ class RegisterController extends Controller
                     $user->update(false);
                     $state = 2;
                 }
-                
+
                 if ($state === null) {
                     $mail = $this->renderPartial('mail/_login.php', ['user' => $user]);
                     // the user is registered directly.
@@ -71,11 +72,11 @@ class RegisterController extends Controller
                     $user->update(false);
                     $state = 3;
                 }
-                
+
                 Yii::$app->mail->compose('Registration', $mail)->address($user->email)->send();
             }
         }
-        
+
         return $this->renderLayout('index', [
             'model' => $model,
             'state' => $state,

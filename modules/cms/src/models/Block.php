@@ -2,16 +2,17 @@
 
 namespace luya\cms\models;
 
-use Yii;
-use luya\cms\base\BlockInterface;
 use luya\admin\ngrest\base\NgRestModel;
+use luya\cms\base\BlockInterface;
+use Yii;
 
 /**
  * Block ActiveRecord contains the Block<->Group relation.
  *
- * @property integer $id
- * @property integer $group_id
+ * @property int $id
+ * @property int $group_id
  * @property string $class
+ *
  * @author Basil Suter <basil@nadar.io>
  */
 class Block extends NgRestModel
@@ -27,34 +28,34 @@ class Block extends NgRestModel
     {
         return 'cms_block';
     }
-    
+
     public function extraFields()
     {
         return ['usageCount'];
     }
-    
+
     public function ngRestAttributeTypes()
     {
         return [
-            'group_id' => ['selectModel', 'modelClass' => BlockGroup::className(), 'valueField' => 'id', 'labelField' => 'name'],
-            'class' => 'text',
+            'group_id'    => ['selectModel', 'modelClass' => BlockGroup::className(), 'valueField' => 'id', 'labelField' => 'name'],
+            'class'       => 'text',
             'is_disabled' => 'toggleStatus',
         ];
     }
-    
+
     public function ngRestExtraAttributeTypes()
     {
         return [
             'usageCount' => 'number',
         ];
     }
-    
+
     public function attributeLabels()
     {
         return [
-            'group_id' => 'Group',
-            'class' => 'Object Class',
-            'usageCount' => 'Used in Content',
+            'group_id'    => 'Group',
+            'class'       => 'Object Class',
+            'usageCount'  => 'Used in Content',
             'is_disabled' => 'Is Disabled',
         ];
     }
@@ -62,7 +63,7 @@ class Block extends NgRestModel
     public function ngRestConfig($config)
     {
         $this->ngRestConfigDefine($config, ['list'], ['group_id', 'class', 'usageCount', 'is_disabled']);
-        
+
         return $config;
     }
 
@@ -70,9 +71,9 @@ class Block extends NgRestModel
     {
         return NavItemPageBlockItem::find()->where(['block_id' => $this->id])->count();
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -82,25 +83,26 @@ class Block extends NgRestModel
             [['class'], 'string', 'max' => 255],
         ];
     }
-    
+
     public function ngRestGroupByField()
     {
         return 'group_id';
     }
 
     /**
-     * Save id before deleting for clean up in afterDelete()
+     * Save id before deleting for clean up in afterDelete().
      *
      * @return bool
      */
     public function beforeDelete()
     {
         $this->cachedDeletedId = $this->id;
+
         return parent::beforeDelete();
     }
 
     /**
-     * Search for entries with cached block id in cms_nav_item_page_block_item and delete them
+     * Search for entries with cached block id in cms_nav_item_page_block_item and delete them.
      */
     public function afterDelete()
     {
@@ -118,7 +120,7 @@ class Block extends NgRestModel
             'class' => $this->class,
         ]);
     }
-    
+
     /**
      * Try to get the name of the log.
      */
@@ -127,12 +129,12 @@ class Block extends NgRestModel
         if ($this->object && $this->object instanceof BlockInterface) {
             return $this->object->name();
         }
-        
+
         return $this->class;
     }
-    
+
     private static $blocks = [];
-    
+
     /**
      * Get the block object from the database with context informations.
      *
@@ -140,7 +142,8 @@ class Block extends NgRestModel
      * @param unknown $id
      * @param unknown $context
      * @param unknown $pageObject
-     * @return boolean|object|mixed
+     *
+     * @return bool|object|mixed
      */
     public static function objectId($blockId, $id, $context, $pageObject = null)
     {
@@ -150,7 +153,7 @@ class Block extends NgRestModel
             $block = self::find()->select(['class'])->where(['id' => $blockId])->asArray()->one();
             static::$blocks[$blockId] = $block;
         }
-        
+
         if (!$block) {
             return false;
         }

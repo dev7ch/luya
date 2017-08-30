@@ -2,35 +2,33 @@
 
 namespace luya\cms\frontend\blocks;
 
+use luya\cms\base\PhpBlock;
+use luya\cms\frontend\Module;
+use luya\helpers\Url;
 use Yii;
 use yii\helpers\Html;
-use luya\helpers\Url;
-use luya\cms\frontend\Module;
-use luya\cms\base\PhpBlock;
 
 /**
- *
  * @author Basil Suter <basil@nadar.io>
- *
  */
 final class FormBlock extends PhpBlock
 {
     public $module = 'cms';
 
     public $defaultNameLabel = 'Name';
-    
+
     public $defaultNamePlaceholder = 'Vor- und Nachname';
-    
+
     public $defaultNameError = 'Bitte geben Sie einen Namen ein';
 
     public $defaultEmailLabel = 'Email';
-    
+
     public $defaultEmailPlaceholder = 'beispiel@beispiel.ch';
-    
+
     public $defaultEmailError = 'Bitte geben Sie eine Emailadresse ein';
 
     public $defaultMessageLabel = 'Nachricht';
-    
+
     public $defaultMessageError = 'Bitte geben Sie eine Nachricht ein';
 
     public $defaultSendLabel = 'Absenden';
@@ -43,7 +41,7 @@ final class FormBlock extends PhpBlock
 
     public function name()
     {
-        return Module::t("block_form_name");
+        return Module::t('block_form_name');
     }
 
     public function icon()
@@ -79,26 +77,26 @@ final class FormBlock extends PhpBlock
     public function extraVars()
     {
         return [
-            'nameLabel' => $this->getVarValue('nameLabel', $this->defaultNameLabel),
-            'namePlaceholder' => $this->getCfgValue('namePlaceholder', $this->defaultNamePlaceholder),
-            'nameError' => $this->getCfgValue('nameError', $this->defaultNameError),
-            'emailLabel' => $this->getVarValue('emailLabel', $this->defaultEmailLabel),
+            'nameLabel'        => $this->getVarValue('nameLabel', $this->defaultNameLabel),
+            'namePlaceholder'  => $this->getCfgValue('namePlaceholder', $this->defaultNamePlaceholder),
+            'nameError'        => $this->getCfgValue('nameError', $this->defaultNameError),
+            'emailLabel'       => $this->getVarValue('emailLabel', $this->defaultEmailLabel),
             'emailPlaceholder' => $this->getCfgValue('emailPlaceholder', $this->defaultEmailPlaceholder),
-            'emailError' => $this->getCfgValue('emailError', $this->defaultEmailError),
-            'messageLabel' => $this->getVarValue('messageLabel', $this->defaultMessageLabel),
-            'messageError' => $this->getCfgValue('messageError', $this->defaultMessageError),
-            'sendLabel' => $this->getVarValue('sendLabel', $this->defaultSendLabel),
-            'sendError' => $this->getCfgValue('sendError', $this->defaultSendError),
-            'sendSuccess' => $this->getCfgValue('sendSuccess', $this->defaultSendSuccess),
-            'subjectText' => $this->getCfgValue('subjectText', $this->defaultMailSubject),
-            'message' => Yii::$app->request->post('message'),
-            'name' => Yii::$app->request->post('name'),
-            'email' => Yii::$app->request->post('email'),
-            'mailerResponse' => $this->getPostResponse(),
-            'csrf' => Yii::$app->request->csrfToken,
-            'nameErrorFlag' => Yii::$app->request->isPost ? (Yii::$app->request->post('name') ? 1 : 0): 1,
-            'emailErrorFlag' => Yii::$app->request->isPost ? (Yii::$app->request->post('email') ? 1 : 0): 1,
-            'messageErrorFlag' => Yii::$app->request->isPost ? (Yii::$app->request->post('message') ? 1 : 0): 1,
+            'emailError'       => $this->getCfgValue('emailError', $this->defaultEmailError),
+            'messageLabel'     => $this->getVarValue('messageLabel', $this->defaultMessageLabel),
+            'messageError'     => $this->getCfgValue('messageError', $this->defaultMessageError),
+            'sendLabel'        => $this->getVarValue('sendLabel', $this->defaultSendLabel),
+            'sendError'        => $this->getCfgValue('sendError', $this->defaultSendError),
+            'sendSuccess'      => $this->getCfgValue('sendSuccess', $this->defaultSendSuccess),
+            'subjectText'      => $this->getCfgValue('subjectText', $this->defaultMailSubject),
+            'message'          => Yii::$app->request->post('message'),
+            'name'             => Yii::$app->request->post('name'),
+            'email'            => Yii::$app->request->post('email'),
+            'mailerResponse'   => $this->getPostResponse(),
+            'csrf'             => Yii::$app->request->csrfToken,
+            'nameErrorFlag'    => Yii::$app->request->isPost ? (Yii::$app->request->post('name') ? 1 : 0) : 1,
+            'emailErrorFlag'   => Yii::$app->request->isPost ? (Yii::$app->request->post('email') ? 1 : 0) : 1,
+            'messageErrorFlag' => Yii::$app->request->isPost ? (Yii::$app->request->post('message') ? 1 : 0) : 1,
         ];
     }
 
@@ -106,11 +104,11 @@ final class FormBlock extends PhpBlock
     {
         $email = Html::encode($email);
         $name = Html::encode($name);
-        
-        $html = "<p>You have recieved an E-Mail via Form Block on " . Url::base(true)."</p>";
-        $html.= "<p>From: " . $name." ($email)<br />Time:".date("d.m.Y - H:i"). "<br />";
-        $html.= "Message:<br />" . nl2br(Html::encode($message)) ."</p>";
-        
+
+        $html = '<p>You have recieved an E-Mail via Form Block on '.Url::base(true).'</p>';
+        $html .= '<p>From: '.$name." ($email)<br />Time:".date('d.m.Y - H:i').'<br />';
+        $html .= 'Message:<br />'.nl2br(Html::encode($message)).'</p>';
+
         $mail = Yii::$app->mail;
         $mail->fromName = $name;
         $mail->from = $email;
@@ -134,7 +132,7 @@ final class FormBlock extends PhpBlock
             }
         }
     }
-    
+
     public function admin()
     {
         return  '<p><i>Form Block</i></p>{% if vars.emailAddress is not empty %}'.

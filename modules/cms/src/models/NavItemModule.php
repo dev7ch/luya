@@ -2,12 +2,12 @@
 
 namespace luya\cms\models;
 
-use Yii;
-use luya\cms\Exception;
-use luya\cms\base\NavItemTypeInterface;
-use luya\cms\base\NavItemType;
-use luya\cms\admin\Module;
 use luya\base\ModuleReflection;
+use luya\cms\admin\Module;
+use luya\cms\base\NavItemType;
+use luya\cms\base\NavItemTypeInterface;
+use luya\cms\Exception;
+use Yii;
 
 /**
  * Represents the type MODULE for a NavItem.
@@ -17,15 +17,15 @@ use luya\base\ModuleReflection;
 class NavItemModule extends NavItemType implements NavItemTypeInterface
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function getNummericType()
     {
         return NavItem::TYPE_MODULE;
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -33,7 +33,7 @@ class NavItemModule extends NavItemType implements NavItemTypeInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -55,7 +55,7 @@ class NavItemModule extends NavItemType implements NavItemTypeInterface
         if (!Yii::$app->hasModule($module)) {
             throw new Exception("The module '$module' does not exist in your module configuration list.");
         }
-        
+
         $this->_module = Yii::$app->getModule($module);
         $this->_module->context = 'cms';
         /*
@@ -66,7 +66,7 @@ class NavItemModule extends NavItemType implements NavItemTypeInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributeLabels()
     {
@@ -76,7 +76,7 @@ class NavItemModule extends NavItemType implements NavItemTypeInterface
     }
 
     private $_content;
-    
+
     /**
      * @todo: see if $pathAfterRoute could be available in the urlRules, otherwise display default
      * (non-PHPdoc)
@@ -87,17 +87,17 @@ class NavItemModule extends NavItemType implements NavItemTypeInterface
     {
         if ($this->_content == null) {
             $module = $this->getModule();
-            
+
             $reflection = Yii::createObject(['class' => ModuleReflection::className(), 'module' => $module]);
             $reflection->suffix = $this->getOption('restString');
-            
+
             $this->_content = $reflection->run();
-            
+
             $this->controller = $reflection->controller;
-            
+
             Yii::$app->menu->setCurrentUrlRule($reflection->getUrlRule());
         }
-        
+
         return $this->_content;
     }
 }

@@ -2,21 +2,21 @@
 
 namespace luya\cms\frontend\controllers;
 
-use Yii;
-use yii\web\View;
-use yii\web\NotFoundHttpException;
 use Exception;
 use luya\cms\frontend\base\Controller;
+use Yii;
+use yii\web\NotFoundHttpException;
+use yii\web\View;
 
 /**
- * CMS Default Rendering
+ * CMS Default Rendering.
  *
  * @author Basil Suter <basil@nadar.io>
  */
 class DefaultController extends Controller
 {
     public $enableCsrfValidation = false;
-    
+
     public function init()
     {
         parent::init();
@@ -40,12 +40,12 @@ class DefaultController extends Controller
         }
 
         $content = $this->renderItem($current->id, Yii::$app->menu->currentAppendix);
-        
+
         // it is a json response (so the Response object is set to JSON_FORMAT).
         if (is_array($content)) {
             return $content;
         }
-        
+
         return $this->renderContent($content);
     }
 }

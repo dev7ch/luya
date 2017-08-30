@@ -10,14 +10,15 @@ use yii\helpers\Json;
  * Provide items to select and returns the selected items.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 abstract class CheckboxArrayProperty extends Property
 {
     abstract public function items();
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function type()
     {
@@ -25,7 +26,7 @@ abstract class CheckboxArrayProperty extends Property
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function options()
     {
@@ -33,19 +34,21 @@ abstract class CheckboxArrayProperty extends Property
         foreach ($this->items as $value => $label) {
             $options = ['value' => $value, 'label' => $label];
         }
-        
+
         return ['items' => $options];
     }
 
     public function getAdminValue()
     {
         $value = parent::getValue();
+
         return Json::decode($value);
     }
-    
+
     public function getValue()
     {
         $value = parent::getValue();
+
         return Json::decode($value);
     }
 }

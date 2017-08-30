@@ -106,8 +106,8 @@ class <?= $className; ?> extends PhpBlock
     {
         return [
 <?php foreach ($extras as $extra):?>
-            <?= $extra;?>
-<?php endforeach;?>
+            <?= $extra; ?>
+<?php endforeach; ?>
 
         ];
     }

@@ -2,9 +2,9 @@
 
 namespace cmstests\src\frontend\commands;
 
-use Yii;
 use cmstests\CmsFrontendTestCase;
 use luya\cms\frontend\commands\BlockController;
+use Yii;
 
 class BlockControllerTest extends CmsFrontendTestCase
 {
@@ -13,9 +13,10 @@ class BlockControllerTest extends CmsFrontendTestCase
         $dom = new \DOMDocument();
         $dom->loadHTML($content);
         $dom->preserveWhiteSpace = false;
+
         return $dom->saveHTML();
     }
-    
+
     public function testAppBlock()
     {
         $tpl = <<<'EOT'
@@ -143,7 +144,7 @@ EOT;
         $ctrl->dryRun = true;
         $this->assertEquals($this->getHtml($tpl), $this->getHtml($ctrl->actionCreate()));
     }
-    
+
     public function testModuleBlock()
     {
         $tpl = <<<'EOT'
@@ -283,7 +284,7 @@ EOT;
         $ctrl->viewFileDoc = [
             '$this->varValue(\'foo\');', '$this->varValue(\'foo\');', '$this->extraValue(\'foo\');', '$this->cfgValue(\'foo\');',
         ];
-        
+
         $view = <<<'EOT'
 <?php
 /**

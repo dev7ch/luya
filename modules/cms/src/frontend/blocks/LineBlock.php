@@ -2,28 +2,28 @@
 
 namespace luya\cms\frontend\blocks;
 
-use luya\cms\frontend\Module;
 use luya\cms\base\PhpBlock;
+use luya\cms\frontend\Module;
 
 /**
- * Simple horizontal line block
+ * Simple horizontal line block.
  *
  * @author Basil Suter <basil@nadar.io>
  */
 final class LineBlock extends PhpBlock
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $module = 'cms';
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $cacheEnabled = true;
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function name()
     {
@@ -31,15 +31,15 @@ final class LineBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function icon()
     {
         return 'remove';
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getIsDirtyDialogEnabled()
     {
@@ -47,17 +47,17 @@ final class LineBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function config()
     {
         return [
            'vars' => [
                 ['var' => 'lineSpace', 'label' => Module::t('block_line_linespace_label'), 'type' => 'zaa-select', 'options' => [
-                    ['value' => '5px', 'label' => '5px ' . Module::t('block_line_linespace_space')],
-                    ['value' => '10px', 'label' => '10px ' . Module::t('block_line_linespace_space')],
-                    ['value' => '20px', 'label' => '20px ' . Module::t('block_line_linespace_space')],
-                    ['value' => '30px', 'label' => '30px ' . Module::t('block_line_linespace_space')],
+                    ['value' => '5px', 'label' => '5px '.Module::t('block_line_linespace_space')],
+                    ['value' => '10px', 'label' => '10px '.Module::t('block_line_linespace_space')],
+                    ['value' => '20px', 'label' => '20px '.Module::t('block_line_linespace_space')],
+                    ['value' => '30px', 'label' => '30px '.Module::t('block_line_linespace_space')],
                 ], 'initvalue' => '5px'],
                 ['var' => 'lineStyle', 'label' => Module::t('block_line_linestyle_label'), 'type' => 'zaa-select', 'options' => [
                     ['value' => 'dotted', 'label' => Module::t('block_line_linestyle_dotted')],
@@ -72,13 +72,13 @@ final class LineBlock extends PhpBlock
                 ['var' => 'lineColor', 'label' => Module::t('block_line_linecolor_label'), 'type' => 'zaa-select', 'options' => [
                     ['value' => '#ccc', 'label' => Module::t('block_line_linecolor_grey')],
                     ['value' => '#000', 'label' => Module::t('block_line_linecolor_black')],
-                ], 'initvalue' => '#ccc']
+                ], 'initvalue' => '#ccc'],
             ],
         ];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function admin()
     {

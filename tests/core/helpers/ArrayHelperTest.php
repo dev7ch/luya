@@ -2,8 +2,8 @@
 
 namespace luyatests\core\helpers;
 
-use luyatests\LuyaWebTestCase;
 use luya\helpers\ArrayHelper;
+use luyatests\LuyaWebTestCase;
 
 class ArrayHelperTest extends LuyaWebTestCase
 {
@@ -12,7 +12,7 @@ class ArrayHelperTest extends LuyaWebTestCase
         $this->assertTrue(is_object(ArrayHelper::toObject(['foo' => 'bar'])));
         $this->assertEquals('bar', ArrayHelper::toObject(['foo' => 'bar'])->foo);
     }
-    
+
     public function testUnshiftAssoc()
     {
         $arr = ['foo' => 'bar', 'nokey'];
@@ -30,10 +30,10 @@ class ArrayHelperTest extends LuyaWebTestCase
     public function testTypeCast()
     {
         $array = [
-            1 => 1,
-            '2' => '2',
-            "3" => "3",
-            "4" => "string",
+            1     => 1,
+            '2'   => '2',
+            '3'   => '3',
+            '4'   => 'string',
             'sub' => [
                 1 => 1,
                 2 => '2',
@@ -44,21 +44,21 @@ class ArrayHelperTest extends LuyaWebTestCase
                 7 => '1.5',
                 8 => '-1.5',
             ],
-            'float' => 27.25,
+            'float'              => 27.25,
             'integerfloatstring' => '27.25',
-            'minus1' => -1,
-            'minus1float' => -1.5,
-            'minus1string' => '-1',
-            'minus1stringfloat' => '-1.5',
+            'minus1'             => -1,
+            'minus1float'        => -1.5,
+            'minus1string'       => '-1',
+            'minus1stringfloat'  => '-1.5',
         ];
-        
+
         $typecasted = ArrayHelper::typeCast($array);
-        
+
         $this->assertSame(1, $typecasted[1]);
         $this->assertSame(2, $typecasted[2]);
         $this->assertSame(3, $typecasted[3]);
         $this->assertSame('string', $typecasted[4]);
-        
+
         $this->assertSame(1, $typecasted['sub'][1]);
         $this->assertSame(2, $typecasted['sub'][2]);
         $this->assertSame(3, $typecasted['sub'][3]);
@@ -67,7 +67,7 @@ class ArrayHelperTest extends LuyaWebTestCase
         $this->assertSame(-1, $typecasted['sub'][6]);
         $this->assertSame(1.5, $typecasted['sub'][7]);
         $this->assertSame(-1.5, $typecasted['sub'][8]);
-        
+
         $this->assertSame(27.25, $typecasted['float']);
         $this->assertSame(27.25, $typecasted['integerfloatstring']);
         $this->assertSame(-1, $typecasted['minus1']);
@@ -75,80 +75,79 @@ class ArrayHelperTest extends LuyaWebTestCase
         $this->assertSame(-1, $typecasted['minus1string']);
         $this->assertSame(-1.5, $typecasted['minus1stringfloat']);
     }
-    
+
     public function testSearch()
     {
         $data = [
             [
-                'name' => 'Foo Bar',
+                'name'        => 'Foo Bar',
                 'description' => 'same',
-                'id' => 1,
+                'id'          => 1,
             ],
             [
-                'name' => 'Baz foo',
+                'name'        => 'Baz foo',
                 'description' => 'same',
-                'id' => 2,
-            ]
+                'id'          => 2,
+            ],
         ];
-        
+
         $this->assertSame(1, count(ArrayHelper::search($data, '1')));
         $this->assertSame(1, count(ArrayHelper::search($data, 1)));
         $this->assertSame(2, count(ArrayHelper::search($data, 'FOO')));
         $this->assertSame(2, count(ArrayHelper::search($data, 'foo')));
         $this->assertSame(2, count(ArrayHelper::search($data, 'Foo')));
         $this->assertSame(2, count(ArrayHelper::search($data, 'fo')));
-        
+
         $this->assertSame(1, count(ArrayHelper::search($data, 'Foo', true)));
     }
-    
+
     public function testSearchColumn()
     {
         $array = [
             ['foo' => 'bar'],
             ['foo' => 'baz'],
         ];
-        
+
         $this->assertSame(['foo' => 'bar'], ArrayHelper::searchColumn($array, 'foo', 'bar'));
         $this->assertFalse(ArrayHelper::searchColumn($array, 'foo', 'ba'));
-        
+
         $sameResults = [
             ['foo' => 'bar', 'prio' => 1],
             ['foo' => 'bar', 'prio' => 2],
         ];
-        
+
         $this->assertSame(['foo' => 'bar', 'prio' => 1], ArrayHelper::searchColumn($sameResults, 'foo', 'bar'));
     }
-    
+
     public function testSearchColumns()
     {
         $array = [
             ['foo' => 'bar', 'user_id' => 1],
             'key' => ['foo' => 'baz', 'user_id' => 1],
         ];
-        
+
         $this->assertSame([
             ['foo' => 'bar', 'user_id' => 1],
             'key' => ['foo' => 'baz', 'user_id' => 1],
         ], ArrayHelper::searchColumns($array, 'user_id', 1));
-        
+
         $this->assertSame([
             'key' => ['foo' => 'baz', 'user_id' => 1],
         ], ArrayHelper::searchColumns($array, 'foo', 'baz'));
-        
+
         $this->assertSame([
             'key' => ['foo' => 'baz', 'user_id' => 1],
         ], ArrayHelper::searchColumns($array, 'foo', 'BAZ'));
-        
-        
+
         $this->assertSame([], ArrayHelper::searchColumns($array, 'foo', 'NOTFOUNDATALL'));
     }
-    
+
     public function testGenerateRange()
     {
         $this->assertSame([1 => 1, 2 => 2, 3 => 3], ArrayHelper::generateRange(1, 3));
         $this->assertSame([10 => 10, 9 => 9, 8 => 8], ArrayHelper::generateRange(10, 8));
-        $this->assertSame([1 => "1 Foo", 2 => "2 Foo", 3 => "3 Foo"], ArrayHelper::generateRange(1, 3, 'Foo'));
-        $this->assertSame([1 => "1 Foo", 2 => "2 Foos", 3 => "3 Foos"], ArrayHelper::generateRange(1, 3, ['Foo', 'Foos']));
-        $this->assertSame([2 => "2 Foos", 3 => "3 Foos"], ArrayHelper::generateRange(2, 3, ['Foo', 'Foos']));
+        $this->assertSame([1 => '1 Foo', 2 => '2 Foo', 3 => '3 Foo'], ArrayHelper::generateRange(1, 3, 'Foo'));
+        $this->assertSame([1 => '1 Foo', 2 => '2 Foos', 3 => '3 Foos'], ArrayHelper::generateRange(1, 3, ['Foo', 'Foos']));
+        $this->assertSame([2 => '2 Foos', 3 => '3 Foos'], ArrayHelper::generateRange(2, 3, ['Foo', 'Foos']));
     }
 }

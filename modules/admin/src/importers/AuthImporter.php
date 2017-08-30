@@ -2,13 +2,14 @@
 
 namespace luya\admin\importers;
 
-use Yii;
 use luya\console\Importer;
+use Yii;
 
 /**
  * Import Auth Apis and Routes.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class AuthImporter extends Importer
@@ -17,7 +18,7 @@ class AuthImporter extends Importer
     {
         $modules = Yii::$app->getModules();
         $data = [
-            'apis' => [],
+            'apis'   => [],
             'routes' => [],
         ];
         foreach ($modules as $id => $moduleObject) {

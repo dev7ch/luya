@@ -20,7 +20,7 @@ class PageController extends Controller
     {
         return $this->render('update');
     }
-    
+
     public function actionDrafts()
     {
         return $this->render('drafts');

@@ -7,17 +7,17 @@ use luya\traits\RegistryTrait;
 /**
  * This is the model class for table "cms_config".
  *
- * @property integer $name
+ * @property int $name
  * @property string $value
  */
 class Config extends \yii\db\ActiveRecord
 {
     use RegistryTrait;
-    
+
     const HTTP_EXCEPTION_NAV_ID = 'httpExceptionNavId';
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -25,7 +25,7 @@ class Config extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -36,12 +36,12 @@ class Config extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributeLabels()
     {
         return [
-            'name' => 'Name',
+            'name'  => 'Name',
             'value' => 'Value',
         ];
     }

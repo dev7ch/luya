@@ -3,8 +3,8 @@
 namespace admintests\admin\commands;
 
 use admintests\AdminTestCase;
-use luya\console\Application;
 use luya\admin\commands\FilterController;
+use luya\console\Application;
 
 class FilterControllerTest extends AdminTestCase
 {
@@ -12,10 +12,10 @@ class FilterControllerTest extends AdminTestCase
     {
         $app = new Application($this->getConfigArray());
         $ctrl = new FilterController('index', $app);
-        
+
         $this->assertTrue(is_object($ctrl));
-    
-        $buff = <<<EOT
+
+        $buff = <<<'EOT'
 
 /**
  * Nam Filter.

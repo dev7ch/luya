@@ -14,7 +14,7 @@ class ConcreptImplementationBlock implements BlockInterface
     {
         return 'Concrept Block';
     }
-    
+
     /**
      * Returns the configuration array.
      *
@@ -24,9 +24,9 @@ class ConcreptImplementationBlock implements BlockInterface
     {
         return [];
     }
-    
+
     /**
-     * Returns the icon based on material icon names
+     * Returns the icon based on material icon names.
      *
      * @return string
      */
@@ -34,7 +34,7 @@ class ConcreptImplementationBlock implements BlockInterface
     {
         return 'volumne';
     }
-    
+
     /**
      * Get the output in the frontend context.
      *
@@ -44,7 +44,7 @@ class ConcreptImplementationBlock implements BlockInterface
     {
         return 'frontend!';
     }
-    
+
     /**
      * Get the output in administration context.
      *
@@ -54,7 +54,7 @@ class ConcreptImplementationBlock implements BlockInterface
     {
         return 'admin!';
     }
-    
+
     /**
      * Returns a class of the blocks group.
      *
@@ -64,7 +64,7 @@ class ConcreptImplementationBlock implements BlockInterface
     {
         return DevelopmentGroup::class;
     }
-    
+
     // getters & setters from outside
 
     /**
@@ -76,22 +76,22 @@ class ConcreptImplementationBlock implements BlockInterface
     {
         return [];
     }
-    
+
     private $_envs = [];
-    
+
     /**
      * Set an environment option informations to the block with key value pairing.
      *
-     * @param string $key The identifier key.
-     * @param mixed $value The value for the key.
+     * @param string $key   The identifier key.
+     * @param mixed  $value The value for the key.
      */
     public function setEnvOption($key, $value)
     {
         $this->_envs[$key] = $value;
     }
-    
+
     private $_vars;
-    
+
     /**
      * Set the values for element vars with an array key value binding.
      *
@@ -101,9 +101,9 @@ class ConcreptImplementationBlock implements BlockInterface
     {
         $this->_vars = $values;
     }
-    
+
     private $_cfgs = [];
-    
+
     /**
      * Set the values for element cfgs with an array key value binding.
      *
@@ -113,9 +113,9 @@ class ConcreptImplementationBlock implements BlockInterface
     {
         $this->_cfgs = $values;
     }
-    
+
     private $_placeholders = [];
-    
+
     /**
      * Set the value from placeholders where the array key is the name of value the content of the placeholder.
      *
@@ -125,7 +125,7 @@ class ConcreptImplementationBlock implements BlockInterface
     {
         $this->_placeholders = $placeholders;
     }
-    
+
     /**
      * Returns an array of key value pairing with additional informations to pass to the API and frontend.
      *
@@ -135,7 +135,7 @@ class ConcreptImplementationBlock implements BlockInterface
     {
         return ['foo' => 'bar'];
     }
-     
+
     /**
      * Returns all config vars element of key value pairing to pass to the API and frontend.
      *
@@ -145,7 +145,7 @@ class ConcreptImplementationBlock implements BlockInterface
     {
         return [];
     }
-     
+
     /**
      * Returns all config cfgs element of key value pairing to pass to the API and frontend.
      *
@@ -155,7 +155,7 @@ class ConcreptImplementationBlock implements BlockInterface
     {
         return [];
     }
-    
+
     /**
      * Returns all config placeholders element of key value pairing to pass to the API and frontend.
      *
@@ -165,25 +165,25 @@ class ConcreptImplementationBlock implements BlockInterface
     {
         return [];
     }
-    
+
     /**
      * Whether cache is enabled for this block or not.
      *
-     * @return boolean
+     * @return bool
      */
     public function getIsCacheEnabled()
     {
         return false;
     }
-    
+
     /**
-     * The time of cache expiration
+     * The time of cache expiration.
      */
     public function getCacheExpirationTime()
     {
         return 60;
     }
-    
+
     /**
      * Whether is an container element or not.
      */
@@ -191,7 +191,7 @@ class ConcreptImplementationBlock implements BlockInterface
     {
         return false;
     }
-    
+
     public function getIsDirtyDialogEnabled()
     {
         return true;

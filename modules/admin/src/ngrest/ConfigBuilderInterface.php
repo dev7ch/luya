@@ -3,7 +3,7 @@
 namespace luya\admin\ngrest;
 
 /**
- * Ngrest Config Builder Interface
+ * Ngrest Config Builder Interface.
  *
  * @author Basil Suter <basil@nadar.io>
  */

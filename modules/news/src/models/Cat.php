@@ -5,20 +5,20 @@ namespace luya\news\models;
 use luya\news\admin\Module;
 
 /**
- * News Category Model
+ * News Category Model.
  *
  * @author Basil Suter <basil@nadar.io>
  */
 class Cat extends \luya\admin\ngrest\base\NgRestModel
 {
     public $i18n = ['title'];
-    
+
     public function init()
     {
         parent::init();
         $this->on(self::EVENT_BEFORE_DELETE, [$this, 'eventBeforeDelete']);
     }
-    
+
     public function eventBeforeDelete($event)
     {
         if (count($this->articles) > 0) {
@@ -26,7 +26,7 @@ class Cat extends \luya\admin\ngrest\base\NgRestModel
             $event->isValid = false;
         }
     }
-    
+
     public static function tableName()
     {
         return 'news_cat';
@@ -48,8 +48,8 @@ class Cat extends \luya\admin\ngrest\base\NgRestModel
     }
 
     /**
+     * {@inheritdoc}
      *
-     * {@inheritDoc}
      * @see \yii\base\Model::attributeLabels()
      */
     public function attributeLabels()
@@ -82,7 +82,7 @@ class Cat extends \luya\admin\ngrest\base\NgRestModel
 
         return $config;
     }
-    
+
     /**
      * Get articles for this category.
      */

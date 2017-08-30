@@ -3,9 +3,9 @@
 namespace luya\cms\injectors;
 
 use luya\cms\base\BaseBlockInjector;
-use yii\db\ActiveQueryInterface;
-use yii\data\ActiveDataProvider;
 use luya\helpers\ArrayHelper;
+use yii\data\ActiveDataProvider;
+use yii\db\ActiveQueryInterface;
 
 /**
  * Checkboxes from an ActiveQuery.
@@ -39,14 +39,16 @@ use luya\helpers\ArrayHelper;
  * ```
  *
  * @property \yii\db\ActiveQueryInterface $query The ActiveQuery object
+ *
  * @since 1.0.0-rc1
+ *
  * @author Basil Suter <basil@nadar.io>
  */
 final class ActiveQueryCheckboxInjector extends BaseBlockInjector
 {
     /**
      * @var null|string|closure This attribute from the model is used to render the admin block dropdown selection. Define
-     * the field name to pick for the label or set a closure lambda function in order to provide the select label template.
+     *                          the field name to pick for the label or set a closure lambda function in order to provide the select label template.
      *
      * ```php
      * 'label' => function($model) {
@@ -57,14 +59,14 @@ final class ActiveQueryCheckboxInjector extends BaseBlockInjector
      * If the label attribute is not defined, just all attribute from the model will be displayed.
      */
     public $label;
-    
+
     /**
-     * @var boolean|array Whether the extr assigned data should enable pagination.
+     * @var bool|array Whether the extr assigned data should enable pagination.
      */
     public $pagination = false;
-    
+
     private $_query;
-    
+
     /**
      * Setter method for the active query interface.
      *
@@ -76,13 +78,13 @@ final class ActiveQueryCheckboxInjector extends BaseBlockInjector
     {
         $this->_query = $query;
     }
-    
+
     private function getQueryData()
     {
         $provider = new ActiveDataProvider([
             'query' => $this->_query,
         ]);
-        
+
         $data = [];
         foreach ($provider->getModels() as $model) {
             if (is_callable($this->label)) {
@@ -90,38 +92,39 @@ final class ActiveQueryCheckboxInjector extends BaseBlockInjector
             } elseif (is_string($this->label)) {
                 $label = $model->{$this->label};
             } else {
-                $label = implode(", ", $model->getAttributes());
+                $label = implode(', ', $model->getAttributes());
             }
             $data[] = ['value' => $model->primaryKey, 'label' => $label];
         }
+
         return $data;
     }
-    
+
     private function getExtraAssignData()
     {
         $ids = ArrayHelper::getColumn($this->getContextConfigValue($this->varName, []), 'value');
-        
+
         $provider = new ActiveDataProvider([
-            'query' => $this->_query->andWhere(['in', 'id', $ids]),
+            'query'      => $this->_query->andWhere(['in', 'id', $ids]),
             'pagination' => $this->pagination,
         ]);
-        
+
         return $provider->getModels();
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function setup()
     {
         // injecto the config
         $this->setContextConfig([
-            'var' => $this->varName,
-            'type' => 'zaa-checkbox-array',
-            'label' => $this->varLabel,
+            'var'     => $this->varName,
+            'type'    => 'zaa-checkbox-array',
+            'label'   => $this->varLabel,
             'options' => [
                 'items' => $this->getQueryData(),
-            ]
+            ],
         ]);
         // provide the extra data
         $this->context->addExtraVar($this->varName, $this->getExtraAssignData());

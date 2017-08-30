@@ -47,7 +47,7 @@ use luya\helpers\Url;
                         <div class="form-side">
                             <select id="layout-changer" class="form-control" ng-model="settings.luyadminlanguage">
                                 <?php foreach ($this->context->module->interfaceLanguageDropdown as $key => $lang): ?>
-                                    <option value="<?= $key; ?>"><?= $lang;?></option>
+                                    <option value="<?= $key; ?>"><?= $lang; ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>

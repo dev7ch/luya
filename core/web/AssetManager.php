@@ -9,6 +9,7 @@ namespace luya\web;
  * Specialy for compressing assets.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class AssetManager extends \yii\web\AssetManager

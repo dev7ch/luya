@@ -2,29 +2,29 @@
 
 namespace luya\cms\frontend\blocks;
 
-use luya\cms\frontend\Module;
 use luya\cms\base\PhpBlock;
+use luya\cms\frontend\Module;
 use luya\cms\injectors\LinkInjector;
 
 /**
- * Simple button element with a link function
+ * Simple button element with a link function.
  *
  * @author Basil Suter <basil@nadar.io>
  */
 final class LinkButtonBlock extends PhpBlock
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $module = 'cms';
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $cacheEnabled = true;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function name()
     {
@@ -32,15 +32,15 @@ final class LinkButtonBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function icon()
     {
         return 'link';
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function injectors()
     {
@@ -52,7 +52,7 @@ final class LinkButtonBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function config()
     {
@@ -62,21 +62,21 @@ final class LinkButtonBlock extends PhpBlock
             ],
             'cfgs' => [
                 [
-                    'var' => 'targetBlank',
+                    'var'   => 'targetBlank',
                     'label' => Module::t('block_link_button_targetblank_label'),
-                    'type' => 'zaa-checkbox'
+                    'type'  => 'zaa-checkbox',
                 ],
                 [
-                    'var' => 'simpleLink',
+                    'var'   => 'simpleLink',
                     'label' => Module::t('block_link_button_simpleLink_label'),
-                    'type' => 'zaa-checkbox'
+                    'type'  => 'zaa-checkbox',
                 ],
             ],
         ];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function extraVars()
     {
@@ -86,11 +86,11 @@ final class LinkButtonBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function admin()
     {
-        return '<p>{% if vars.label is empty or vars.linkData is empty %}' . Module::t('block_link_button_name') . ': ' . Module::t('block_link_button_empty') . '{% else %}' .
+        return '<p>{% if vars.label is empty or vars.linkData is empty %}'.Module::t('block_link_button_name').': '.Module::t('block_link_button_empty').'{% else %}'.
         '{% if vars.label is not empty %}<a class="btn disabled">{{ vars.label }}</a>{% endif %}{% endif %}</p>';
     }
 }

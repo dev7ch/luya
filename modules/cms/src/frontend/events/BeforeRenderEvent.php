@@ -10,6 +10,6 @@ namespace luya\cms\frontend\events;
 class BeforeRenderEvent extends \yii\base\Event
 {
     public $isValid = true;
-    
+
     public $menu;
 }

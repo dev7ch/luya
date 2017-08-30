@@ -7,14 +7,14 @@ class m151026_161841_admin_tag extends Migration
     public function safeUp()
     {
         $this->createTable('admin_tag', [
-            'id' => $this->primaryKey(),
+            'id'   => $this->primaryKey(),
             'name' => $this->string(120)->notNull()->unique(),
         ]);
 
         $this->createTable('admin_tag_relation', [
-            'tag_id' => $this->integer(11)->notNull(),
+            'tag_id'     => $this->integer(11)->notNull(),
             'table_name' => $this->string(120)->notNull(),
-            'pk_id' => $this->integer(11)->notNull(),
+            'pk_id'      => $this->integer(11)->notNull(),
         ]);
     }
 

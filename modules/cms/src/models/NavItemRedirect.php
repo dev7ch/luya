@@ -2,18 +2,19 @@
 
 namespace luya\cms\models;
 
-use Yii;
 use Exception;
+use luya\cms\admin\Module;
 use luya\cms\base\NavItemType;
 use luya\cms\base\NavItemTypeInterface;
-use luya\cms\admin\Module;
+use Yii;
 
 /**
  * Represents the type REDIRECT for a NavItem.
  *
- * @property integer $id
- * @property integer $type The type of redirect (1 = page, 2 = URL, 3 = Link to File)
+ * @property int $id
+ * @property int $type The type of redirect (1 = page, 2 = URL, 3 = Link to File)
  * @property string $value Depending on the type (1 = cms_nav.id, 2 = http://luya.io)
+ *
  * @author Basil Suter <basil@nadar.io>
  */
 class NavItemRedirect extends NavItemType implements NavItemTypeInterface
@@ -25,7 +26,7 @@ class NavItemRedirect extends NavItemType implements NavItemTypeInterface
     const TYPE_LINK_TO_FILE = 3;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -33,15 +34,15 @@ class NavItemRedirect extends NavItemType implements NavItemTypeInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function getNummericType()
     {
         return NavItem::TYPE_REDIRECT;
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -51,13 +52,13 @@ class NavItemRedirect extends NavItemType implements NavItemTypeInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributeLabels()
     {
         return [
             'value' => Module::t('model_navitemredirect_value_label'),
-            'type' => Module::t('model_navitemredirect_type_label'),
+            'type'  => Module::t('model_navitemredirect_type_label'),
         ];
     }
 
@@ -67,7 +68,7 @@ class NavItemRedirect extends NavItemType implements NavItemTypeInterface
             case self::TYPE_INTERNAL_PAGE:
                 $item = Yii::$app->menu->find()->where(['nav_id' => $this->value])->with('hidden')->one();
                 if (!$item) {
-                    throw new Exception('Unable to find item '.$this->value . ' in order to resolve an internal page redirect. Maybe the page does not exist anymore or is offline.');
+                    throw new Exception('Unable to find item '.$this->value.' in order to resolve an internal page redirect. Maybe the page does not exist anymore or is offline.');
                 }
 
                 return $item->link;
@@ -80,7 +81,5 @@ class NavItemRedirect extends NavItemType implements NavItemTypeInterface
     {
         Yii::$app->getResponse()->redirect($this->resolveValue());
         Yii::$app->end();
-
-        return;
     }
 }

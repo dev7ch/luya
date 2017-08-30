@@ -2,9 +2,9 @@
 
 namespace luya\cms\frontend\blocks;
 
-use luya\cms\frontend\Module;
-use luya\cms\frontend\blockgroups\MediaGroup;
 use luya\cms\base\PhpBlock;
+use luya\cms\frontend\blockgroups\MediaGroup;
+use luya\cms\frontend\Module;
 
 /**
  * Embed YouTube and Vimeo video Block.
@@ -14,25 +14,25 @@ use luya\cms\base\PhpBlock;
 final class VideoBlock extends PhpBlock
 {
     const PROVIDER_YOUTUBE = 'youtube';
-    
+
     const PROVIDER_YOUTUBE_EMBED_URL = 'https://www.youtube.com/embed/';
-    
+
     const PROVIDER_VIMEO = 'vimeo';
-    
+
     const PROVIDER_VIMEO_EMBED_URL = 'https://player.vimeo.com/video/';
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $module = 'cms';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $cacheEnabled = true;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function name()
     {
@@ -40,15 +40,15 @@ final class VideoBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function icon()
     {
         return 'videocam';
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function blockGroup()
     {
@@ -56,7 +56,7 @@ final class VideoBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function config()
     {
@@ -72,17 +72,17 @@ final class VideoBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getFieldHelp()
     {
         return [
-            'url' => Module::t('block_video_help_url'),
+            'url'      => Module::t('block_video_help_url'),
             'controls' => Module::t('block_video_help_controls'),
-            'width' => Module::t('block_video_help_width'),
+            'width'    => Module::t('block_video_help_width'),
         ];
     }
-    
+
     /**
      * Ensure the emebed youtube url based on url var.
      *
@@ -97,10 +97,11 @@ final class VideoBlock extends PhpBlock
             if ($this->getCfgValue('controls')) {
                 $params['controls'] = 0;
             }
-            return self::PROVIDER_YOUTUBE_EMBED_URL . $args['v'] . '?' . http_build_query($params);
+
+            return self::PROVIDER_YOUTUBE_EMBED_URL.$args['v'].'?'.http_build_query($params);
         }
     }
-    
+
     /**
      * Ensure the emebed vimeo url based on url var.
      *
@@ -108,7 +109,7 @@ final class VideoBlock extends PhpBlock
      */
     public function embedVimeo()
     {
-        return self::PROVIDER_VIMEO_EMBED_URL . ltrim(parse_url($this->getVarValue('url'), PHP_URL_PATH), '/');
+        return self::PROVIDER_VIMEO_EMBED_URL.ltrim(parse_url($this->getVarValue('url'), PHP_URL_PATH), '/');
     }
 
     /**
@@ -127,12 +128,10 @@ final class VideoBlock extends PhpBlock
                 }
             }
         }
-        
-        return null;
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function extraVars()
     {
@@ -142,10 +141,10 @@ final class VideoBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function admin()
     {
-        return '{% if extras.url is not empty %}<div class="iframe-container"><iframe src="{{ extras.url }}" frameborder="0" allowfullscreen></iframe></div>{% else %}<span class="block__empty-text">' . Module::t('block_video_no_video') . '</span>{% endif %}';
+        return '{% if extras.url is not empty %}<div class="iframe-container"><iframe src="{{ extras.url }}" frameborder="0" allowfullscreen></iframe></div>{% else %}<span class="block__empty-text">'.Module::t('block_video_no_video').'</span>{% endif %}';
     }
 }

@@ -2,10 +2,8 @@
 
 namespace tests\web\cmsadmin\base;
 
-use luya\cms\base\Block;
-use cmstests\data\blocks\TestBlock;
-use cmstests\data\blocks\FailureBlock;
 use cmstests\CmsFrontendTestCase;
+use cmstests\data\blocks\TestBlock;
 use luya\cms\base\PhpBlock;
 
 class GetterSetter extends PhpBlock
@@ -43,7 +41,6 @@ class BlockTest extends CmsFrontendTestCase
 
         $this->assertEquals(false, $block->isAdminContext());
         $this->assertEquals(false, $block->isFrontendContext());
-
 
         foreach ($block->getConfigVarsExport() as $var) {
             $this->assertArrayHasKey('id', $var);

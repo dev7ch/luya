@@ -12,8 +12,8 @@ use luya\admin\ngrest\base\NgRestModel;
  * 
  * <?=$luyaVersion; ?> 
  *
-<?php foreach ($properties as $name => $type): ?> * @property <?= $type; ?> $<?= $name . PHP_EOL; ?>
-<?php endforeach;?>
+<?php foreach ($properties as $name => $type): ?> * @property <?= $type; ?> $<?= $name.PHP_EOL; ?>
+<?php endforeach; ?>
  */
 class <?= $className; ?> extends NgRestModel
 {
@@ -23,7 +23,7 @@ class <?= $className; ?> extends NgRestModel
      */
     public $i18n = ['<?= implode("', '", $textFields); ?>'];
 
-<?php endif;?>
+<?php endif; ?>
     /**
      * @inheritdoc
      */
@@ -77,7 +77,7 @@ class <?= $className; ?> extends NgRestModel
     {
         return [
         <?php foreach ($ngrestFieldConfig as $name => $type): ?>
-    '<?=$name; ?>' => '<?= $type;?>',
+    '<?=$name; ?>' => '<?= $type; ?>',
         <?php endforeach; ?>];
     }
 

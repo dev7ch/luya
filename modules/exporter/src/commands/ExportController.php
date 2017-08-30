@@ -2,10 +2,10 @@
 
 namespace luya\exporter\commands;
 
-use Yii;
-use luya\helpers\ZipHelper;
-use luya\helpers\FileHelper;
 use Ifsnop\Mysqldump;
+use luya\helpers\FileHelper;
+use luya\helpers\ZipHelper;
+use Yii;
 
 class ExportController extends \luya\console\Command
 {
@@ -19,30 +19,30 @@ class ExportController extends \luya\console\Command
     {
         $hash = time();
         $cacheFolder = Yii::getAlias('@runtime/exporter/'.$hash);
-        
+
         $this->verbosePrint("cache folder $cacheFolder");
-        
+
         FileHelper::createDirectory($cacheFolder, 0777);
 
         $dump = new Mysqldump\Mysqldump(Yii::$app->db->dsn, Yii::$app->db->username, Yii::$app->db->password);
         $dump->start($cacheFolder.'/mysql.sql');
 
         $source = Yii::getAlias('@web/public_html/storage');
-        
+
         $this->verbosePrint("storage source folder $source");
-        
+
         if (is_link($source)) {
             $source = readlink($source);
-            
-            $this->verbosePrint("source is a symlink, readlink output: " . $source);
+
+            $this->verbosePrint('source is a symlink, readlink output: '.$source);
         }
-        
+
         FileHelper::copyDirectory($source, $cacheFolder.'/storage', ['dirMode' => 0777, 'fileMode' => 0775]);
 
         $save = Yii::getAlias($this->module->downloadFile);
 
         if (file_exists($save)) {
-            $this->verbosePrint("a exporter file does already exists, unlink file: " . $save);
+            $this->verbosePrint('a exporter file does already exists, unlink file: '.$save);
             @unlink($save);
         }
 

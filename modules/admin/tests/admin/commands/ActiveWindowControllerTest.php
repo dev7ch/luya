@@ -2,18 +2,18 @@
 
 namespace admintests\admin\commands;
 
-use Yii;
-use luya\console\commands\ActiveWindowController;
 use admintests\AdminTestCase;
+use luya\console\commands\ActiveWindowController;
+use Yii;
 
 class ActiveWindowControllerTest extends AdminTestCase
 {
     public function testPhpViewRenderContent()
     {
         $ctrl = new ActiveWindowController('id', Yii::$app);
-        
+
         $content = $ctrl->renderWindowClassView('MeinTestActiveWindow', 'path\\to\\aws', 'cmsadmin');
-        
+
         $tpl = <<<'EOT'
 <?php
 
@@ -57,7 +57,7 @@ class MeinTestActiveWindow extends ActiveWindow
     }
 }
 EOT;
-        
+
         $this->assertSame($tpl, $content);
     }
 }

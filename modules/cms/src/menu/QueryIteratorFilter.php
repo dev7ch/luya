@@ -2,16 +2,17 @@
 
 namespace luya\cms\menu;
 
-use Yii;
-use FilterIterator;
 use Countable;
+use FilterIterator;
 use luya\cms\frontend\events\MenuItemEvent;
 use luya\cms\Menu;
+use Yii;
 
 /**
- * Iterator filter to verify valid events
+ * Iterator filter to verify valid events.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0-beta5
  */
 class QueryIteratorFilter extends FilterIterator implements Countable
@@ -19,7 +20,8 @@ class QueryIteratorFilter extends FilterIterator implements Countable
     /**
      * Verifys if an menu item does have valid event response.
      *
-     * {@inheritDoc}
+     * {@inheritdoc}
+     *
      * @see FilterIterator::accept()
      */
     public function accept()
@@ -30,9 +32,10 @@ class QueryIteratorFilter extends FilterIterator implements Countable
             $event->visible = true;
         }
         Yii::$app->menu->trigger(Menu::MENU_ITEM_EVENT, $event);
+
         return $event->visible;
     }
-    
+
     /**
      * Callculate to number of items when using count() function against the QueryIterator object.
      *

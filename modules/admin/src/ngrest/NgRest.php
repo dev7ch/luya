@@ -2,11 +2,11 @@
 
 namespace luya\admin\ngrest;
 
-use Yii;
 use luya\admin\ngrest\render\RenderInterface;
+use Yii;
 
 /**
- * NgRest Base Object
+ * NgRest Base Object.
  *
  * ```php
  * $config = new ngrest\Config();
@@ -27,6 +27,7 @@ use luya\admin\ngrest\render\RenderInterface;
  * ```
  *
  * @since 1.0.0
+ *
  * @author Basil Suter <basil@nadar.io>
  */
 class NgRest
@@ -50,32 +51,35 @@ class NgRest
      * Renders the Config for the Given Render Interface.
      *
      * @param \luya\admin\ngrest\render\RenderInterface $render
+     *
      * @return string
      */
     public function render(RenderInterface $render)
     {
         $this->render = $render;
         $this->render->setConfig($this->config);
+
         return $this->render->render();
     }
-    
+
     /**
      * Generates an NgRest Plugin Object.
      *
      * @param string $className
      * @param string $name
      * @param string $alias
-     * @param boolean $i18n
-     * @param array $args
+     * @param bool   $i18n
+     * @param array  $args
+     *
      * @return \luya\admin\ngrest\base\Plugin
      */
     public static function createPluginObject($className, $name, $alias, $i18n, $args = [])
     {
         return Yii::createObject(array_merge([
             'class' => $className,
-            'name' => $name,
+            'name'  => $name,
             'alias' => $alias,
-            'i18n' => $i18n,
+            'i18n'  => $i18n,
         ], $args));
     }
 }

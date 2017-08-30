@@ -8,25 +8,25 @@ use yii\db\ActiveRecord;
 /**
  * This is the model class for table "admin_search_data".
  *
- * @property integer $id
- * @property integer $user_id
- * @property integer $timestamp_create
+ * @property int $id
+ * @property int $user_id
+ * @property int $timestamp_create
  * @property string $query
- * @property integer $num_rows
+ * @property int $num_rows
  */
 final class SearchData extends ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
         parent::init();
         $this->on(self::EVENT_BEFORE_VALIDATE, [$this, 'onBeforeValidate']);
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -34,7 +34,7 @@ final class SearchData extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {

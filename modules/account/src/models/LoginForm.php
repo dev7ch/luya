@@ -7,7 +7,7 @@ class LoginForm extends \yii\base\Model
     private $_user = false;
 
     public $email;
-    
+
     public $password;
 
     public function rules()

@@ -8,6 +8,7 @@ namespace luya;
  * Exception wrapper for {{yii\base\Exception}}, represents a generic exception for all purposes.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class Exception extends \yii\base\Exception

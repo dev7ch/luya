@@ -2,8 +2,8 @@
 
 namespace luyatests\core;
 
-use luyatests\LuyaWebTestCase;
 use luya\base\Widget;
+use luyatests\LuyaWebTestCase;
 
 class WidgetTest extends LuyaWebTestCase
 {
@@ -11,7 +11,7 @@ class WidgetTest extends LuyaWebTestCase
     {
         $this->assertContains('core/base/views', (new Widget())->getViewPath());
     }
-    
+
     public function testUseAppViewsPath()
     {
         $this->assertContains('@app/views/widgets', (new Widget(['useAppViewPath' => true]))->getViewPath());

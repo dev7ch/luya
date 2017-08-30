@@ -12,23 +12,23 @@ class UserFixture extends ActiveFixture
     {
         return [
             'user1' => [
-                'id' => 1,
-                'title' => 1,
-                'firstname' => 'John',
-                'lastname' => 'Doe',
-                'email' => 'john@luya.io',
-                'password' => 'nohash',
+                'id'         => 1,
+                'title'      => 1,
+                'firstname'  => 'John',
+                'lastname'   => 'Doe',
+                'email'      => 'john@luya.io',
+                'password'   => 'nohash',
                 'is_deleted' => 0,
             ],
             'user2' => [
-                'id' => 2,
-                'title' => 2,
-                'firstname' => 'Jane',
-                'lastname' => 'Doe',
-                'email' => 'jane@luya.io',
-                'password' => 'nohash',
+                'id'         => 2,
+                'title'      => 2,
+                'firstname'  => 'Jane',
+                'lastname'   => 'Doe',
+                'email'      => 'jane@luya.io',
+                'password'   => 'nohash',
                 'is_deleted' => 0,
-            ]
+            ],
         ];
     }
 }

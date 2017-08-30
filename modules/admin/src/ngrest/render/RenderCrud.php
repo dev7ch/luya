@@ -2,16 +2,15 @@
 
 namespace luya\admin\ngrest\render;
 
-use Yii;
 use luya\admin\components\Auth;
 use luya\admin\models\Lang;
-use luya\admin\ngrest\NgRest;
 use luya\admin\ngrest\base\Render;
+use luya\admin\ngrest\NgRest;
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\ViewContextInterface;
 
 /**
- *
  * @property \luya\admin\ngrest\render\RenderCrudView $view
  *
  * @author Basil Suter <basil@nadar.io>
@@ -36,11 +35,10 @@ class RenderCrud extends Render implements RenderInterface, ViewContextInterface
 
         return $this->_permissions[$type];
     }
-    
+
     private $_view;
 
     /**
-     *
      * @return \luya\admin\ngrest\render\RenderCrudView
      */
     public function getView()
@@ -51,76 +49,77 @@ class RenderCrud extends Render implements RenderInterface, ViewContextInterface
 
         return $this->_view;
     }
-    
+
     public function getViewPath()
     {
         return '@admin/views/ngrest';
     }
-    
+
     public function render()
     {
         return $this->view->render($this->viewFile, [
-            'canCreate' => $this->can(Auth::CAN_CREATE),
-            'canUpdate' => $this->can(Auth::CAN_UPDATE),
-            'canDelete' => $this->can(Auth::CAN_DELETE),
-            'config' => $this->config,
-            'isInline' => $this->getIsInline(),
+            'canCreate'      => $this->can(Auth::CAN_CREATE),
+            'canUpdate'      => $this->can(Auth::CAN_UPDATE),
+            'canDelete'      => $this->can(Auth::CAN_DELETE),
+            'config'         => $this->config,
+            'isInline'       => $this->getIsInline(),
             'modelSelection' => $this->getModelSelection(),
-            'relationCall' => $this->getRelationCall(), // this is currently only used for the curd_relation view file, there for split the RenderCrud into two sepeare renderes.
-            'currentMenu' => Yii::$app->adminmenu->getApiDetail($this->getConfig()->getApiEndpoint()),
+            'relationCall'   => $this->getRelationCall(), // this is currently only used for the curd_relation view file, there for split the RenderCrud into two sepeare renderes.
+            'currentMenu'    => Yii::$app->adminmenu->getApiDetail($this->getConfig()->getApiEndpoint()),
         ], $this);
     }
 
     public function getApiEndpoint($append = null)
     {
         if ($append) {
-            $append = '/' . ltrim($append, '/');
+            $append = '/'.ltrim($append, '/');
         }
-        
-        return 'admin/'.$this->getConfig()->getApiEndpoint() . $append;
+
+        return 'admin/'.$this->getConfig()->getApiEndpoint().$append;
     }
-    
+
     public function getPrimaryKey()
     {
         return $this->config->primaryKey;
     }
-    
+
     private $_relationCall = false;
-    
+
     public function getRelationCall()
     {
         return $this->_relationCall;
     }
-    
+
     public function setRelationCall(array $options)
     {
         $this->_relationCall = $options;
     }
-    
+
     private $_isInline = false;
 
     /**
-     * @var boolean Determine whether this ngrest config is runing as inline window mode (a modal dialog with the
-     * crud inside) or not. When inline mode is enabled some features like ESC-Keys and URL chaning must be disabled.
+     * @var bool Determine whether this ngrest config is runing as inline window mode (a modal dialog with the
+     *           crud inside) or not. When inline mode is enabled some features like ESC-Keys and URL chaning must be disabled.
+     *
      * @return bool
      */
     public function getIsInline()
     {
         return $this->_isInline;
     }
-    
+
     public function setIsInline($inline)
     {
         $this->_isInline = $inline;
     }
-    
+
     private $_modelSelection;
-    
+
     public function setModelSelection($selection)
     {
         $this->_modelSelection = $selection;
     }
-    
+
     public function getModelSelection()
     {
         return $this->_modelSelection;
@@ -131,29 +130,28 @@ class RenderCrud extends Render implements RenderInterface, ViewContextInterface
         if ($this->getConfig()->getDefaultOrderField() === false) {
             return false;
         }
-        
-        return $this->getConfig()->getDefaultOrderDirection() . $this->getConfig()->getDefaultOrderField();
+
+        return $this->getConfig()->getDefaultOrderDirection().$this->getConfig()->getDefaultOrderField();
     }
-    
+
     private $_globalButtons = [];
-    
+
     public function setGlobalButtons(array $buttons)
     {
         $this->_globalButtons = $buttons;
     }
-    
+
     public function getGlobalButtons()
     {
         return $this->_globalButtons;
     }
-    
+
     /*
      * OLD
      */
 
-    
     private $_buttons;
-    
+
     /**
      * collection all the buttons in the crud list.
      *
@@ -164,56 +162,58 @@ class RenderCrud extends Render implements RenderInterface, ViewContextInterface
      *     ['ngClick' => 'toggle(...)', 'icon' => 'fa fa-fw fa-edit', 'label' => 'Button Label']
      * ];
      * ```
-     * @return returns array with all buttons for this crud
+     *
      * @throws InvalidConfigException
+     *
+     * @return returns array with all buttons for this crud
      */
     public function getButtons()
     {
         if ($this->_buttons === null) {
             $buttons = [];
-            
+
             foreach ($this->getConfig()->getRelataions() as $rel) {
                 $api = Yii::$app->adminmenu->getApiDetail($rel['apiEndpoint']);
-                
+
                 if (!$api) {
                     throw new InvalidConfigException("The configured api relation '{$rel['apiEndpoint']}' does not exists in the menu elements. Maybe you have no permissions to access this API.");
                 }
-                
+
                 $buttons[] = [
                     'ngClick' => 'tabService.addTab(item.'.$this->config->primaryKey.', \''.$api['route'].'\', \''.$rel['arrayIndex'].'\', \''.$rel['label'].'\', \''.$rel['modelClass'].'\')',
-                    'icon' => 'chrome_reader_mode',
-                    'label' => $rel['label'],
+                    'icon'    => 'chrome_reader_mode',
+                    'label'   => $rel['label'],
                 ];
             }
-            
+
             if ($this->can(Auth::CAN_UPDATE)) {
                 // get all activeWindows assign to the crud
                 foreach ($this->getActiveWindows() as $hash => $config) {
                     $buttons[] = [
                         'ngClick' => 'getActiveWindow(\''.$hash.'\', item.'.$this->config->primaryKey.')',
-                        'icon' => $config['icon'],
-                        'label' => $config['alias'],
+                        'icon'    => $config['icon'],
+                        'label'   => $config['alias'],
                     ];
                 }
             }
-            
+
             // check if deletable is enabled
             if ($this->config->isDeletable() && $this->can(Auth::CAN_DELETE)) {
                 $buttons[] = [
                     'ngClick' => 'deleteItem(item.'.$this->config->primaryKey.')',
-                    'icon' => 'delete',
-                    'label' => '',
+                    'icon'    => 'delete',
+                    'label'   => '',
                 ];
             }
             // do we have an edit button
             if (count($this->getFields('update')) > 0 && $this->can(Auth::CAN_UPDATE)) {
                 $buttons[] = [
                     'ngClick' => 'toggleUpdate(item.'.$this->config->primaryKey.')',
-                    'icon' => 'mode_edit',
-                    'label' => '',
+                    'icon'    => 'mode_edit',
+                    'label'   => '',
                 ];
             }
-            
+
             $this->_buttons = $buttons;
         }
 
@@ -237,7 +237,7 @@ class RenderCrud extends Render implements RenderInterface, ViewContextInterface
     }
 
     private $_fields = [];
-    
+
     /**
      * wrapper of $config->getPointer to get only the fields.
      */
@@ -266,8 +266,7 @@ class RenderCrud extends Render implements RenderInterface, ViewContextInterface
     {
         return ($activeWindows = $this->config->getPointer('aw')) ? $activeWindows : [];
     }
-    
-    
+
     private $_langs;
 
     public function getLangs()
@@ -296,12 +295,12 @@ class RenderCrud extends Render implements RenderInterface, ViewContextInterface
         if (!$pointerElements) {
             return [];
         }
-        
+
         $names = [];
         foreach ($pointerElements as $elmn) {
             $names[$elmn['name']] = $elmn['name'];
         }
-        
+
         foreach ($this->getConfig()->getAttributeGroups()as $group) {
             foreach ($group[0] as $item) {
                 if (in_array($item, $names)) {
@@ -309,28 +308,27 @@ class RenderCrud extends Render implements RenderInterface, ViewContextInterface
                 }
             }
         }
-        
+
         $groups[] = [$names, '__default', 'collapsed' => true, 'is_default' => true];
-        
-        
+
         return array_merge($groups, $this->getConfig()->getAttributeGroups());
     }
-    
+
     public function forEachGroups($pointer)
     {
         $groups = $this->evalGroupFields($this->config->getPointer($pointer));
 
         $data = [];
-        
+
         foreach ($groups as $group) {
             $data[] = [
-                'fields' => $this->config->getFields($pointer, $group[0]),
-                'name' => $group[1],
-                'collapsed' => (isset($group['collapsed'])) ? (bool) $group['collapsed'] : false,
+                'fields'     => $this->config->getFields($pointer, $group[0]),
+                'name'       => $group[1],
+                'collapsed'  => (isset($group['collapsed'])) ? (bool) $group['collapsed'] : false,
                 'is_default' => (isset($group['is_default'])) ? (bool) $group['is_default'] : false,
             ];
         }
-        
+
         return $data;
     }
 
@@ -338,7 +336,8 @@ class RenderCrud extends Render implements RenderInterface, ViewContextInterface
      * @todo do not return the specofic type content, but return an array contain more infos also about is multi linguage and foreach in view file!
      *
      * @param unknown_type $element
-     * @param string $configContext list,create,update
+     * @param string       $configContext list,create,update
+     *
      * @return array
      */
     public function createElements($element, $configContext)
@@ -351,7 +350,7 @@ class RenderCrud extends Render implements RenderInterface, ViewContextInterface
                     $return[] = [
                         'html' => '<div class="form-i18n">
                                        <label class="form-i18n-label">
-                                           ' . $element['alias'] . '
+                                           '.$element['alias'].'
                                        </label>
                                            <div class="row">',
                     ];
@@ -386,7 +385,7 @@ class RenderCrud extends Render implements RenderInterface, ViewContextInterface
         $method = 'render'.ucfirst($configContext);
         $html = $obj->$method($elmnId, $elmnModel);
 
-        return is_array($html) ? implode(" ", $html) : $html;
+        return is_array($html) ? implode(' ', $html) : $html;
     }
 
     private function ngModelString($configContext, $fieldId)

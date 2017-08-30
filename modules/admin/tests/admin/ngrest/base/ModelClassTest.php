@@ -39,7 +39,7 @@ class ModelClassTest extends AdminTestCase
         } elseif ($type === static::OBJECT_TYPE) {
             $this->modelClass = new User();
         } else {
-            throw new InvalidConfigException('Not support model type: ' . $type);
+            throw new InvalidConfigException('Not support model type: '.$type);
         }
     }
 }

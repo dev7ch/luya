@@ -2,14 +2,15 @@
 
 namespace luya\admin\ngrest\render;
 
-use Yii;
-use yii\helpers\Inflector;
+use luya\admin\ngrest\base\Render;
 use luya\Exception;
 use luya\helpers\ObjectHelper;
-use luya\admin\ngrest\base\Render;
+use Yii;
+use yii\helpers\Inflector;
 
 /**
  * @todo sanitize post (\yii\helpers\HtmlPurifier::process(...)
+ *
  * @author Basil Suter <basil@nadar.io>
  */
 class RenderActiveWindowCallback extends Render implements RenderInterface
@@ -20,11 +21,11 @@ class RenderActiveWindowCallback extends Render implements RenderInterface
         $activeWindowCallback = Yii::$app->request->get('activeWindowCallback');
 
         $activeWindows = $this->config->getPointer('aw');
-        
+
         if (!isset($activeWindows[$activeWindowHash])) {
-            throw new Exception("Unable to find ActiveWindow " . $activeWindowHash);
+            throw new Exception('Unable to find ActiveWindow '.$activeWindowHash);
         }
-        
+
         $obj = Yii::createObject($activeWindows[$activeWindowHash]['objectConfig']);
         $obj->setItemId(Yii::$app->session->get($activeWindowHash));
         $obj->setConfigHash($this->config->getHash());

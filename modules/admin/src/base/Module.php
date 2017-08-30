@@ -2,8 +2,8 @@
 
 namespace luya\admin\base;
 
-use yii\helpers\ArrayHelper;
 use luya\base\AdminModuleInterface;
+use yii\helpers\ArrayHelper;
 
 /**
  * The base Admin Module for all administration modules.
@@ -16,7 +16,7 @@ use luya\base\AdminModuleInterface;
 class Module extends \luya\base\Module implements AdminModuleInterface
 {
     public $requiredComponents = ['db'];
-    
+
     /**
      * Dashboard Objects will be retrieved when the admin dashboard is loaded.
      * You can use either easy to use preconfigured objects or provide a custom dashboard widget
@@ -32,7 +32,7 @@ class Module extends \luya\base\Module implements AdminModuleInterface
 
     /**
      * @var array The config linker property can specific the configuration class for ngRest model where the key
-     * is the `api` and the value is the class to the config. An array could look like this:
+     *            is the `api` and the value is the class to the config. An array could look like this:
      *
      * ```php
      * [
@@ -63,7 +63,6 @@ class Module extends \luya\base\Module implements AdminModuleInterface
      */
     public $ngrestConfigLinker = [];
 
-    
     /**
      * Returns all Asset files to registered in the administration interfaces.
      *
@@ -85,7 +84,7 @@ class Module extends \luya\base\Module implements AdminModuleInterface
     {
         return [];
     }
-    
+
     /**
      * Returns all message identifier for the current module which should be assigned to the javascript admin interface.
      *
@@ -110,11 +109,12 @@ class Module extends \luya\base\Module implements AdminModuleInterface
     {
         return [];
     }
-    
+
     /**
      * Checks if a config exist in the linked property based on the provided `$apiEndpoint`.
      *
      * @param string $apiEndpoint The identifier of an apiEndpoint. ApiEndpoints are listed in the module class.
+     *
      * @return bool|string If apiEndpoint exists in the linker property returns className, otherwhise false.
      */
     public function getLinkedNgRestConfig($apiEndpoint)
@@ -129,7 +129,7 @@ class Module extends \luya\base\Module implements AdminModuleInterface
     {
         return false;
     }
-    
+
     /**
      * Extend the permission apis with none menu based items.
      *
@@ -176,11 +176,11 @@ class Module extends \luya\base\Module implements AdminModuleInterface
     public function getAuthApis()
     {
         $menu = $this->getMenu();
-        
+
         if (!$menu) {
             return $this->extendPermissionApis();
         }
-        
+
         return ArrayHelper::merge($this->extendPermissionApis(), $menu->getPermissionApis());
     }
 
@@ -192,11 +192,11 @@ class Module extends \luya\base\Module implements AdminModuleInterface
     public function getAuthRoutes()
     {
         $menu = $this->getMenu();
-         
+
         if (!$menu) {
             return $this->extendPermissionRoutes();
         }
-        
+
         return ArrayHelper::merge($this->extendPermissionRoutes(), $menu->getPermissionRoutes());
     }
 }

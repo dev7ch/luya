@@ -2,12 +2,12 @@
 
 namespace luya\web;
 
-use yii\base\Object;
-use luya\helpers\Url;
-use yii\base\InvalidConfigException;
-use yii\base\ArrayableTrait;
-use yii\base\Arrayable;
 use luya\helpers\StringHelper;
+use luya\helpers\Url;
+use yii\base\Arrayable;
+use yii\base\ArrayableTrait;
+use yii\base\InvalidConfigException;
+use yii\base\Object;
 
 /**
  * Generate External Link object.
@@ -16,35 +16,37 @@ use luya\helpers\StringHelper;
  * by the current base absolute base URL.
  *
  * @property string $href The external href link will be http ensured on set.
+ *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class ExternalLink extends Object implements LinkInterface, Arrayable
 {
     use LinkTrait, ArrayableTrait;
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
         parent::init();
-        
+
         if ($this->href === null) {
             throw new InvalidConfigException('The href attribute can not be empty and must be set trough configuration array.');
         }
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function fields()
     {
         return ['href', 'target'];
     }
-    
+
     private $_href;
-    
+
     /**
      * Set the href value for an external link resource.
      *
@@ -53,22 +55,22 @@ class ExternalLink extends Object implements LinkInterface, Arrayable
     public function setHref($href)
     {
         if (StringHelper::startsWith($href, '//')) {
-            $this->_href = Url::base(true) . str_replace('//', '/', $href);
+            $this->_href = Url::base(true).str_replace('//', '/', $href);
         } else {
             $this->_href = Url::ensureHttp($href);
         }
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getHref()
     {
         return $this->_href;
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getTarget()
     {

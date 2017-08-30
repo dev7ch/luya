@@ -2,27 +2,28 @@
 
 namespace luya\traits;
 
-use yii\web\NotFoundHttpException;
-use yii\helpers\Json;
 use Curl\Curl;
 use luya\helpers\Url;
+use yii\helpers\Json;
+use yii\web\NotFoundHttpException;
 
 /**
  * ErrorHandler trait to extend the renderException method with an api call if enabled.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 trait ErrorHandlerTrait
 {
     /**
      * @var string The url of the error api without trailing slash. Make sure you have installed the error api
-     * module on the requested api url (https://luya.io/guide/module/luyadev---luya-module-errorapi).
+     *             module on the requested api url (https://luya.io/guide/module/luyadev---luya-module-errorapi).
      */
     public $api = 'http://luya.io/errorapi';
 
     /**
-     * @var boolean Enable the transfer of exceptions to the defined `$api` server.
+     * @var bool Enable the transfer of exceptions to the defined `$api` server.
      */
     public $transferException = false;
 
@@ -39,24 +40,26 @@ trait ErrorHandlerTrait
      * ```
      *
      * @param string $message The message you want to send to the error api server.
-     * @param string $file The you are currently send the message (use __FILE__)
-     * @param string $line The line you want to submit (use __LINE__)
+     * @param string $file    The you are currently send the message (use __FILE__)
+     * @param string $line    The line you want to submit (use __LINE__)
+     *
      * @return bool|null
      */
     public function transferMessage($message, $file = __FILE__, $line = __LINE__)
     {
         return $this->apiServerSendData($this->getExceptionArray([
             'message' => $message,
-            'file' => $file,
-            'line' => $line,
+            'file'    => $file,
+            'line'    => $line,
         ]));
     }
-    
+
     /**
      * Send the array data to the api server.
      *
      * @param array $data The array to be sent to the server.
-     * @return boolean|null true/false if data has been sent to the api successfull or not, null if the transfer is disabled.
+     *
+     * @return bool|null true/false if data has been sent to the api successfull or not, null if the transfer is disabled.
      */
     private function apiServerSendData(array $data)
     {
@@ -65,30 +68,30 @@ trait ErrorHandlerTrait
             $curl->post(Url::ensureHttp(rtrim($this->api, '/')).'/create', [
                 'error_json' => Json::encode($data),
             ]);
+
             return !$curl->error;
         }
-        
-        return null;
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderException($exception)
     {
         if ($exception instanceof NotFoundHttpException || !$this->transferException) {
             return parent::renderException($exception);
         }
-        
+
         $this->apiServerSendData($this->getExceptionArray($exception));
-        
+
         return parent::renderException($exception);
     }
 
     /**
-     * Get an readable array to transfer from an exception
+     * Get an readable array to transfer from an exception.
      *
      * @param mixed $exception Exception object
+     *
      * @return array An array with transformed exception data
      */
     public function getExceptionArray($exception)
@@ -98,59 +101,60 @@ trait ErrorHandlerTrait
         $_line = 0;
         $_trace = [];
         $_previousException = [];
-        
+
         if (is_object($exception)) {
             $prev = $exception->getPrevious();
-            
+
             if (!empty($prev)) {
                 $_previousException = [
                     'message' => $prev->getMessage(),
-                    'file' => $prev->getFile(),
-                    'line' => $prev->getLine(),
-                    'trace' => $this->buildTrace($prev),
+                    'file'    => $prev->getFile(),
+                    'line'    => $prev->getLine(),
+                    'trace'   => $this->buildTrace($prev),
                 ];
             }
-            
+
             $_trace = $this->buildTrace($exception);
             $_message = $exception->getMessage();
             $_file = $exception->getFile();
             $_line = $exception->getLine();
         } elseif (is_string($exception)) {
-            $_message = 'exception string: ' . $exception;
+            $_message = 'exception string: '.$exception;
         } elseif (is_array($exception)) {
-            $_message = isset($exception['message']) ? $exception['message'] : 'exception array dump: ' . print_r($exception, true);
+            $_message = isset($exception['message']) ? $exception['message'] : 'exception array dump: '.print_r($exception, true);
             $_file = isset($exception['file']) ? $exception['file'] : __FILE__;
             $_line = isset($exception['line']) ? $exception['line'] : __LINE__;
         }
 
         return [
-            'message' => $_message,
-            'file' => $_file,
-            'line' => $_line,
-            'requestUri' => (isset($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : null,
-            'serverName' => (isset($_SERVER['SERVER_NAME'])) ? $_SERVER['SERVER_NAME'] : null,
-            'date' => date('d.m.Y H:i'),
-            'trace' => $_trace,
+            'message'           => $_message,
+            'file'              => $_file,
+            'line'              => $_line,
+            'requestUri'        => (isset($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : null,
+            'serverName'        => (isset($_SERVER['SERVER_NAME'])) ? $_SERVER['SERVER_NAME'] : null,
+            'date'              => date('d.m.Y H:i'),
+            'trace'             => $_trace,
             'previousException' => $_previousException,
-            'ip' => (isset($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : null,
-            'get' => (isset($_GET)) ? $_GET : [],
-            'post' => (isset($_POST)) ? $_POST : [],
-            'session' => (isset($_SESSION)) ? $_SESSION : [],
-            'server' => (isset($_SERVER)) ? $_SERVER : [],
+            'ip'                => (isset($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : null,
+            'get'               => (isset($_GET)) ? $_GET : [],
+            'post'              => (isset($_POST)) ? $_POST : [],
+            'session'           => (isset($_SESSION)) ? $_SESSION : [],
+            'server'            => (isset($_SERVER)) ? $_SERVER : [],
         ];
     }
-    
+
     private function buildTrace($exception)
     {
         $_trace = [];
         foreach ($exception->getTrace() as $key => $item) {
             $_trace[$key] = [
-                'file' => isset($item['file']) ? $item['file'] : null,
-                'line' => isset($item['line']) ? $item['line'] : null,
+                'file'     => isset($item['file']) ? $item['file'] : null,
+                'line'     => isset($item['line']) ? $item['line'] : null,
                 'function' => isset($item['function']) ? $item['function'] : null,
-                'class' => isset($item['class']) ? $item['class'] : null,
+                'class'    => isset($item['class']) ? $item['class'] : null,
             ];
         }
+
         return $_trace;
     }
 }

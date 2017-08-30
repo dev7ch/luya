@@ -2,31 +2,30 @@
 
 namespace luya\admin\models;
 
-use Yii;
-use yii\web\IdentityInterface;
-
+use luya\admin\aws\ChangePasswordActiveWindow;
 use luya\admin\aws\ChangePasswordInterface;
 use luya\admin\Module;
-use luya\admin\traits\SoftDeleteTrait;
-use yii\helpers\Json;
 use luya\admin\ngrest\base\NgRestModel;
-use luya\admin\aws\ChangePasswordActiveWindow;
+use luya\admin\traits\SoftDeleteTrait;
+use Yii;
+use yii\helpers\Json;
+use yii\web\IdentityInterface;
 
 /**
  * User Model represents all Administration Users.
  *
- * @property integer $id
+ * @property int $id
  * @property string $firstname
  * @property string $lastname
- * @property integer $title
+ * @property int $title
  * @property string $email
  * @property string $password
  * @property string $password_salt
  * @property string $auth_token
- * @property integer $is_deleted
+ * @property int $is_deleted
  * @property string $secure_token
- * @property integer $secure_token_timestamp
- * @property integer $force_reload
+ * @property int $secure_token_timestamp
+ * @property int $force_reload
  * @property string $settings
  * @property \luya\admin\models\UserSetting $setting Setting object to store data.
  *
@@ -35,13 +34,13 @@ use luya\admin\aws\ChangePasswordActiveWindow;
 final class User extends NgRestModel implements IdentityInterface, ChangePasswordInterface
 {
     const USER_SETTING_ISDEVELOPER = 'isDeveloper';
-    
+
     const USER_SETTING_UILANGUAGE = 'luyadminlanguage';
-    
+
     use SoftDeleteTrait;
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -49,67 +48,67 @@ final class User extends NgRestModel implements IdentityInterface, ChangePasswor
         $this->on(self::EVENT_BEFORE_INSERT, [$this, 'beforeCreate']);
         $this->on(self::EVENT_BEFORE_VALIDATE, [$this, 'eventBeforeValidate']);
     }
-    
+
     private $_setting;
-    
+
     public function getSetting()
     {
         if ($this->_setting === null) {
             $settingsArray = (empty($this->settings)) ? [] : Json::decode($this->settings);
             $this->_setting = Yii::createObject(['class' => UserSetting::className(), 'sender' => $this, 'data' => $settingsArray]);
         }
-        
+
         return $this->_setting;
     }
-    
+
     public function getLastloginTimestamp()
     {
         $item = UserLogin::find()->select(['timestamp_create'])->where(['user_id' => $this->id])->orderBy('id DESC')->asArray()->one();
-    
+
         if ($item) {
             return $item['timestamp_create'];
         }
     }
-    
+
     public function updateSettings(array $data)
     {
         $this->updateAttributes([
             'settings' => Json::encode($data),
         ]);
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function ngRestApiEndpoint()
     {
         return 'api-admin-user';
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function ngRestListOrder()
     {
         return ['firstname' => SORT_ASC];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function ngRestAttributeTypes()
     {
         return [
-            'title' => ['selectArray', 'data' => static::getTitles(), 'initValue' => 0],
+            'title'     => ['selectArray', 'data' => static::getTitles(), 'initValue' => 0],
             'firstname' => 'text',
-            'lastname' => 'text',
-            'email' => 'text',
-            'password' => 'password',
+            'lastname'  => 'text',
+            'email'     => 'text',
+            'password'  => 'password',
         ];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function ngRestFilters()
     {
@@ -117,9 +116,9 @@ final class User extends NgRestModel implements IdentityInterface, ChangePasswor
             'Removed' => self::find()->where(['is_deleted' => true]),
         ];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function ngRestExtraAttributeTypes()
     {
@@ -127,7 +126,7 @@ final class User extends NgRestModel implements IdentityInterface, ChangePasswor
             'lastloginTimestamp' => 'datetime',
         ];
     }
-    
+
     public function ngRestScopes()
     {
         return [
@@ -137,7 +136,7 @@ final class User extends NgRestModel implements IdentityInterface, ChangePasswor
             ['delete', true],
         ];
     }
-    
+
     public function ngRestActiveWindows()
     {
         return [
@@ -146,7 +145,7 @@ final class User extends NgRestModel implements IdentityInterface, ChangePasswor
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -154,7 +153,7 @@ final class User extends NgRestModel implements IdentityInterface, ChangePasswor
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function genericSearchFields()
     {
@@ -162,7 +161,7 @@ final class User extends NgRestModel implements IdentityInterface, ChangePasswor
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -179,32 +178,32 @@ final class User extends NgRestModel implements IdentityInterface, ChangePasswor
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributeLabels()
     {
         return [
-            'title' => Module::t('mode_user_title'),
-            'firstname' => Module::t('mode_user_firstname'),
-            'lastname' => Module::t('mode_user_lastname'),
-            'email' => Module::t('mode_user_email'),
-            'password' => Module::t('mode_user_password'),
+            'title'              => Module::t('mode_user_title'),
+            'firstname'          => Module::t('mode_user_firstname'),
+            'lastname'           => Module::t('mode_user_lastname'),
+            'email'              => Module::t('mode_user_email'),
+            'password'           => Module::t('mode_user_password'),
             'lastloginTimestamp' => Module::t('model_user_lastlogintimestamp'),
         ];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function scenarios()
     {
         return [
-            'restcreate' => ['title', 'firstname', 'lastname', 'email', 'password'],
-            'restupdate' => ['title', 'firstname', 'lastname', 'email'],
+            'restcreate'     => ['title', 'firstname', 'lastname', 'email', 'password'],
+            'restupdate'     => ['title', 'firstname', 'lastname', 'email'],
             'changepassword' => ['password', 'password_salt'],
-            'login' => ['email', 'password', 'force_reload'],
-            'securelayer' => ['secure_token'],
-            'default' => ['title', 'firstname', 'lastname', 'email', 'password', 'force_reload', 'settings'],
+            'login'          => ['email', 'password', 'force_reload'],
+            'securelayer'    => ['secure_token'],
+            'default'        => ['title', 'firstname', 'lastname', 'email', 'password', 'force_reload', 'settings'],
         ];
     }
 
@@ -233,7 +232,7 @@ final class User extends NgRestModel implements IdentityInterface, ChangePasswor
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function find()
     {
@@ -254,7 +253,7 @@ final class User extends NgRestModel implements IdentityInterface, ChangePasswor
 
         return $this->addError('newpass', 'Fehler beim Verschlüsseln des Passworts aufgetreten!');
     }
-    
+
     public function encodePassword()
     {
         if (empty($this->password) || strlen($this->password) < 8) {
@@ -269,7 +268,7 @@ final class User extends NgRestModel implements IdentityInterface, ChangePasswor
 
         return true;
     }
-    
+
     /**
      * Get the title Mr, Mrs. as string for the current user.
      *
@@ -281,7 +280,6 @@ final class User extends NgRestModel implements IdentityInterface, ChangePasswor
     }
 
     /**
-     *
      * @return string[]
      */
     public static function getTitles()
@@ -293,6 +291,7 @@ final class User extends NgRestModel implements IdentityInterface, ChangePasswor
     {
         $fields = parent::fields();
         unset($fields['password'], $fields['password_salt'], $fields['auth_token'], $fields['is_deleted']);
+
         return $fields;
     }
 
@@ -336,8 +335,8 @@ final class User extends NgRestModel implements IdentityInterface, ChangePasswor
      * Finds an identity by the given token.
      *
      * @param string $token the token to be looked for
+     * @param null   $type
      *
-     * @param null $type
      * @return null|IdentityInterface the identity object that matches the given token.
      */
     public static function findIdentityByAccessToken($token, $type = null)

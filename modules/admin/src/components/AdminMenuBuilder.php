@@ -2,8 +2,8 @@
 
 namespace luya\admin\components;
 
-use yii\base\Object;
 use luya\base\AdminModuleInterface;
+use yii\base\Object;
 
 /**
  * Builder class for the Administration Menu/Navigation.
@@ -33,187 +33,191 @@ use luya\base\AdminModuleInterface;
  * ```
  *
  * @since 1.0.0-RC2
+ *
  * @author Basil Suter <basil@nadar.io>
  */
 class AdminMenuBuilder extends Object implements AdminMenuBuilderInterface
 {
     private static $index = 0;
-    
+
     private $_menu = [];
-    
+
     private $_pointers = [];
-    
+
     /**
      * @var array The available options for itemApi and itemRoute.
      */
     protected static $options = ['hiddenInMenu'];
-    
+
     /**
      * @var \luya\base\AdminModuleInterface The context on what the menu is running.
      */
     protected $moduleContext;
-    
-    
-    
-    
-    
+
     /**
      * @param \luya\base\AdminModuleInterface $module
-     * @param array $config
+     * @param array                           $config
      */
     public function __construct(AdminModuleInterface $module, array $config = [])
     {
         $this->moduleContext = $module;
         parent::__construct($config);
     }
-    
+
     /**
      * @var array List of all permission APIs.
      */
     private $_permissionApis = [];
-    
+
     public function getPermissionApis()
     {
         return $this->_permissionApis;
     }
-    
+
     /**
      * @var array List of all permission Routes.
      */
     private $_permissionRoutes = [];
-    
+
     public function getPermissionRoutes()
     {
         return $this->_permissionRoutes;
     }
-    
+
     /**
      * The node is the menu entry in the TOP navigation of the luya administration interface.
      *
-     * @param string $name The name of the node, all names will process trough the `Yii::t` function with its module name as prefix.
-     * @param string $icon The icon name based on the google icons font see https://design.google.com/icons/.
-     * @param bool $template Whether to use a custom template or not.
+     * @param string $name     The name of the node, all names will process trough the `Yii::t` function with its module name as prefix.
+     * @param string $icon     The icon name based on the google icons font see https://design.google.com/icons/.
+     * @param bool   $template Whether to use a custom template or not.
+     *
      * @return \luya\admin\components\AdminMenuBuilder
      */
     public function node($name, $icon, $template = false)
     {
         $this->_pointers['node'] = self::$index;
         $this->_menu[self::$index] = [
-            'id' => self::$index,
-            'moduleId' => $this->moduleContext->id,
-            'template' => $template,
-            'routing' => $template ? 'custom' : 'default',
-            'alias' => $name,
-            'icon' => $icon,
-            'permissionRoute' => false,
+            'id'                => self::$index,
+            'moduleId'          => $this->moduleContext->id,
+            'template'          => $template,
+            'routing'           => $template ? 'custom' : 'default',
+            'alias'             => $name,
+            'icon'              => $icon,
+            'permissionRoute'   => false,
             'permissionIsRoute' => false,
-            'searchModelClass' => false,
+            'searchModelClass'  => false,
         ];
-    
+
         self::$index++;
+
         return $this;
     }
-    
+
     /**
      * A node which is a custom route to open, nodes are the the top menu of the luya administration interfaces.
      *
-     * @param string $name The name of the node, all names will process trough the `Yii::t` function with its module name as prefix.
-     * @param string $icon The icon name based on the google icons font see https://design.google.com/icons/.
-     * @param string $route The route to the template which is going to be render by angular, example `cmsadmin/default/index`.
+     * @param string $name             The name of the node, all names will process trough the `Yii::t` function with its module name as prefix.
+     * @param string $icon             The icon name based on the google icons font see https://design.google.com/icons/.
+     * @param string $route            The route to the template which is going to be render by angular, example `cmsadmin/default/index`.
      * @param string $searchModelClass The path to the model to search inside the admin global search, must implement the {{luya\admin\base\GenericSearchInterface}}.
+     *
      * @return \luya\admin\components\AdminMenuBuilder
      */
     public function nodeRoute($name, $icon, $route, $searchModelClass = null)
     {
         $this->_pointers['node'] = self::$index;
         $this->_menu[self::$index] = [
-            'id' => self::$index,
-            'moduleId' => $this->moduleContext->id,
-            'template' => $route, // as the template is equal to the route of the node which is loaded
-            'routing' => 'custom',
-            'alias' => $name,
-            'icon' => $icon,
-            'permissionRoute' => $route,
+            'id'                => self::$index,
+            'moduleId'          => $this->moduleContext->id,
+            'template'          => $route, // as the template is equal to the route of the node which is loaded
+            'routing'           => 'custom',
+            'alias'             => $name,
+            'icon'              => $icon,
+            'permissionRoute'   => $route,
             'permissionIsRoute' => true,
-            'searchModelClass' => $searchModelClass,
+            'searchModelClass'  => $searchModelClass,
         ];
-    
+
         $this->_permissionRoutes[] = ['route' => $route, 'alias' => $name];
-    
+
         self::$index++;
+
         return $this;
     }
-    
+
     /**
      * Add a group, all items (api or route) must be child items of a group. The group is the title in the left menu of the admin interface.
      *
      * @param string $name The name of the group.
+     *
      * @return \luya\admin\components\AdminMenuBuilder
      */
     public function group($name)
     {
         $this->_pointers['group'] = $name;
         $this->_menu[$this->_pointers['node']]['groups'][$name] = ['name' => $name, 'items' => []];
-    
+
         return $this;
     }
-    
+
     /**
      * Add an item to a group. API items are based on the ngrest crud concept.
      *
-     * @param string $name The name of the Api (displayed as menu point in the left navigation), all names run through the `Yii::t()` method prefixed with the module id.
-     * @param string $route The api route to the ngrest controller `cmsadmin/navcontainer/index`.
-     * @param string $icon The icon name based on the google icons font see https://design.google.com/icons/.
+     * @param string $name        The name of the Api (displayed as menu point in the left navigation), all names run through the `Yii::t()` method prefixed with the module id.
+     * @param string $route       The api route to the ngrest controller `cmsadmin/navcontainer/index`.
+     * @param string $icon        The icon name based on the google icons font see https://design.google.com/icons/.
      * @param string $apiEndpoint The api endpoint defined in the NgRestModel::ngRestApiEndpoint `api-cms-navcontainer`.
-     * @param array $options An array with options you can provided and read inside the admin menu component. See {{\luya\admin\components\AdminMenuBuilder::verifyOptions}} for detail list and informations.
+     * @param array  $options     An array with options you can provided and read inside the admin menu component. See {{\luya\admin\components\AdminMenuBuilder::verifyOptions}} for detail list and informations.
+     *
      * @return \luya\admin\components\AdminMenuBuilder
      */
     public function itemApi($name, $route, $icon, $apiEndpoint, array $options = [])
     {
         $this->_menu[$this->_pointers['node']]['groups'][$this->_pointers['group']]['items'][] = [
-            'alias' => $name,
-            'route' => $route,
-            'icon' => $icon,
+            'alias'                => $name,
+            'route'                => $route,
+            'icon'                 => $icon,
             'permssionApiEndpoint' => $apiEndpoint,
-            'permissionIsRoute' => false,
-            'permissionIsApi' => true,
-            'searchModelClass' => false,
-            'options' => $this->verifyOptions($options),
+            'permissionIsRoute'    => false,
+            'permissionIsApi'      => true,
+            'searchModelClass'     => false,
+            'options'              => $this->verifyOptions($options),
         ];
-    
+
         $this->_permissionApis[] = ['api' => $apiEndpoint, 'alias' => $name];
-    
+
         return $this;
     }
-    
+
     /**
      * Add an item to a group. Route items opens a angular view.
      *
-     * @param string $name The name of the Api (displayed as menu point in the left navigation), all names run through the `Yii::t()` method prefixed with the module id.
-     * @param string $route The route to the template `cmsadmin/permission/index`.
-     * @param string $icon The icon name based on the google icons font see https://design.google.com/icons/.
+     * @param string $name             The name of the Api (displayed as menu point in the left navigation), all names run through the `Yii::t()` method prefixed with the module id.
+     * @param string $route            The route to the template `cmsadmin/permission/index`.
+     * @param string $icon             The icon name based on the google icons font see https://design.google.com/icons/.
      * @param string $searchModelClass The search model must implement the {{luya\admin\base\GenericSearchInterface}}.
-     * @param array $options An array with options you can provided and read inside the admin menu component. See {{\luya\admin\components\AdminMenuBuilder::verifyOptions}} for detail list and informations.
+     * @param array  $options          An array with options you can provided and read inside the admin menu component. See {{\luya\admin\components\AdminMenuBuilder::verifyOptions}} for detail list and informations.
+     *
      * @return \luya\admin\components\AdminMenuBuilder
      */
     public function itemRoute($name, $route, $icon, $searchModelClass = null, array $options = [])
     {
         $this->_menu[$this->_pointers['node']]['groups'][$this->_pointers['group']]['items'][] = [
-            'alias' => $name,
-            'route' => $route,
-            'icon' => $icon,
+            'alias'                => $name,
+            'route'                => $route,
+            'icon'                 => $icon,
             'permssionApiEndpoint' => null,
-            'permissionIsRoute' => true,
-            'permissionIsApi' => false,
-            'searchModelClass' => $searchModelClass,
-            'options' => $this->verifyOptions($options),
+            'permissionIsRoute'    => true,
+            'permissionIsApi'      => false,
+            'searchModelClass'     => $searchModelClass,
+            'options'              => $this->verifyOptions($options),
         ];
-    
+
         $this->_permissionRoutes[] = ['route' => $route, 'alias' => $name];
-    
+
         return $this;
     }
-    
+
     /**
      * Verify the additional options of an itemRoute or itemApi item.
      *
@@ -222,6 +226,7 @@ class AdminMenuBuilder extends Object implements AdminMenuBuilderInterface
      * - hiddenInMenu: If set to true the item will be hidden in the left menu, this is usefull when creating ngrest crud's for crud-realtion views.
      *
      * @param array $options The options to verify
+     *
      * @return array The verified allowed options.
      */
     protected function verifyOptions(array $options = [])
@@ -231,24 +236,25 @@ class AdminMenuBuilder extends Object implements AdminMenuBuilderInterface
                 unset($options[$key]);
             }
         }
-        
+
         return $options;
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function menu()
     {
         return $this->_menu;
     }
-    
+
     /**
      * Helper method to get then value of an options inside an item.
      *
-     * @param array $item The item where the option key persists.
-     * @param string $optionName The name of the option to get.
-     * @param mixed $defaultValue The default value if the option is not available for this item.
+     * @param array  $item         The item where the option key persists.
+     * @param string $optionName   The name of the option to get.
+     * @param mixed  $defaultValue The default value if the option is not available for this item.
+     *
      * @return mixed
      */
     public static function getOptionValue(array $item, $optionName, $defaultValue = false)
@@ -256,7 +262,7 @@ class AdminMenuBuilder extends Object implements AdminMenuBuilderInterface
         if (!isset($item['options'])) {
             return $defaultValue;
         }
-        
+
         return (isset($item['options'][$optionName])) ? $item['options'][$optionName] : $defaultValue;
     }
 }

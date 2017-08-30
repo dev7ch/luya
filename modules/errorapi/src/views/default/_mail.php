@@ -1,11 +1,11 @@
 <?php
 /**
- * @var $model
+ * @var
  */
 ?>
 <h1 style="color: #f00;"><?php echo $model->message; ?></h1>
 <p style="color: #800000;">from <strong><?php echo $model->serverName; ?></strong></p>
-<a href="https://github.com/luyadev/luya/issues/new?title=<?php echo urlencode('#'. $model->identifier . ' ' . $model->message);?>"><?php echo luya\errorapi\Module::t('mail_create_issue') ?></a>
+<a href="https://github.com/luyadev/luya/issues/new?title=<?php echo urlencode('#'.$model->identifier.' '.$model->message); ?>"><?php echo luya\errorapi\Module::t('mail_create_issue') ?></a>
 <table cellspacing="2" cellpadding="6" border="0" width="1200">
 <?php foreach ($model->errorArray as $key => $value): ?>
 <tr>
@@ -59,14 +59,14 @@
                     </tr>
                  <?php else: ?>
                     <tr>
-                        <td><?php echo $k; ?>:</td><td><?php echo (is_array($v)) ?  print_r($v, true) : $v; ?></td>
+                        <td><?php echo $k; ?>:</td><td><?php echo (is_array($v)) ? print_r($v, true) : $v; ?></td>
                     </tr>
                  <?php endif; ?>
                 <?php endforeach; ?>
             </table>
         <?php else: ?>
             <?php echo $value; ?>
-        <?php endif;?>
+        <?php endif; ?>
 </tr>
 <?php endforeach; ?>
 </table>

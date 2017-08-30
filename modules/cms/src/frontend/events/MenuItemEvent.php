@@ -21,17 +21,18 @@ namespace luya\cms\frontend\events;
  *  ```
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0-beta5
  */
 class MenuItemEvent extends \yii\base\Event
 {
     public $item;
-    
+
     public function getVisible()
     {
         return !$this->item->isHidden;
     }
-    
+
     public function setVisible($state)
     {
         $this->item->isHidden = !$state;

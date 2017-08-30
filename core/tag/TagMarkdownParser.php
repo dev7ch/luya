@@ -15,12 +15,13 @@ use cebe\markdown\GithubMarkdown;
  * Otherwise those values would be automatiaclly converted to html link tags (<a href="www.luya.io">www.luya.io</a>).
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class TagMarkdownParser extends GithubMarkdown
 {
     /**
-     * @var boolean To convert all newlines to <br/>-tags. By default only newlines with two preceding spaces are converted to <br/>-tags.
+     * @var bool To convert all newlines to <br/>-tags. By default only newlines with two preceding spaces are converted to <br/>-tags.
      */
     public $enableNewlines = true;
 
@@ -33,10 +34,10 @@ class TagMarkdownParser extends GithubMarkdown
      * Will not be parsed to an a tag.
      *
      * @param string $markdown
+     *
      * @return array|void
      */
     protected function parseUrl($markdown)
     {
-        return;
     }
 }

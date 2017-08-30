@@ -2,13 +2,13 @@
 
 namespace luya\traits;
 
-use Yii;
-use yii\web\Response;
-use yii\filters\auth\CompositeAuth;
-use yii\filters\auth\QueryParamAuth;
-use yii\filters\auth\HttpBearerAuth;
-use yii\filters\ContentNegotiator;
 use luya\rest\UserBehaviorInterface;
+use Yii;
+use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBearerAuth;
+use yii\filters\auth\QueryParamAuth;
+use yii\filters\ContentNegotiator;
+use yii\web\Response;
 
 /**
  * Rest Behaviors Trait.
@@ -25,6 +25,7 @@ use luya\rest\UserBehaviorInterface;
  * Read the {{luya\rest\UserBehaviorInterface}} about the configuration ability to protect the controller.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 trait RestBehaviorsTrait
@@ -32,30 +33,30 @@ trait RestBehaviorsTrait
     /**
      * Whether the rest controller is protected or not.
      *
-     * @return boolean|\yii\web\User
+     * @return bool|\yii\web\User
      */
     private function getUserAuthClass()
     {
         if ($this instanceof UserBehaviorInterface) {
             $class = $this->userAuthClass();
-            
+
             if (!$class) { // return false;
                 return false;
             }
-            
+
             if (!is_object($class)) {
                 return Yii::createObject($class);
             }
-    
+
             return $class;
         }
-        
+
         return false;
     }
 
     /**
      * Override the default {{yii\rest\Controller::behaviors()}} method.
-     * The following changes are differ to the base implementation:
+     * The following changes are differ to the base implementation:.
      *
      * + If {{luya\rest\UserBehaviorInterface}} is **not** implemented, the `authenticator` behavior ({{yii\filters\auth\CompositeAuth}}) is removed.
      * + If {{luya\rest\UserBehaviorInterface}} **is** implemented, the `authenticator` behavior ({{yii\filters\auth\CompositeAuth}}) is enabled.
@@ -74,8 +75,8 @@ trait RestBehaviorsTrait
         } else {
             // change to admin user auth class
             $behaviors['authenticator'] = [
-                'class' => CompositeAuth::className(),
-                'user' => $this->getUserAuthClass(),
+                'class'       => CompositeAuth::className(),
+                'user'        => $this->getUserAuthClass(),
                 'authMethods' => [
                     QueryParamAuth::className(),
                     HttpBearerAuth::className(),
@@ -84,13 +85,13 @@ trait RestBehaviorsTrait
         }
 
         $behaviors['contentNegotiator'] = [
-            'class' => ContentNegotiator::className(),
+            'class'   => ContentNegotiator::className(),
             'formats' => [
                 'application/json' => Response::FORMAT_JSON,
-                'application/xml' => Response::FORMAT_XML,
+                'application/xml'  => Response::FORMAT_XML,
             ],
         ];
-        
+
         // by default rate limiter behavior is removed as its not implememented.
         if (isset($behaviors['rateLimiter'])) {
             unset($behaviors['rateLimiter']);

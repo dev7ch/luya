@@ -2,19 +2,17 @@
 
 namespace luya\cms;
 
-use Yii;
-
 use ArrayAccess;
-use yii\base\Component;
-use yii\web\NotFoundHttpException;
-use yii\db\Query as DbQuery;
-
+use luya\cms\menu\InjectItemInterface;
+use luya\cms\menu\Item;
 use luya\cms\menu\Query as MenuQuery;
+use luya\cms\menu\QueryOperatorFieldInterface;
 use luya\cms\models\NavItemModule;
 use luya\traits\CacheableTrait;
-use luya\cms\menu\Item;
-use luya\cms\menu\InjectItemInterface;
-use luya\cms\menu\QueryOperatorFieldInterface;
+use Yii;
+use yii\base\Component;
+use yii\db\Query as DbQuery;
+use yii\web\NotFoundHttpException;
 
 /**
  * Menu container component by language.
@@ -87,37 +85,38 @@ use luya\cms\menu\QueryOperatorFieldInterface;
  * @property \luya\cms\menu\Item $home Get the home menu item.
  *
  * @since 1.0.0-beta1
+ *
  * @author Basil Suter <basil@nadar.io>
  */
 class Menu extends Component implements ArrayAccess, QueryOperatorFieldInterface
 {
     use CacheableTrait;
-    
+
     /**
      * @todo rename to EVENT_ON_ITEM_FIND
      */
     const MENU_ITEM_EVENT = 'menuItemEvent';
-    
+
     /**
      * @var string Event which is triggere after the menu component is loaded and registered.
      */
     const EVENT_AFTER_LOAD = 'eventAfterLoad';
-    
+
     const ITEM_TYPE_PAGE = 1;
-    
+
     const ITEM_TYPE_MODULE = 2;
-    
+
     const ITEM_TYPE_REDIRECT = 3;
-    
+
     /**
      * @var \luya\web\Request Request object
      */
     public $request;
-    
+
     private $_cachePrefix = 'MenuContainerCache';
-    
+
     private $_currentUrlRule;
-    
+
     private $_composition;
 
     private $_current;
@@ -129,21 +128,21 @@ class Menu extends Component implements ArrayAccess, QueryOperatorFieldInterface
     private $_languages;
 
     private $_redirectMap;
-    
+
     private $_modulesMap;
-    
+
     /**
      * Class constructor to DI the request object.
      *
      * @param \luya\web\Request $request The request object resolved by DI.
-     * @param array $config
+     * @param array             $config
      */
     public function __construct(\luya\web\Request $request, array $config = [])
     {
         $this->request = $request;
         parent::__construct($config);
     }
-    
+
     /**
      * Set url rules for the current page item in order to retrieve at another point of the appliation when building language links.
      *
@@ -163,11 +162,12 @@ class Menu extends Component implements ArrayAccess, QueryOperatorFieldInterface
     {
         return $this->_currentUrlRule;
     }
-    
+
     /**
      * ArrayAccess check if the offset key exists in the language array.
      *
      * @param string $offset Language short code the verify
+     *
      * @return bool
      */
     public function offsetExists($offset)
@@ -179,6 +179,7 @@ class Menu extends Component implements ArrayAccess, QueryOperatorFieldInterface
      * ArrayAccess get the current offset key if not yet loaded.
      *
      * @param string $offset Language short code to get
+     *
      * @return array|mixed
      */
     public function offsetGet($offset)
@@ -203,6 +204,7 @@ class Menu extends Component implements ArrayAccess, QueryOperatorFieldInterface
      * ArrayAccess offsetSet is not implemented in singleton component.
      *
      * @param string $offset
+     *
      * @throws \luya\cms\Exception Always throws exception as this method is not implemented.
      */
     public function offsetUnset($offset)
@@ -223,7 +225,7 @@ class Menu extends Component implements ArrayAccess, QueryOperatorFieldInterface
 
         return $this->_composition;
     }
-    
+
     /**
      * Setter method for the language container.
      *
@@ -261,7 +263,7 @@ class Menu extends Component implements ArrayAccess, QueryOperatorFieldInterface
      * ```
      *
      * @param string $langShortCode
-     * @param array $data An array with items based on the database `[0 => ['id' => 1, 'nav_id' => 2, ... ]]`
+     * @param array  $data          An array with items based on the database `[0 => ['id' => 1, 'nav_id' => 2, ... ]]`
      */
     public function setLanguageContainer($langShortCode, array $data)
     {
@@ -273,6 +275,7 @@ class Menu extends Component implements ArrayAccess, QueryOperatorFieldInterface
      * when using the ArrayAccess offsetGet() method.
      *
      * @param string $langShortCode A languag short code which have to access in $this->getLanguages().
+     *
      * @return array An array containing all items in theyr keys for the provided language short code.
      */
     public function getLanguageContainer($langShortCode)
@@ -289,7 +292,8 @@ class Menu extends Component implements ArrayAccess, QueryOperatorFieldInterface
      * Get languag information for a specific language short code.
      *
      * @param string $shortCode E.g. de or en
-     * @return array|boolean If the shortCode exists an array with informations as returned, otherwise false.
+     *
+     * @return array|bool If the shortCode exists an array with informations as returned, otherwise false.
      */
     public function getLanguage($shortCode)
     {
@@ -347,13 +351,14 @@ class Menu extends Component implements ArrayAccess, QueryOperatorFieldInterface
      * not work of changed urls).
      *
      * @param \luya\cms\menu\Item $item The current item object
+     *
      * @since 1.0.0-beta6
      */
     public function setCurrent(Item $item)
     {
         $this->_current = $item;
     }
-    
+
     /**
      * Get the current menu item resolved by active language (from composition).
      *
@@ -367,15 +372,16 @@ class Menu extends Component implements ArrayAccess, QueryOperatorFieldInterface
 
         return $this->_current;
     }
-    
+
     /**
      * Get all items for a specific level.
      *
-     * @param integer $level Define the level you like to get the items from, the hirarchy starts by the level 1, which is the root line.
+     * @param int                 $level    Define the level you like to get the items from, the hirarchy starts by the level 1, which is the root line.
      * @param \luya\cms\menu\Item $baseItem Provide an optional element which represents the base calculation item for Theme
-     * siblings/children calculation, this can be case when you have several contains do not want to use the "current" Item
-     * as base calucation, because getCurrent() could be in another container so it would get you all level container items for
-     * this container.
+     *                                      siblings/children calculation, this can be case when you have several contains do not want to use the "current" Item
+     *                                      as base calucation, because getCurrent() could be in another container so it would get you all level container items for
+     *                                      this container.
+     *
      * @return array|\luya\cms\menu\QueryIterator All siblings or children items, if not found an empty array will return.
      */
     public function getLevelContainer($level, Item $baseItem = null)
@@ -386,11 +392,11 @@ class Menu extends Component implements ArrayAccess, QueryOperatorFieldInterface
         $level--;
         // foreach counter
         $i = 1;
-        
+
         if ($baseItem === null) {
             $baseItem = $this->getCurrent();
         }
-        
+
         // foreach
         foreach ($baseItem->with('hidden')->getTeardown() as $item) {
             // if its the root line an match level 1 get all siblings
@@ -409,8 +415,9 @@ class Menu extends Component implements ArrayAccess, QueryOperatorFieldInterface
      * Get the current item for specified level/depth. Menus always start on level/depth 1. This works
      * only in reversed order, to get the parent level from a child!
      *
-     * @param integer $level Level menu starts with 1
-     * @return \luya\cms\menu\Item|boolean An item-object for the specific level current, false otherwise.
+     * @param int $level Level menu starts with 1
+     *
+     * @return \luya\cms\menu\Item|bool An item-object for the specific level current, false otherwise.
      */
     public function getLevelCurrent($level)
     {
@@ -442,16 +449,18 @@ class Menu extends Component implements ArrayAccess, QueryOperatorFieldInterface
      */
     public function find()
     {
-        return (new MenuQuery());
+        return new MenuQuery();
     }
 
     /**
      * Wrapper method to get all menu items for the current language without hidden items for
      * the specific where statement.
      *
-     * @param array $where See {{\luya\cms\menu\Query::where()}}
-     * @param boolean $preloadModels Whether to preload all models for the given menu Query. See {{luya\cms\menu\Query::preloadModels()}}
+     * @param array $where         See {{\luya\cms\menu\Query::where()}}
+     * @param bool  $preloadModels Whether to preload all models for the given menu Query. See {{luya\cms\menu\Query::preloadModels()}}
+     *
      * @see \luya\cms\menu\Query::where()
+     *
      * @return \luya\cms\menu\QueryIterator
      */
     public function findAll(array $where, $preloadModels = false)
@@ -464,7 +473,9 @@ class Menu extends Component implements ArrayAccess, QueryOperatorFieldInterface
      * sepcific where statement.
      *
      * @param array $where See {{\luya\cms\menu\Query::where()}}
+     *
      * @see \luya\cms\menu\Query::where()
+     *
      * @return \luya\cms\menu\Item
      */
     public function findOne(array $where)
@@ -481,8 +492,10 @@ class Menu extends Component implements ArrayAccess, QueryOperatorFieldInterface
      * 2. find menu item based on the end of the current path (via array_pop)
      * 3. if no item could be found the home item will be returned
      * 4. otherwise return the alias match from step 2.
-     * @return Item
+     *
      * @throws NotFoundHttpException
+     *
+     * @return Item
      */
     private function resolveCurrent()
     {
@@ -497,9 +510,9 @@ class Menu extends Component implements ArrayAccess, QueryOperatorFieldInterface
         }
 
         $requestPath = rtrim($requestPath, '/');
-        
+
         $urlParts = explode('/', $requestPath);
-        
+
         $item = $this->aliasMatch($urlParts);
 
         if (!$item) {
@@ -512,15 +525,17 @@ class Menu extends Component implements ArrayAccess, QueryOperatorFieldInterface
 
         if ($item) {
             $this->_currentAppendix = substr($requestPath, strlen($item->alias) + 1);
+
             return $item;
         }
 
         // no item could have been resolved, but the home side type is module, which can have links.
         if (!$item && $this->home->type == 2) {
             $this->_currentAppendix = $requestPath;
+
             return $this->getHome();
         }
-        
+
         throw new NotFoundHttpException("Unable to resolve requested path '".$requestPath."'.");
     }
 
@@ -528,15 +543,16 @@ class Menu extends Component implements ArrayAccess, QueryOperatorFieldInterface
      * prepand the base url for the provided alias.
      *
      * @param string $alias
+     *
      * @return string
      */
     public function buildItemLink($alias, $langShortCode)
     {
         return Yii::$app->getUrlManager()->prependBaseUrl($this->composition->prependTo($alias, $this->composition->createRouteEnsure(['langShortCode' => $langShortCode])));
     }
-    
+
     /**
-     * Return all nav item modules to request data later in items
+     * Return all nav item modules to request data later in items.
      *
      * @return array An array with all modules index by the id
      */
@@ -545,14 +561,15 @@ class Menu extends Component implements ArrayAccess, QueryOperatorFieldInterface
         if ($this->_modulesMap === null) {
             $this->_modulesMap = NavItemModule::find()->select(['module_name', 'id'])->indexBy('id')->asArray()->all();
         }
-        
+
         return $this->_modulesMap;
     }
 
     /**
      * load all navigation items for a specific language id.
      *
-     * @param integer $langId
+     * @param int $langId
+     *
      * @return array
      */
     private function getNavData($langId)
@@ -566,42 +583,43 @@ class Menu extends Component implements ArrayAccess, QueryOperatorFieldInterface
         ->indexBy('id')
         ->all();
     }
-        
+
     private $_paths = [];
-    
+
     private $_nodes = [];
-    
+
     /**
      * Helper method to build an index with all the alias paths to build the correct links.
      *
      * @param array $data
+     *
      * @return array An array with the index where the key is the nav_id
      */
     private function buildIndexForContainer($data)
     {
         $this->_paths = [];
         $this->_nodes = [];
-        
+
         foreach ($data as $item) {
             $this->_nodes[$item['nav_id']] = ['parent_nav_id' => $item['parent_nav_id'], 'alias' => $item['alias'], 'nav_id' => $item['nav_id']];
         }
-        
+
         foreach ($this->_nodes as $node) {
             $this->_paths[$node['nav_id']] = $this->processParant($node['nav_id'], null);
         }
-        
+
         return $this->_paths;
     }
-     
+
     private function processParant($nodeId, $path)
     {
         $parentId = $this->_nodes[$nodeId]['parent_nav_id'];
         $alias = $this->_nodes[$nodeId]['alias'];
-    
+
         if ($parentId > 0 && array_key_exists($parentId, $this->_nodes)) {
-            return $this->processParant($parentId, $path) . '/' . $alias;
+            return $this->processParant($parentId, $path).'/'.$alias;
         }
-    
+
         return $alias;
     }
 
@@ -609,6 +627,7 @@ class Menu extends Component implements ArrayAccess, QueryOperatorFieldInterface
      * helper method to see if the request url can be found in the active container.
      *
      * @param array $urlParts
+     *
      * @return bool|Item
      */
     private function aliasMatch(array $urlParts)
@@ -620,84 +639,85 @@ class Menu extends Component implements ArrayAccess, QueryOperatorFieldInterface
      * Helper method to load all contaienr data for a specific langauge.
      *
      * @param string $langShortCode e.g. de
-     * @return array
+     *
      * @throws NotFoundHttpException
+     *
+     * @return array
      */
     private function loadLanguageContainer($langShortCode)
     {
         $cacheKey = $this->_cachePrefix.$langShortCode;
-        
+
         $languageContainer = $this->getHasCache($cacheKey);
-        
+
         if ($languageContainer === false) {
             $lang = $this->getLanguage($langShortCode);
-    
+
             if (!$lang) {
                 throw new NotFoundHttpException(sprintf("The requested language '%s' does not exist in language table", $langShortCode));
             }
-    
+
             $data = $this->getNavData($lang['id']);
-    
+
             $index = $this->buildIndexForContainer($data);
-    
+
             $languageContainer = [];
-    
+
             // $key = cms_nav_item.id (as of indexBy('id'))
             foreach ($data as $key => $item) {
                 $alias = $item['alias'];
-    
+
                 if ($item['parent_nav_id'] > 0 && array_key_exists($item['parent_nav_id'], $index)) {
                     $alias = $index[$item['parent_nav_id']].'/'.$item['alias'];
                 }
-    
+
                 $languageContainer[$key] = [
-                    'id' => $item['id'],
-                    'nav_id' => $item['nav_id'],
-                    'lang' => $lang['short_code'],
-                    'link' => $this->buildItemLink($alias, $langShortCode),
-                    'title' => $item['title'],
-                    'title_tag' => $item['title_tag'],
-                    'alias' => $alias,
-                    'description' => $item['description'],
-                    'keywords' => $item['keywords'],
-                    'create_user_id' => $item['create_user_id'],
-                    'update_user_id' => $item['update_user_id'],
+                    'id'               => $item['id'],
+                    'nav_id'           => $item['nav_id'],
+                    'lang'             => $lang['short_code'],
+                    'link'             => $this->buildItemLink($alias, $langShortCode),
+                    'title'            => $item['title'],
+                    'title_tag'        => $item['title_tag'],
+                    'alias'            => $alias,
+                    'description'      => $item['description'],
+                    'keywords'         => $item['keywords'],
+                    'create_user_id'   => $item['create_user_id'],
+                    'update_user_id'   => $item['update_user_id'],
                     'timestamp_create' => $item['timestamp_create'],
                     'timestamp_update' => $item['timestamp_update'],
-                    'is_home' => $item['is_home'],
-                    'parent_nav_id' => $item['parent_nav_id'],
-                    'sort_index' => $item['sort_index'],
-                    'is_hidden' => $item['is_hidden'],
-                    'type' => $item['nav_item_type'],
-                    'redirect' => ($item['nav_item_type'] == 3 && isset($this->redirectMap[$item['nav_item_type_id']])) ? $this->redirectMap[$item['nav_item_type_id']] : false,
-                    'module_name' => ($item['nav_item_type'] == 2 && isset($this->modulesMap[$item['nav_item_type_id']])) ? $this->modulesMap[$item['nav_item_type_id']]['module_name'] : false,
-                    'container' => $item['container'],
-                    'depth' => count(explode('/', $alias)),
+                    'is_home'          => $item['is_home'],
+                    'parent_nav_id'    => $item['parent_nav_id'],
+                    'sort_index'       => $item['sort_index'],
+                    'is_hidden'        => $item['is_hidden'],
+                    'type'             => $item['nav_item_type'],
+                    'redirect'         => ($item['nav_item_type'] == 3 && isset($this->redirectMap[$item['nav_item_type_id']])) ? $this->redirectMap[$item['nav_item_type_id']] : false,
+                    'module_name'      => ($item['nav_item_type'] == 2 && isset($this->modulesMap[$item['nav_item_type_id']])) ? $this->modulesMap[$item['nav_item_type_id']]['module_name'] : false,
+                    'container'        => $item['container'],
+                    'depth'            => count(explode('/', $alias)),
                 ];
             }
-            
+
             $this->setHasCache($cacheKey, $languageContainer);
         }
-        
+
         return $languageContainer;
     }
-    
+
     /**
-     *
      * @param \luya\cms\menu\InjectItemInterface $item
      */
     public function injectItem(InjectItemInterface $item)
     {
         $this->_languageContainer[$item->getLang()][$item->getId()] = $item->toArray();
     }
-    
+
     /**
-     * Flush all caching data for the menu for each language
+     * Flush all caching data for the menu for each language.
      */
     public function flushCache()
     {
         foreach ($this->getLanguages() as $lang) {
-            $this->deleteHasCache($this->_cachePrefix . $lang['short_code']);
+            $this->deleteHasCache($this->_cachePrefix.$lang['short_code']);
         }
     }
 }

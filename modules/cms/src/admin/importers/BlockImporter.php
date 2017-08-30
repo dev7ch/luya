@@ -2,12 +2,12 @@
 
 namespace luya\cms\admin\importers;
 
-use Yii;
+use luya\cms\base\BlockInterface;
 use luya\cms\models\Block;
 use luya\cms\models\BlockGroup;
 use luya\console\Importer;
 use luya\helpers\FileHelper;
-use luya\cms\base\BlockInterface;
+use Yii;
 
 /**
  * Import cms Blocks.
@@ -17,18 +17,19 @@ use luya\cms\base\BlockInterface;
 class BlockImporter extends Importer
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
+     *
      * @see \luya\console\Importer::run()
      */
     public function run()
     {
         $allblocks = Block::find()->all();
         $exists = [];
-        
+
         foreach ($this->getImporter()->getDirectoryFiles('blocks') as $file) {
             $exists[] = $this->saveBlock($file['ns']);
         }
-        
+
         foreach (Yii::$app->packageInstaller->configs as $config) {
             foreach ($config->blocks as $block) {
                 if (is_file($block)) {
@@ -40,7 +41,7 @@ class BlockImporter extends Importer
                 }
             }
         }
-        
+
         foreach ($allblocks as $block) {
             if (!in_array($block->id, $exists)) {
                 $this->addLog('- Deleted block ID '.$block->id.' from database.');
@@ -48,20 +49,20 @@ class BlockImporter extends Importer
             }
         }
     }
-    
+
     /**
-     *
      * @param unknown $fullClassName
+     *
      * @return number
      */
     protected function saveBlock($fullClassName)
     {
         $model = Block::find()->where(['class' => $fullClassName])->one();
-        
+
         $blockObject = $this->createBlockObject($fullClassName);
-        
+
         $blockGroupId = $this->getBlockGroupId($blockObject);
-        
+
         if (!$model) {
             $model = new Block();
             $model->group_id = $blockGroupId;
@@ -71,49 +72,49 @@ class BlockImporter extends Importer
         } else {
             $model->updateAttributes(['group_id' => $blockGroupId]);
         }
-        
+
         return $model->id;
     }
-    
+
     /**
-     *
      * @param unknown $path
-     * @return number|boolean
+     *
+     * @return number|bool
      */
     protected function saveBlockByPath($path)
     {
         $info = FileHelper::classInfo($path);
-        
+
         if ($info) {
-            $className = $info['namespace'] . '\\' . $info['class'];
-            
+            $className = $info['namespace'].'\\'.$info['class'];
+
             return $this->saveBlock($className);
         }
-        
+
         return false;
     }
-    
+
     /**
-     *
      * @param unknown $className
+     *
      * @return object|mixed
      */
     protected function createBlockObject($className)
     {
         return Yii::createObject(['class' => $className]);
     }
-    
+
     /**
-     *
      * @param BlockInterface $blockObject
+     *
      * @return unknown
      */
     protected function getBlockGroupId(BlockInterface $blockObject)
     {
         $groupClassName = $blockObject->blockGroup();
-        
+
         $identifier = Yii::createObject(['class' => $groupClassName])->identifier();
-        
+
         return BlockGroup::findOne(['identifier' => $identifier])->id;
     }
 }

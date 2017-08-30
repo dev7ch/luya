@@ -2,8 +2,8 @@
 
 namespace luyatests\core\helpers;
 
-use luyatests\LuyaWebTestCase;
 use luya\helpers\FileHelper;
+use luyatests\LuyaWebTestCase;
 
 class FileHelperTest extends LuyaWebTestCase
 {
@@ -22,7 +22,7 @@ class FileHelperTest extends LuyaWebTestCase
         $this->assertSame('931.32 GB', FileHelper::humanReadableFilesize(1000000000000));
         $this->assertSame('90.95 TB', FileHelper::humanReadableFilesize(100000000000000));
         $this->assertSame('88.82 PB', FileHelper::humanReadableFilesize(100000000000000000));
-        
+
         $this->assertSame('1 MB', FileHelper::humanReadableFilesize(1048577));
     }
 
@@ -36,7 +36,7 @@ class FileHelperTest extends LuyaWebTestCase
         $this->assertSame('path/to/file.twig', FileHelper::ensureExtension('path/to/file.', 'twig'));
         $this->assertSame('path/to/file.twig', FileHelper::ensureExtension('path/to/file.twig', 'twig'));
     }
-    
+
     public function testGetFileInfo()
     {
         $test = FileHelper::getFileInfo('/path/to/myfile.png');
@@ -51,28 +51,28 @@ class FileHelperTest extends LuyaWebTestCase
         $test = FileHelper::getFileInfo('/path/to/');
         $this->assertFalse($test->extension);
         $this->assertSame('to', $test->name);
-        
+
         $empty = FileHelper::getFileInfo('');
         $this->assertFalse($empty->name);
         $this->assertFalse($empty->extension);
     }
-    
+
     public function testGetHashFile()
     {
         $this->assertSame(false, FileHelper::md5sum('notexists.jpg'));
-        $this->assertSame('7dff5cc5a1d8f04004b4a0075d3eeeae', FileHelper::md5sum(__DIR__ . '/../../data/hashfile.txt'));
+        $this->assertSame('7dff5cc5a1d8f04004b4a0075d3eeeae', FileHelper::md5sum(__DIR__.'/../../data/hashfile.txt'));
     }
-    
+
     public function testWriteFile()
     {
         $this->assertTrue(FileHelper::writeFile('@runtime/temp.txt', 'Hello World'));
         $this->assertFalse(FileHelper::writeFile('@does/not/exists/nofile.txt', 'Hello World'));
     }
-    
+
     public function testGetFileContent()
     {
         $this->assertSame('Hello World', FileHelper::getFileContent('@runtime/temp.txt'));
-        
+
         $this->assertFalse(FileHelper::getFileContent('doesNotExist.txt'));
     }
 }

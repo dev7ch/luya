@@ -2,9 +2,9 @@
 
 namespace luya\cms\helpers;
 
-use Yii;
-use luya\web\ExternalLink;
 use luya\TagParser;
+use luya\web\ExternalLink;
+use Yii;
 
 /**
  * Helper methods for CMS Blocks.
@@ -16,6 +16,7 @@ use luya\TagParser;
  * value output or configuration of a block element like vars, cfgs.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class BlockHelper
@@ -32,9 +33,11 @@ class BlockHelper
      * return Tag::find()->select(['name'])->indexBy('id')->column();
      * ```
      *
-     * @param array $options The key value array pairing the select array should be created from.
-     * @param string $prompt The prompt message when nothing is selected (contains the value 0 by default).
+     * @param array  $options The key value array pairing the select array should be created from.
+     * @param string $prompt  The prompt message when nothing is selected (contains the value 0 by default).
+     *
      * @return array
+     *
      * @since 1.0.0-beta5
      */
     public static function selectArrayOption(array $options, $prompt = null)
@@ -46,10 +49,10 @@ class BlockHelper
         foreach ($options as $key => $value) {
             $transform[] = ['value' => $key, 'label' => $value];
         }
-    
+
         return $transform;
     }
-    
+
     /**
      * Create the Options list in the config for a zaa-checkbox-array based on an
      * key => value pairing array.
@@ -63,7 +66,9 @@ class BlockHelper
      * Where name is the value and id the key for the array.
      *
      * @param array $options The array who cares the options with items
+     *
      * @return array
+     *
      * @since 1.0.0-beta5
      */
     public static function checkboxArrayOption(array $options)
@@ -72,12 +77,12 @@ class BlockHelper
         foreach ($options as $key => $value) {
             $transform[] = ['value' => $key, 'label' => $value];
         }
-    
+
         return ['items' => $transform];
     }
-    
+
     /**
-     * Get all informations from an zaa-image-upload type:
+     * Get all informations from an zaa-image-upload type:.
      *
      * ```php
      * 'image' => BlockHelper::ImageUpload($this->getVarValue('myImage')),
@@ -89,42 +94,45 @@ class BlockHelper
      * 'imageFiltered' => BlockHelper::ImageUpload($this->getVarValue('myImage'), 'small-thumbnail'),
      * ```
      *
-     * @param string|int $value Provided the value
-     * @param boolean|string $applyFilter To apply a filter insert the identifier of the filter.
-     * @param boolean $returnObject Whether the storage object should be returned or an array.
-     * @return boolean|array|luya\admin\image\Item Returns false when not found, returns an array with all data for the image on success.
+     * @param string|int  $value        Provided the value
+     * @param bool|string $applyFilter  To apply a filter insert the identifier of the filter.
+     * @param bool        $returnObject Whether the storage object should be returned or an array.
+     *
+     * @return bool|array|luya\admin\image\Item Returns false when not found, returns an array with all data for the image on success.
      */
     public static function imageUpload($value, $applyFilter = false, $returnObject = false)
     {
         if (empty($value)) {
             return false;
         }
-    
+
         $image = Yii::$app->storage->getImage($value);
-    
+
         if (!$image) {
             return false;
         }
-    
+
         if ($applyFilter && is_string($applyFilter)) {
             $filter = $image->applyFilter($applyFilter);
-    
+
             if ($filter) {
                 if ($returnObject) {
                     return $filter;
                 }
+
                 return $filter->toArray();
             }
         }
-    
+
         if ($returnObject) {
             return $image;
         }
+
         return $image->toArray();
     }
-    
+
     /**
-     * Get the full array for the specific zaa-file-image-upload type
+     * Get the full array for the specific zaa-file-image-upload type.
      *
      * ```php
      * 'imageList' => BlockHelper::ImageArrayUpload($this->getVarValue('images')),
@@ -132,31 +140,32 @@ class BlockHelper
      *
      * Each array item will have all file query item data and a caption key.
      *
-     * @param string|int $value The specific var or cfg fieldvalue.
-     * @param boolean|string $applyFilter To apply a filter insert the identifier of the filter.
-     * @param boolean $returnObject Whether the storage object should be returned or an array.
+     * @param string|int  $value        The specific var or cfg fieldvalue.
+     * @param bool|string $applyFilter  To apply a filter insert the identifier of the filter.
+     * @param bool        $returnObject Whether the storage object should be returned or an array.
+     *
      * @return array Returns an array in any case, even an empty array.
      */
     public static function imageArrayUpload($value, $applyFilter = false, $returnObject = false)
     {
         if (!empty($value) && is_array($value)) {
             $data = [];
-    
+
             foreach ($value as $key => $item) {
                 $image = static::imageUpload($item['imageId'], $applyFilter, true);
                 if ($image) {
                     $image->caption = $item['caption'];
-    
+
                     $data[$key] = ($returnObject) ? $image : $image->toArray();
                 }
             }
-    
+
             return $data;
         }
-    
+
         return [];
     }
-    
+
     /**
      * Get file information based on input fileId.
      *
@@ -181,11 +190,12 @@ class BlockHelper
      * <?php endif; ?>
      * ```
      *
-     * @param integer $fileId The file id from a config or cfg value in order to find the file.
-     * @param boolean $returnObject Whether the storage object should be returned or an array, if the file could not be found this parameter is
-     * has no affect to the response and will return false.
-     * @return boolean|array|\luya\admin\file\Item Returns an array or the {{\luya\admin\file\Item}} object if the file could be find, otherwise the response is false. Make
-     * sure to check whether return value is false or not to ensure no exception will be thrown.
+     * @param int  $fileId       The file id from a config or cfg value in order to find the file.
+     * @param bool $returnObject Whether the storage object should be returned or an array, if the file could not be found this parameter is
+     *                           has no affect to the response and will return false.
+     *
+     * @return bool|array|\luya\admin\file\Item Returns an array or the {{\luya\admin\file\Item}} object if the file could be find, otherwise the response is false. Make
+     *                                          sure to check whether return value is false or not to ensure no exception will be thrown.
      */
     public static function fileUpload($fileId, $returnObject = false)
     {
@@ -196,15 +206,16 @@ class BlockHelper
                 if ($returnObject) {
                     return $file;
                 }
+
                 return $file->toArray();
             }
         }
-    
+
         return false;
     }
-    
+
     /**
-     * Get the full array for the specific zaa-file-array-upload type
+     * Get the full array for the specific zaa-file-array-upload type.
      *
      * ```php
      * 'fileList' => BlockHelper::FileArrayUpload($this->getVarValue('files')),
@@ -212,8 +223,9 @@ class BlockHelper
      *
      * Each array item will have all file query item data and a caption key.
      *
-     * @param string|int $value The specific var or cfg fieldvalue.
-     * @param boolean $returnObject Whether the storage object should be returned or an array.
+     * @param string|int $value        The specific var or cfg fieldvalue.
+     * @param bool       $returnObject Whether the storage object should be returned or an array.
+     *
      * @return array Returns an array in any case, even an empty array.
      */
     public static function fileArrayUpload($value, $returnObject = false)
@@ -231,18 +243,18 @@ class BlockHelper
                     $data[$key] = ($returnObject) ? $file : $file->toArray();
                 }
             }
-    
+
             return $data;
         }
-    
+
         return [];
     }
-    
-    
+
     /**
      * Generate a link object based on the configuration (array).
      *
      * @param string|array $config The configuration array to build the object
+     *
      * @return \luya\web\LinkInterface|false Returns a linkable resource object or false if configuration is wrong.
      */
     public static function linkObject($config)
@@ -257,14 +269,15 @@ class BlockHelper
                     break;
             }
         }
-    
+
         return false;
     }
-    
+
     /**
      * Wrapper function for Markdown Parsing.
      *
      * @param string $text The text to parse with Markdown.
+     *
      * @return string The parsed Markdown text.
      */
     public static function markdown($text)

@@ -1,7 +1,7 @@
 <?php
 use app\assets\ResourcesAsset;
-use luya\helpers\Url;
 use luya\cms\widgets\LangSwitcher;
+use luya\helpers\Url;
 
 ResourcesAsset::register($this);
 
@@ -32,16 +32,16 @@ $this->beginPage();
             <div>
                 <ul class="nav navbar-nav">
                 <?php foreach (Yii::$app->menu->findAll(['depth' => 1, 'container' => 'default']) as $item): /* @var $item \luya\cms\menu\Item */ ?>
-                    <li <?php if ($item->isActive): ?>class="active"<?php endif;?>>
+                    <li <?php if ($item->isActive): ?>class="active"<?php endif; ?>>
                         <a href="<?= $item->link; ?>"><?= $item->title; ?></a>
                     </li>
                 <?php endforeach; ?>
                 </ul>
                 <?= LangSwitcher::widget([
                     'listElementOptions' => ['class' => 'nav navbar-nav navbar-right hidden-xs'],
-                    'linkLabel' => function ($lang) {
+                    'linkLabel'          => function ($lang) {
                         return strtoupper($lang['short_code']);
-                    }
+                    },
                 ]); ?>
             </div>
         </div>

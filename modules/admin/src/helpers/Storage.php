@@ -3,9 +3,9 @@
 namespace luya\admin\helpers;
 
 use Exception;
-use Yii;
 use luya\admin\models\StorageFile;
 use luya\admin\models\StorageImage;
+use Yii;
 
 /**
  * Helper class to handle remove, upload and moving of storage files.
@@ -31,11 +31,12 @@ class Storage
         7 => 'Failed to write file to disk.',
         8 => 'A PHP extension stopped the file upload.',
     ];
-    
+
     /**
      * Get the upload error message from a given $_FILES error code id.
      *
-     * @param integer $errorId
+     * @param int $errorId
+     *
      * @return string
      */
     public static function getUploadErrorMessage($errorId)
@@ -50,21 +51,23 @@ class Storage
      * Because PHP's integer type is signed many crc32 checksums will result in negative integers on 32bit platforms. On 64bit installations all crc32() results will be positive integers though.
      * So you need to use the "%u" formatter of sprintf() or printf() to get the string representation of the unsigned crc32() checksum in decimal format.
      *
-     * @var string $fileName The file name which should be hashed
+     * @var string The file name which should be hashed
+     *
      * @return string
      */
     public static function createFileHash($fileName)
     {
         return sprintf('%s', hash('crc32b', uniqid($fileName, true)));
     }
-    
+
     /**
      * Remove a file from the storage system.
      *
-     * @param integer $fileId The file id to delete
-     * @param boolean $cleanup If cleanup is enabled, also all images will be deleted, this is by default turned off because
-     * casual you want to remove the large source file but not the images where used in several tables and situations.
-     * @return boolean
+     * @param int  $fileId  The file id to delete
+     * @param bool $cleanup If cleanup is enabled, also all images will be deleted, this is by default turned off because
+     *                      casual you want to remove the large source file but not the images where used in several tables and situations.
+     *
+     * @return bool
      */
     public static function removeFile($fileId, $cleanup = false)
     {
@@ -77,19 +80,21 @@ class Storage
             }
             $response = $model->delete();
             Yii::$app->storage->flushArrays();
+
             return $response;
         }
-    
+
         return true;
     }
-    
+
     /**
      * Remove an image from the storage system and database.
      *
-     * @param integer $imageId The corresponding imageId for the {{\luya\admin\models\StorageImage}} Model to remove.
-     * @param boolean $cleanup If cleanup is enabled, all other images will be deleted. Event the {{\luya\admin\models\StorageFile}} will be removed
-     * from the database and filesystem. By default cleanup is disabled and will only remove the provided $imageId itself from {{\luya\admin\models\StorageImage}}.
-     * @return boolean
+     * @param int  $imageId The corresponding imageId for the {{\luya\admin\models\StorageImage}} Model to remove.
+     * @param bool $cleanup If cleanup is enabled, all other images will be deleted. Event the {{\luya\admin\models\StorageFile}} will be removed
+     *                      from the database and filesystem. By default cleanup is disabled and will only remove the provided $imageId itself from {{\luya\admin\models\StorageImage}}.
+     *
+     * @return bool
      */
     public static function removeImage($imageId, $cleanup = false)
     {
@@ -104,12 +109,12 @@ class Storage
                 }
             }
         }
-        
+
         $file = StorageImage::findOne($imageId);
         if ($file) {
             return $file->delete();
         }
-        
+
         return false;
     }
 
@@ -117,34 +122,36 @@ class Storage
      * Get the image resolution of a given file path.
      *
      * @param string $filePath
-     * @param bool $throwException
-     * @return array
+     * @param bool   $throwException
+     *
      * @throws Exception
+     *
+     * @return array
      */
     public static function getImageResolution($filePath, $throwException = false)
     {
         $dimensions = @getimagesize($filePath);
-        
+
         $width = 0;
         $height = 0;
-        
+
         if (isset($dimensions[0]) && isset($dimensions[1])) {
-            $width = (int)$dimensions[0];
-            $height = (int)$dimensions[1];
+            $width = (int) $dimensions[0];
+            $height = (int) $dimensions[1];
         } elseif ($throwException) {
             throw new Exception("Unable to determine the resoltuions of the file $filePath.");
         }
-        
+
         return [
-            'width' => $width,
+            'width'  => $width,
             'height' => $height,
         ];
     }
-    
+
     /**
      * Move an array of storage fileIds to another folder.
      *
-     * @param array $fileIds
+     * @param array   $fileIds
      * @param unknown $folderId
      */
     public static function moveFilesToFolder(array $fileIds, $folderId)
@@ -153,27 +160,29 @@ class Storage
             static::moveFileToFolder($fileId, $folderId);
         }
     }
-    
+
     /**
      * Move a storage file to another folder.
      *
      * @param string|int $fileId
      * @param string|int $folderId
-     * @return boolean
+     *
+     * @return bool
      */
     public static function moveFileToFolder($fileId, $folderId)
     {
         $file = StorageFile::findOne($fileId);
-        
+
         if ($file) {
             $file->updateAttributes(['folder_id' => $folderId]);
             Yii::$app->storage->flushArrays();
+
             return true;
         }
-        
+
         return false;
     }
-    
+
     /**
      * Replace the source of a file on the webeserver based on new and old source path informations.
      *
@@ -181,20 +190,23 @@ class Storage
      *
      * @param string $oldFileSource The path to the old file which should be replace by the new file. e.g `path/to/old.jpp`
      * @param string $newFileSource The path to the new file which is going to have the same name as the old file e.g. `path/of/new.jpg`.
-     * @return boolean Whether moving was successfull or not.
+     *
+     * @return bool Whether moving was successfull or not.
      */
     public static function replaceFile($oldFileSource, $newFileSource)
     {
-        $toDelete = $oldFileSource . uniqid('oldfile') . '.bkl';
+        $toDelete = $oldFileSource.uniqid('oldfile').'.bkl';
         if (rename($oldFileSource, $toDelete)) {
             if (copy($newFileSource, $oldFileSource)) {
                 @unlink($toDelete);
+
                 return true;
             }
         }
+
         return false;
     }
-    
+
     /**
      * Add File to the storage container by providing the $_FILES array name.
      *
@@ -211,22 +223,23 @@ class Storage
      * ['upload' => true, 'message' => 'No file was uploaded.', 'file_id' => 0], // error response example
      * ```
      *
-     * @param array $fileArray Its an entry of the files array like $_FILES['logo_image'].
-     * @param integer $toFolder The id of the folder the file should be uploaded to, see {{luya\admin\components\StorageContainer::findFolders}}
-     * @param string $isHidden Whether the file should be hidden or not.
+     * @param array  $fileArray Its an entry of the files array like $_FILES['logo_image'].
+     * @param int    $toFolder  The id of the folder the file should be uploaded to, see {{luya\admin\components\StorageContainer::findFolders}}
+     * @param string $isHidden  Whether the file should be hidden or not.
+     *
      * @return array An array with key `upload`, `message` and `file_id`. When upload is false, an error occured otherwise true. The message key contains the error messages. If no error happend `file_id` will contain the new uploaded file id.
      */
     public static function uploadFromFileArray(array $fileArray, $toFolder = 0, $isHidden = false)
     {
         $files = self::extractFilesDataFromFilesArray($fileArray);
-        
+
         if (count($files) !== 1) {
             return ['upload' => false, 'message' => 'no image found', 'file_id' => 0];
         }
-        
+
         return self::verifyAndSaveFile($files[0], $toFolder, $isHidden);
     }
-    
+
     /**
      * Add Files to storage component by just providing $_FILES array, used for multi file storage.
      *
@@ -244,9 +257,11 @@ class Storage
      * ```
      *
      * @todo what happen if $files does have more then one entry, as the response is limit to 1
-     * @param array $filesArray Use $_FILES array.
-     * @param integer $toFolder The id of the folder the file should be uploaded to, see {{luya\admin\components\StorageContainer::findFolders}}
-     * @param string $isHidden Whether the file should be hidden or not.
+     *
+     * @param array  $filesArray Use $_FILES array.
+     * @param int    $toFolder   The id of the folder the file should be uploaded to, see {{luya\admin\components\StorageContainer::findFolders}}
+     * @param string $isHidden   Whether the file should be hidden or not.
+     *
      * @return array An array with key `upload`, `message` and `file_id`. When upload is false, an error occured otherwise true. The message key contains the error messages. If no error happend `file_id` will contain the new uploaded file id.
      */
     public static function uploadFromFiles(array $filesArray, $toFolder = 0, $isHidden = false)
@@ -255,106 +270,108 @@ class Storage
         foreach ($filesArray as $fileArrayKey => $file) {
             $files = array_merge($files, self::extractFilesDataFromFilesArray($file));
         }
-    
+
         foreach ($files as $file) {
             return self::verifyAndSaveFile($file, $toFolder, $isHidden);
         }
-    
+
         return ['upload' => false, 'message' => 'no files selected or empty files list.', 'file_id' => 0];
     }
-    
+
     /**
-     * Example Input unform:
+     * Example Input unform:.
      *
      * ```php
-        Array
-        (
-            [name] => Array
-                (
-                    [attachment] => Array
-                        (
-                            [0] => Altersfragen-Leimental (4).pdf
-                            [1] => Altersfragen-Leimental (2).pdf
-                        )
-
-                )
-
-            [type] => Array
-                (
-                    [attachment] => Array
-                        (
-                            [0] => application/pdf
-                            [1] => application/pdf
-                        )
-
-                )
-
-            [tmp_name] => Array
-                (
-                    [attachment] => Array
-                        (
-                            [0] => /tmp/phpNhqnwR
-                            [1] => /tmp/phpbZ8XSn
-                        )
-
-                )
-
-            [error] => Array
-                (
-                    [attachment] => Array
-                        (
-                            [0] => 0
-                            [1] => 0
-                        )
-
-                )
-
-            [size] => Array
-                (
-                    [attachment] => Array
-                        (
-                            [0] => 261726
-                            [1] => 255335
-                        )
-
-                )
-
-        )
+     * Array
+     * (
+     * [name] => Array
+     * (
+     * [attachment] => Array
+     * (
+     * [0] => Altersfragen-Leimental (4).pdf
+     * [1] => Altersfragen-Leimental (2).pdf
+     * )
+     *
+     * )
+     *
+     * [type] => Array
+     * (
+     * [attachment] => Array
+     * (
+     * [0] => application/pdf
+     * [1] => application/pdf
+     * )
+     *
+     * )
+     *
+     * [tmp_name] => Array
+     * (
+     * [attachment] => Array
+     * (
+     * [0] => /tmp/phpNhqnwR
+     * [1] => /tmp/phpbZ8XSn
+     * )
+     *
+     * )
+     *
+     * [error] => Array
+     * (
+     * [attachment] => Array
+     * (
+     * [0] => 0
+     * [1] => 0
+     * )
+     *
+     * )
+     *
+     * [size] => Array
+     * (
+     * [attachment] => Array
+     * (
+     * [0] => 261726
+     * [1] => 255335
+     * )
+     *
+     * )
+     *
+     * )
      * ```
      *
      * to:
      *
      * ```php
      *
-        Array
-        (
-            [0] => Array
-                (
-                    [name] => Altersfragen-Leimental (4).pdf
-                    [type] => application/pdf
-                    [tmp_name] => /tmp/phpNhqnwR
-                    [error] => 0
-                    [size] => 261726
-                )
-
-            [1] => Array
-                (
-                    [name] => Altersfragen-Leimental (2).pdf
-                    [type] => application/pdf
-                    [tmp_name] => /tmp/phpbZ8XSn
-                    [error] => 0
-                    [size] => 255335
-                )
-
-        )
+     * Array
+     * (
+     * [0] => Array
+     * (
+     * [name] => Altersfragen-Leimental (4).pdf
+     * [type] => application/pdf
+     * [tmp_name] => /tmp/phpNhqnwR
+     * [error] => 0
+     * [size] => 261726
+     * )
+     *
+     * [1] => Array
+     * (
+     * [name] => Altersfragen-Leimental (2).pdf
+     * [type] => application/pdf
+     * [tmp_name] => /tmp/phpbZ8XSn
+     * [error] => 0
+     * [size] => 255335
+     * )
+     *
+     * )
      * ```
+     *
      * @param array $files
+     *
      * @return array|unknown
      */
     public static function extractFilesDataFromMultipleFiles(array $files)
     {
         $data = [];
-        $i=0;
+        $i = 0;
         foreach ($files as $type => $field) {
             foreach ($field as $fieldName => $values) {
                 if (is_array($values)) {
@@ -366,14 +383,15 @@ class Storage
                 }
             }
         }
-        
+
         return $data;
     }
-    
+
     /**
      * Extract $_FILES array.
      *
      * @param array $file
+     *
      * @return array
      */
     public static function extractFilesDataFromFilesArray(array $file)
@@ -381,7 +399,7 @@ class Storage
         if (!isset($file['tmp_name'])) {
             return [];
         }
-        
+
         $files = [];
         if (is_array($file['tmp_name'])) {
             foreach ($file['tmp_name'] as $index => $value) {
@@ -391,36 +409,36 @@ class Storage
                 }
                 // create files structure array
                 $files[] = [
-                    'name' => $file['name'][$index],
-                    'type' => $file['type'][$index],
+                    'name'     => $file['name'][$index],
+                    'type'     => $file['type'][$index],
                     'tmp_name' => $file['tmp_name'][$index],
-                    'error' => $file['error'][$index],
-                    'size' => $file['size'][$index],
+                    'error'    => $file['error'][$index],
+                    'size'     => $file['size'][$index],
                 ];
             }
         } elseif (isset($file['tmp_name']) && !empty($file['tmp_name'])) {
             $files[] = [
-                'name' => $file['name'],
-                'type' => $file['type'],
+                'name'     => $file['name'],
+                'type'     => $file['type'],
                 'tmp_name' => $file['tmp_name'],
-                'error' => $file['error'],
-                'size' => $file['size'],
+                'error'    => $file['error'],
+                'size'     => $file['size'],
             ];
         }
-        
+
         return $files;
     }
-    
+
     /**
-     *
-     * @param array $file An array with the following keys available:
-     * - name:
-     * - type:
-     * - tmp_name:
-     * - error:
-     * - size:
+     * @param array  $file     An array with the following keys available:
+     *                         - name:
+     *                         - type:
+     *                         - tmp_name:
+     *                         - error:
+     *                         - size:
      * @param number $toFolder
      * @param string $isHidden
+     *
      * @return array
      */
     protected static function verifyAndSaveFile(array $file, $toFolder = 0, $isHidden = false)
@@ -429,7 +447,7 @@ class Storage
             if ($file['error'] !== UPLOAD_ERR_OK) {
                 return ['upload' => false, 'message' => static::$uploadErrors[$file['error']], 'file_id' => 0];
             }
-    
+
             $file = Yii::$app->storage->addFile($file['tmp_name'], $file['name'], $toFolder, $isHidden);
             if ($file) {
                 return ['upload' => true, 'message' => 'file uploaded succesfully', 'file_id' => $file->id];
@@ -437,7 +455,7 @@ class Storage
         } catch (Exception $err) {
             return ['upload' => false, 'message' => $err->getMessage(), 'file_id' => 0];
         }
-        
+
         return ['upload' => false, 'message' => 'no files selected or empty files list.', 'file_id' => 0];
     }
 }

@@ -2,15 +2,15 @@
 
 namespace ngresttest\models;
 
-use Yii;
 use luya\admin\ngrest\base\NgRestModel;
+use Yii;
 
 /**
  * Fobar.
  *
  * File has been created with `crud/create` command on LUYA version 1.0.0-dev.
  *
- * @property integer $id
+ * @property int $id
  * @property text $image
  * @property text $imageArray
  * @property text $file
@@ -53,7 +53,7 @@ use luya\admin\ngrest\base\NgRestModel;
 class Fobar extends NgRestModel
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -61,7 +61,7 @@ class Fobar extends NgRestModel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function ngRestApiEndpoint()
     {
@@ -69,55 +69,55 @@ class Fobar extends NgRestModel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('app', 'ID'),
-            'image' => Yii::t('app', 'Image'),
-            'imageArray' => Yii::t('app', 'Image Array'),
-            'file' => Yii::t('app', 'File'),
-            'fileArray' => Yii::t('app', 'File Array'),
-            'text' => Yii::t('app', 'Text'),
-            'textarea' => Yii::t('app', 'Textarea'),
-            'selectArray' => Yii::t('app', 'Select Array'),
-            'checkboxList' => Yii::t('app', 'Checkbox List'),
-            'checkboxRelation' => Yii::t('app', 'Checkbox Relation'),
-            'color' => Yii::t('app', 'Color'),
-            'date' => Yii::t('app', 'Date'),
-            'datetime' => Yii::t('app', 'Datetime'),
-            'decimal' => Yii::t('app', 'Decimal'),
-            'number' => Yii::t('app', 'Number'),
-            'password' => Yii::t('app', 'Password'),
-            'selectClass' => Yii::t('app', 'Select Class'),
-            'toggleStatus' => Yii::t('app', 'Toggle Status'),
-            'sortRelationArray' => Yii::t('app', 'Sort Relation Array'),
-            'sortRelationModel' => Yii::t('app', 'Sort Relation Model'),
-            'i18n_image' => Yii::t('app', 'I18n Image'),
-            'i18n_imageArray' => Yii::t('app', 'I18n Image Array'),
-            'i18n_file' => Yii::t('app', 'I18n File'),
-            'i18n_fileArray' => Yii::t('app', 'I18n File Array'),
-            'i18n_text' => Yii::t('app', 'I18n Text'),
-            'i18n_textarea' => Yii::t('app', 'I18n Textarea'),
-            'i18n_selectArray' => Yii::t('app', 'I18n Select Array'),
-            'i18n_checkboxList' => Yii::t('app', 'I18n Checkbox List'),
-            'i18n_checkboxRelation' => Yii::t('app', 'I18n Checkbox Relation'),
-            'i18n_color' => Yii::t('app', 'I18n Color'),
-            'i18n_date' => Yii::t('app', 'I18n Date'),
-            'i18n_datetime' => Yii::t('app', 'I18n Datetime'),
-            'i18n_decimal' => Yii::t('app', 'I18n Decimal'),
-            'i18n_number' => Yii::t('app', 'I18n Number'),
-            'i18n_password' => Yii::t('app', 'I18n Password'),
-            'i18n_selectClass' => Yii::t('app', 'I18n Select Class'),
-            'i18n_toggleStatus' => Yii::t('app', 'I18n Toggle Status'),
+            'id'                     => Yii::t('app', 'ID'),
+            'image'                  => Yii::t('app', 'Image'),
+            'imageArray'             => Yii::t('app', 'Image Array'),
+            'file'                   => Yii::t('app', 'File'),
+            'fileArray'              => Yii::t('app', 'File Array'),
+            'text'                   => Yii::t('app', 'Text'),
+            'textarea'               => Yii::t('app', 'Textarea'),
+            'selectArray'            => Yii::t('app', 'Select Array'),
+            'checkboxList'           => Yii::t('app', 'Checkbox List'),
+            'checkboxRelation'       => Yii::t('app', 'Checkbox Relation'),
+            'color'                  => Yii::t('app', 'Color'),
+            'date'                   => Yii::t('app', 'Date'),
+            'datetime'               => Yii::t('app', 'Datetime'),
+            'decimal'                => Yii::t('app', 'Decimal'),
+            'number'                 => Yii::t('app', 'Number'),
+            'password'               => Yii::t('app', 'Password'),
+            'selectClass'            => Yii::t('app', 'Select Class'),
+            'toggleStatus'           => Yii::t('app', 'Toggle Status'),
+            'sortRelationArray'      => Yii::t('app', 'Sort Relation Array'),
+            'sortRelationModel'      => Yii::t('app', 'Sort Relation Model'),
+            'i18n_image'             => Yii::t('app', 'I18n Image'),
+            'i18n_imageArray'        => Yii::t('app', 'I18n Image Array'),
+            'i18n_file'              => Yii::t('app', 'I18n File'),
+            'i18n_fileArray'         => Yii::t('app', 'I18n File Array'),
+            'i18n_text'              => Yii::t('app', 'I18n Text'),
+            'i18n_textarea'          => Yii::t('app', 'I18n Textarea'),
+            'i18n_selectArray'       => Yii::t('app', 'I18n Select Array'),
+            'i18n_checkboxList'      => Yii::t('app', 'I18n Checkbox List'),
+            'i18n_checkboxRelation'  => Yii::t('app', 'I18n Checkbox Relation'),
+            'i18n_color'             => Yii::t('app', 'I18n Color'),
+            'i18n_date'              => Yii::t('app', 'I18n Date'),
+            'i18n_datetime'          => Yii::t('app', 'I18n Datetime'),
+            'i18n_decimal'           => Yii::t('app', 'I18n Decimal'),
+            'i18n_number'            => Yii::t('app', 'I18n Number'),
+            'i18n_password'          => Yii::t('app', 'I18n Password'),
+            'i18n_selectClass'       => Yii::t('app', 'I18n Select Class'),
+            'i18n_toggleStatus'      => Yii::t('app', 'I18n Toggle Status'),
             'i18n_sortRelationArray' => Yii::t('app', 'I18n Sort Relation Array'),
             'i18n_sortRelationModel' => Yii::t('app', 'I18n Sort Relation Model'),
         ];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -127,7 +127,7 @@ class Fobar extends NgRestModel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function genericSearchFields()
     {
@@ -135,54 +135,54 @@ class Fobar extends NgRestModel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function ngRestAttributeTypes()
     {
         return [
-            'image' => 'textarea',
-            'imageArray' => 'textarea',
-            'file' => 'textarea',
-            'fileArray' => 'textarea',
-            'text' => 'textarea',
-            'textarea' => 'textarea',
-            'selectArray' => 'textarea',
-            'checkboxList' => 'textarea',
-            'checkboxRelation' => 'textarea',
-            'color' => 'textarea',
-            'date' => 'textarea',
-            'datetime' => 'textarea',
-            'decimal' => 'textarea',
-            'number' => 'textarea',
-            'password' => 'textarea',
-            'selectClass' => 'textarea',
-            'toggleStatus' => 'textarea',
-            'sortRelationArray' => 'textarea',
-            'sortRelationModel' => 'textarea',
-            'i18n_image' => 'textarea',
-            'i18n_imageArray' => 'textarea',
-            'i18n_file' => 'textarea',
-            'i18n_fileArray' => 'textarea',
-            'i18n_text' => 'textarea',
-            'i18n_textarea' => 'textarea',
-            'i18n_selectArray' => 'textarea',
-            'i18n_checkboxList' => 'textarea',
-            'i18n_checkboxRelation' => 'textarea',
-            'i18n_color' => 'textarea',
-            'i18n_date' => 'textarea',
-            'i18n_datetime' => 'textarea',
-            'i18n_decimal' => 'textarea',
-            'i18n_number' => 'textarea',
-            'i18n_password' => 'textarea',
-            'i18n_selectClass' => 'textarea',
-            'i18n_toggleStatus' => 'textarea',
+            'image'                  => 'textarea',
+            'imageArray'             => 'textarea',
+            'file'                   => 'textarea',
+            'fileArray'              => 'textarea',
+            'text'                   => 'textarea',
+            'textarea'               => 'textarea',
+            'selectArray'            => 'textarea',
+            'checkboxList'           => 'textarea',
+            'checkboxRelation'       => 'textarea',
+            'color'                  => 'textarea',
+            'date'                   => 'textarea',
+            'datetime'               => 'textarea',
+            'decimal'                => 'textarea',
+            'number'                 => 'textarea',
+            'password'               => 'textarea',
+            'selectClass'            => 'textarea',
+            'toggleStatus'           => 'textarea',
+            'sortRelationArray'      => 'textarea',
+            'sortRelationModel'      => 'textarea',
+            'i18n_image'             => 'textarea',
+            'i18n_imageArray'        => 'textarea',
+            'i18n_file'              => 'textarea',
+            'i18n_fileArray'         => 'textarea',
+            'i18n_text'              => 'textarea',
+            'i18n_textarea'          => 'textarea',
+            'i18n_selectArray'       => 'textarea',
+            'i18n_checkboxList'      => 'textarea',
+            'i18n_checkboxRelation'  => 'textarea',
+            'i18n_color'             => 'textarea',
+            'i18n_date'              => 'textarea',
+            'i18n_datetime'          => 'textarea',
+            'i18n_decimal'           => 'textarea',
+            'i18n_number'            => 'textarea',
+            'i18n_password'          => 'textarea',
+            'i18n_selectClass'       => 'textarea',
+            'i18n_toggleStatus'      => 'textarea',
             'i18n_sortRelationArray' => 'textarea',
             'i18n_sortRelationModel' => 'textarea',
         ];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function ngRestScopes()
     {

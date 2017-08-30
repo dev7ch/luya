@@ -2,8 +2,8 @@
 
 namespace luya\cms\models;
 
-use luya\admin\traits\SoftDeleteTrait;
 use luya\admin\ngrest\base\NgRestModel;
+use luya\admin\traits\SoftDeleteTrait;
 
 /**
  * Represents the Navigation-Containers.
@@ -18,7 +18,7 @@ class NavContainer extends NgRestModel
     {
         return 'cms_nav_container';
     }
-    
+
     public static function ngRestApiEndpoint()
     {
         return 'api-cms-navcontainer';
@@ -30,7 +30,7 @@ class NavContainer extends NgRestModel
             [['name', 'alias'], 'required'],
         ];
     }
-    
+
     public function scenarios()
     {
         return [
@@ -38,7 +38,7 @@ class NavContainer extends NgRestModel
             'restupdate' => ['name', 'alias'],
         ];
     }
-    
+
     public function ngRestConfig($config)
     {
         $config->delete = true;
@@ -52,10 +52,10 @@ class NavContainer extends NgRestModel
         $config->options = [
             'saveCallback' => 'function(ServiceMenuData) { ServiceMenuData.load(true); }',
         ];
-        
+
         return $config;
     }
-    
+
     /**
      * Relation returns all `cms_nav` rows belongs to this container sort by index without deleted or draf items.
      *

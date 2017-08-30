@@ -8,6 +8,7 @@ namespace luya\cms\menu;
  * This interfaces describes all available fields which can be used as Operator in {{luya\cms\menu\Query::where()}} conditions.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 interface QueryOperatorFieldInterface

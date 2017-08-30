@@ -2,8 +2,8 @@
 
 namespace luya\admin\components;
 
-use yii\base\Component;
 use luya\admin\models\Lang;
+use yii\base\Component;
 
 /**
  * Admin Language Component.
@@ -12,7 +12,7 @@ use luya\admin\models\Lang;
  *
  * @property string $getLanguageByShortCode Get the language from a shortCode..
  * @property array $languages Get an array of all languages (its not an AR object!).
- * @property integer $activeId Get the current active language ID.
+ * @property int $activeId Get the current active language ID.
  * @property string $activeShortCode Get the current active langauge Short-Code.
  * @property array $activeLanguage Get the array of the current active language (its not an AR object!).
  *
@@ -26,16 +26,16 @@ class AdminLanguage extends Component
      * @var array
      */
     private $_activeLanguage;
-    
+
     /**
      * Containg all availabe languages from Lang Model.
      *
      * @var array
      */
     private $_languages;
-    
+
     /**
-     * Get the array of the current active language (its not an AR object!)
+     * Get the array of the current active language (its not an AR object!).
      *
      * @return array
      */
@@ -44,12 +44,12 @@ class AdminLanguage extends Component
         if ($this->_activeLanguage === null) {
             $this->_activeLanguage = Lang::findActive();
         }
-        
+
         return $this->_activeLanguage;
     }
-    
+
     /**
-     * Get the current active langauge Short-Code
+     * Get the current active langauge Short-Code.
      *
      * @return string
      */
@@ -57,9 +57,9 @@ class AdminLanguage extends Component
     {
         return $this->getActiveLanguage()['short_code'];
     }
-    
+
     /**
-     * Get the current active language ID
+     * Get the current active language ID.
      *
      * @return int
      */
@@ -67,9 +67,9 @@ class AdminLanguage extends Component
     {
         return (int) $this->getActiveLanguage()['id'];
     }
-    
+
     /**
-     * Get an array of all languages (its not an AR object!)
+     * Get an array of all languages (its not an AR object!).
      *
      * @return array
      */
@@ -78,15 +78,16 @@ class AdminLanguage extends Component
         if ($this->_languages === null) {
             $this->_languages = Lang::getQuery();
         }
-    
+
         return $this->_languages;
     }
-    
+
     /**
      * Get the language from a shortCode.
      *
      * @param string $shortCode
-     * @return boolean|mixed
+     *
+     * @return bool|mixed
      */
     public function getLanguageByShortCode($shortCode)
     {

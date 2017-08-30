@@ -2,11 +2,11 @@
 
 namespace luya\admin\apis;
 
-use Yii;
-use luya\Exception;
-use luya\admin\models\SearchData;
-use luya\admin\base\RestController;
 use luya\admin\base\GenericSearchInterface;
+use luya\admin\base\RestController;
+use luya\admin\models\SearchData;
+use luya\Exception;
+use Yii;
 
 /**
  * Search API, allows you to perform search querys for the entire administration including all items provided in the auth section.
@@ -21,8 +21,10 @@ class SearchController extends RestController
      * This method returns all node items with an search model class or a generic search interface instance and returns its data.
      *
      * @param string $query The query to search for.
-     * @return array
+     *
      * @throws Exception
+     *
+     * @return array
      */
     public function actionIndex($query)
     {
@@ -39,14 +41,14 @@ class SearchController extends RestController
                 if (count($data) > 0) {
                     $stateProvider = $model->genericSearchStateProvider();
                     $search[] = [
-                        'hideFields' => $model->genericSearchHiddenFields(),
-                        'type' => 'custom',
-                        'menuItem' => $node,
-                        'data' => $data,
+                        'hideFields'    => $model->genericSearchHiddenFields(),
+                        'type'          => 'custom',
+                        'menuItem'      => $node,
+                        'data'          => $data,
                         'stateProvider' => $stateProvider,
                     ];
                 }
-                
+
                 unset($data);
             }
         }
@@ -59,10 +61,10 @@ class SearchController extends RestController
                     $stateProvider = $ctrl[0]->runAction('search-provider');
                     $hiddenFields = $ctrl[0]->runAction('search-hidden-fields');
                     $search[] = [
-                        'hideFields' => $hiddenFields,
-                        'type' => 'api',
-                        'menuItem' => $api,
-                        'data' => $data,
+                        'hideFields'    => $hiddenFields,
+                        'type'          => 'api',
+                        'menuItem'      => $api,
+                        'data'          => $data,
                         'stateProvider' => $stateProvider,
                     ];
                 }

@@ -20,29 +20,29 @@ class BootTest extends \luyatests\LuyaWebTestCase
         $boot = new Boot();
         $boot->run();
     }
-    
+
     /**
      * @expectedException Exception
      */
     public function testWrongConfigFile()
     {
         $boot = new Boot();
-        $boot->configFile = __DIR__ . '/../../data/configs/wrongconfig.php';
+        $boot->configFile = __DIR__.'/../../data/configs/wrongconfig.php';
         $boot->run();
     }
-    
+
     /**
      * @expectedException Exception
      */
     public function testYiiNotFound()
     {
         $boot = new Boot();
-        $boot->configFile = __DIR__ . '/../../data/configs/console.php';
+        $boot->configFile = __DIR__.'/../../data/configs/console.php';
         $boot->setBaseYiiFile('wrongPathToYii.php');
         $boot->mockOnly = true;
         $boot->applicationConsole();
     }
-    
+
     public function testSetterGetterConfig()
     {
         $boot = new Boot();

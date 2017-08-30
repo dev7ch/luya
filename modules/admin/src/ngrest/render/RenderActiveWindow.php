@@ -2,23 +2,24 @@
 
 namespace luya\admin\ngrest\render;
 
-use Yii;
 use luya\admin\ngrest\base\Render;
+use Yii;
 
 /**
  * Render the index view of an Active Window.
  *
  * @property \luya\admin\ngrest\base\ActiveWindowInterface $activeWindowObject
- * @property integer $itemId
+ * @property int $itemId
  * @property string $activeWindowHash
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class RenderActiveWindow extends Render implements RenderInterface
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function render()
     {
@@ -26,7 +27,7 @@ class RenderActiveWindow extends Render implements RenderInterface
     }
 
     private $_activeWindowObject;
-    
+
     /**
      * Get current Active Window Object.
      *
@@ -43,12 +44,12 @@ class RenderActiveWindow extends Render implements RenderInterface
             Yii::$app->session->set($this->activeWindowHash, $this->_itemId);
             $this->_activeWindowObject = $object;
         }
-        
+
         return $this->_activeWindowObject;
     }
-    
+
     private $_activeWindowHash;
-    
+
     /**
      * Active Window Hash Getter Method.
      *
@@ -58,7 +59,7 @@ class RenderActiveWindow extends Render implements RenderInterface
     {
         return $this->_activeWindowHash;
     }
-    
+
     /**
      * Active Window Hash Setter Method.
      *
@@ -68,19 +69,19 @@ class RenderActiveWindow extends Render implements RenderInterface
     {
         $this->_activeWindowHash = $activeWindowHash;
     }
-    
+
     private $_itemId;
 
     /**
      * Setter Method for current Item Id.
      *
-     * @param integer $id
+     * @param int $id
      */
     public function setItemId($id)
     {
         $this->_itemId = (int) $id;
     }
-    
+
     /**
      * Getter method for current Item Id.
      *
@@ -95,12 +96,13 @@ class RenderActiveWindow extends Render implements RenderInterface
      * Find the active window in the config based on a given Hash.
      *
      * @param string $activeWindowHash
-     * @return array|boolean
+     *
+     * @return array|bool
      */
     public function findActiveWindow($activeWindowHash)
     {
         $activeWindows = $this->getConfig()->getPointer('aw');
-        
+
         return isset($activeWindows[$activeWindowHash]) ? $activeWindows[$activeWindowHash] : false;
     }
 }

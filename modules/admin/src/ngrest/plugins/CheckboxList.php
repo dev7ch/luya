@@ -27,54 +27,54 @@ use luya\helpers\StringHelper;
 class CheckboxList extends Plugin
 {
     public $data = [];
-    
+
     public $i18nEmptyValue = [];
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderList($id, $ngModel)
     {
         return $this->createListTag($ngModel);
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderCreate($id, $ngModel)
     {
         return $this->createFormTag('zaa-checkbox-array', $id, $ngModel, ['options' => $this->getServiceName('checkboxitems')]);
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderUpdate($id, $ngModel)
     {
         return $this->renderCreate($id, $ngModel);
     }
-    
+
     protected function getItems()
     {
         $data = [];
-    
+
         foreach ($this->data as $value => $label) {
             $data[] = ['value' => $value, 'label' => $label];
         }
-    
+
         return ['items' => ArrayHelper::typeCast($data)];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function serviceData($event)
     {
         return ['checkboxitems' => $this->getItems()];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function onBeforeSave($event)
     {
@@ -82,7 +82,7 @@ class CheckboxList extends Plugin
         if (!$this->i18n) {
             // as it could be an assigned array from the frontend model assigne via a form, we verify if the array contains a value key.
             $value = $event->sender->getAttribute($this->name);
-            
+
             $data = [];
             if (is_array($value)) {
                 foreach ($value as $key => $row) {
@@ -95,43 +95,46 @@ class CheckboxList extends Plugin
             } else {
                 $data = $value;
             }
-            
+
             $event->sender->setAttribute($this->name, $this->i18nFieldEncode($data));
+
             return false;
         }
-    
+
         return true;
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function onBeforeExpandFind($event)
     {
         if (!$this->i18n) {
             $event->sender->setAttribute($this->name, $this->jsonDecode($event->sender->getAttribute($this->name)));
+
             return false;
         }
-        
+
         return true;
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function onBeforeFind($event)
     {
         if (!$this->i18n) {
             $array = $this->jsonDecode($event->sender->getAttribute($this->name));
             $event->sender->setAttribute($this->name, ArrayHelper::getColumn($array, 'value'));
+
             return false;
         }
-        
+
         return true;
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function onAfterListFind($event)
     {
@@ -139,9 +142,9 @@ class CheckboxList extends Plugin
         if (!$this->i18n) {
             $value = $this->jsonDecode($value);
         }
-        
+
         $value = StringHelper::typeCast($value);
-        
+
         if (!empty($value)) {
             $results = [];
             foreach ($this->getItems()['items'] as $item) {
@@ -151,7 +154,7 @@ class CheckboxList extends Plugin
                     }
                 }
             }
-            $event->sender->setAttribute($this->name, implode(", ", $results));
+            $event->sender->setAttribute($this->name, implode(', ', $results));
         }
     }
 }

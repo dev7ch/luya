@@ -28,6 +28,7 @@ namespace luya\rest;
  * ```
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 interface UserBehaviorInterface
@@ -62,7 +63,7 @@ interface UserBehaviorInterface
      * ];
      * ```
      *
-     * @return boolean|string|\yii\web\User If `false` is returned the protection is disabled, if a string is provided this will be threated as className to create the User object.
+     * @return bool|string|\yii\web\User If `false` is returned the protection is disabled, if a string is provided this will be threated as className to create the User object.
      */
     public function userAuthClass();
 }

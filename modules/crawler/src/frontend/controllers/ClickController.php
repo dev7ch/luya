@@ -2,9 +2,9 @@
 
 namespace luya\crawler\frontend\controllers;
 
-use luya\web\Controller;
 use luya\crawler\models\Click;
 use luya\crawler\models\Index;
+use luya\web\Controller;
 
 class ClickController extends Controller
 {
@@ -13,19 +13,19 @@ class ClickController extends Controller
         $model = new Click();
         $model->attributes = [
             'searchdata_id' => $searchId,
-            'index_id' => $indexId,
-            'timestamp' => time(),
-            'position' => $position,
+            'index_id'      => $indexId,
+            'timestamp'     => time(),
+            'position'      => $position,
         ];
         // save whether valid or not, as user must be redirected.
         $model->save(false);
-        
+
         $index = Index::findOne($indexId);
-        
+
         if ($index) {
             return $this->redirect($index->url);
         }
-        
-        throw new \Exception("Unable to find index.");
+
+        throw new \Exception('Unable to find index.');
     }
 }

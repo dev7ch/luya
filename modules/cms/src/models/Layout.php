@@ -2,8 +2,8 @@
 
 namespace luya\cms\models;
 
-use yii\helpers\Json;
 use luya\admin\ngrest\base\NgRestModel;
+use yii\helpers\Json;
 
 /**
  * Layout Model for CMS-Layouts.
@@ -16,37 +16,36 @@ class Layout extends NgRestModel
     {
         return 'cms_layout';
     }
-    
+
     public static function ngRestApiEndpoint()
     {
         return 'api-cms-layout';
     }
-    
+
     public function rules()
     {
         return [
             [['name', 'json_config', 'view_file'], 'required'],
         ];
     }
-    
+
     public function ngRestAttributeTypes()
     {
         return [
-            'name' => 'text',
+            'name'        => 'text',
             'json_config' => 'textarea',
-            'view_file' => 'text',
+            'view_file'   => 'text',
         ];
     }
-    
+
     public function ngRestScopes()
     {
         return [
-            ['list', ['name', 'json_config', 'view_file'], ],
+            ['list', ['name', 'json_config', 'view_file']],
             [['create', 'update'], ['name']],
         ];
     }
 
-    
     public function getJsonConfig($node = false)
     {
         $json = Json::decode($this->json_config);

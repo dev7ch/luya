@@ -2,9 +2,9 @@
 
 namespace luya\admin\ngrest\plugins;
 
+use luya\admin\file\Query;
 use luya\admin\ngrest\base\Plugin;
 use luya\helpers\ArrayHelper;
-use luya\admin\file\Query;
 
 /**
  * Type Multiple Files Upload.
@@ -32,17 +32,17 @@ use luya\admin\file\Query;
 class FileArray extends Plugin
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $i18nEmptyValue = [];
-    
+
     /**
-     * @var boolean Whether to return a {{luya\admin\file\Iterator}} instead of an array with file ids value from the database.
+     * @var bool Whether to return a {{luya\admin\file\Iterator}} instead of an array with file ids value from the database.
      */
     public $fileIterator = false;
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderList($id, $ngModel)
     {
@@ -50,7 +50,7 @@ class FileArray extends Plugin
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderCreate($id, $ngModel)
     {
@@ -58,42 +58,44 @@ class FileArray extends Plugin
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderUpdate($id, $ngModel)
     {
         return $this->renderCreate($id, $ngModel);
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function onBeforeSave($event)
     {
         // if its not i18n casted field we have to serialize the the file array as json and abort further event excution.
         if (!$this->i18n) {
             $event->sender->setAttribute($this->name, $this->i18nFieldEncode($event->sender->getAttribute($this->name)));
+
             return false;
         }
-        
+
         return true;
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function onBeforeExpandFind($event)
     {
         if (!$this->i18n) {
             $event->sender->setAttribute($this->name, $this->jsonDecode($event->sender->getAttribute($this->name)));
+
             return false;
         }
-         
+
         return true;
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function onBeforeFind($event)
     {
@@ -102,14 +104,15 @@ class FileArray extends Plugin
             if ($this->fileIterator) {
                 $event->sender->setAttribute($this->name, $this->parseFileIteration($event->sender->getAttribute($this->name)));
             }
+
             return false;
         }
-        
+
         return true;
     }
-    
+
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function onAfterFind($event)
     {
@@ -117,11 +120,12 @@ class FileArray extends Plugin
             $event->sender->setAttribute($this->name, $this->parseFileIteration($event->sender->getAttribute($this->name)));
         }
     }
-    
+
     /**
      * Parse an array with fileId and caption into an {{\luya\admin\file\Iterator}} object.
      *
      * @param array $values The array with key 'fileId' like `[['fileId' => 1, 'caption' => 'test']]`.
+     *
      * @return \luya\admin\file\Iterator The iterator object from the parsed values or an empty array if empty.
      */
     protected function parseFileIteration(array $values)
@@ -129,6 +133,7 @@ class FileArray extends Plugin
         if (empty($values)) {
             return [];
         }
+
         return (new Query())->where(['in', 'id', ArrayHelper::getColumn($values, 'fileId')])->all();
     }
 }

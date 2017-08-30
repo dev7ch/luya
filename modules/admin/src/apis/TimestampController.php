@@ -2,13 +2,11 @@
 
 namespace luya\admin\apis;
 
-use Yii;
-use luya\admin\models\UserOnline;
 use luya\admin\base\RestController;
 use luya\admin\models\Config;
-use luya\console\commands\MigrateController;
+use luya\admin\models\UserOnline;
 use luya\console\Application;
-use luya\Boot;
+use Yii;
 
 /**
  * Timestamp API, refreshes the UserOnline system of the administration area.
@@ -26,14 +24,15 @@ class TimestampController extends RestController
     {
         // clear user online list
         UserOnline::clearList();
-        
+
         if (!UserOnline::findOne(['user_id' => Yii::$app->adminuser->id])) {
             Yii::$app->response->statusCode = 401;
+
             return Yii::$app->response->send();
         }
-        
+
         $forceReload = Yii::$app->adminuser->identity->force_reload;
-                
+
         // if developer is enabled, check if vendor has changed and run the required commands and force reload
         if (!YII_ENV_PROD) {
             $config = (int) Config::get(Config::CONFIG_INSTALLER_VENDOR_TIMESTAMP, null);
@@ -47,37 +46,40 @@ class TimestampController extends RestController
         		*/
             }
         }
-        
+
         // return users, verify force reload.
         $data = [
-            'useronline' => UserOnline::getList(),
+            'useronline'  => UserOnline::getList(),
             'forceReload' => $forceReload,
-            'locked' => UserOnline::find()->select(['lock_pk', 'lock_table', 'last_timestamp', 'u.firstname', 'u.lastname', 'u.id'])->where(['!=', 'u.id', Yii::$app->adminuser->id])->joinWith('user as u')->createCommand()->queryAll(),
+            'locked'      => UserOnline::find()->select(['lock_pk', 'lock_table', 'last_timestamp', 'u.firstname', 'u.lastname', 'u.id'])->where(['!=', 'u.id', Yii::$app->adminuser->id])->joinWith('user as u')->createCommand()->queryAll(),
         ];
-        
+
         return $data;
     }
-    
+
     /**
-     * Running console command on background
+     * Running console command on background.
      *
      * @param string $cmd Argument that will be passed to console application
-     * @return boolean
+     *
+     * @return bool
      */
     protected function cli($cmd)
     {
-        $cmd = PHP_BINDIR . '/php ' . Yii::getAlias('@vendor/bin/luya') . ' ' . $cmd;
+        $cmd = PHP_BINDIR.'/php '.Yii::getAlias('@vendor/bin/luya').' '.$cmd;
         if ($this->isWindows() === true) {
-            pclose(popen('start /b ' . $cmd, 'r'));
+            pclose(popen('start /b '.$cmd, 'r'));
         } else {
-            pclose(popen($cmd . ' > /dev/null &', 'r'));
+            pclose(popen($cmd.' > /dev/null &', 'r'));
         }
+
         return true;
     }
+
     /**
-     * Check operating system
+     * Check operating system.
      *
-     * @return boolean true if it's Windows OS
+     * @return bool true if it's Windows OS
      */
     protected function isWindows()
     {

@@ -2,10 +2,10 @@
 
 namespace luya\admin\apis;
 
-use Yii;
-use luya\admin\Module;
 use luya\admin\base\RestController;
 use luya\admin\models\UserOnline;
+use luya\admin\Module;
+use Yii;
 
 /**
  * Admin Menu API, provides all menu items and dashabord informations for a node or the entire system.
@@ -27,19 +27,22 @@ class MenuController extends RestController
     /**
      * The items action returns all items for a given node.
      *
-     * @param integer $nodeId The id of the node to find all items from.
+     * @param int $nodeId The id of the node to find all items from.
+     *
      * @return array
      */
     public function actionItems($nodeId)
     {
         UserOnline::unlock(Yii::$app->adminuser->id);
+
         return Yii::$app->adminmenu->getModuleItems($nodeId);
     }
 
     /**
      * Get all dashabord items for a given node.
      *
-     * @param integer $nodeId The id of the node to find all items from.
+     * @param int $nodeId The id of the node to find all items from.
+     *
      * @return array
      */
     public function actionDashboard($nodeId)
@@ -51,7 +54,7 @@ class MenuController extends RestController
         if (!isset($data['groups'])) {
             return [];
         }
-        
+
         foreach ($data['groups'] as $groupkey => $groupvalue) {
             foreach ($groupvalue['items'] as $row) {
                 if ($row['permissionIsApi']) {
@@ -71,13 +74,13 @@ class MenuController extends RestController
             foreach ($data as $row) {
                 $date = mktime(0, 0, 0, date('n', $row['timestamp_create']), date('j', $row['timestamp_create']), date('Y', $row['timestamp_create']));
                 $log[$date][] = [
-                    'name' => $row['firstname'].' '.$row['lastname'],
+                    'name'      => $row['firstname'].' '.$row['lastname'],
                     'is_update' => $row['is_update'],
                     'is_insert' => $row['is_insert'],
                     'timestamp' => $row['timestamp_create'],
-                    'alias' => $access['alias'],
-                    'message' => ($row['is_update']) ? Module::t('dashboard_log_message_edit', ['container' => $access['alias']]) : Module::t('dashboard_log_message_add', ['container' => $access['alias']]),
-                    'icon' => $access['icon'],
+                    'alias'     => $access['alias'],
+                    'message'   => ($row['is_update']) ? Module::t('dashboard_log_message_edit', ['container' => $access['alias']]) : Module::t('dashboard_log_message_add', ['container' => $access['alias']]),
+                    'icon'      => $access['icon'],
                 ];
             }
         }
@@ -88,7 +91,7 @@ class MenuController extends RestController
 
         foreach ($log as $day => $values) {
             $array[] = [
-                'day' => $day,
+                'day'   => $day,
                 'items' => $values,
             ];
         }

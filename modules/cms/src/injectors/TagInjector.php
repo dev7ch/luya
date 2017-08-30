@@ -2,10 +2,10 @@
 
 namespace luya\cms\injectors;
 
-use luya\cms\base\BaseBlockInjector;
 use luya\admin\base\TypesInterface;
-use luya\cms\helpers\BlockHelper;
 use luya\admin\models\Tag;
+use luya\cms\base\BaseBlockInjector;
+use luya\cms\helpers\BlockHelper;
 use luya\helpers\ArrayHelper;
 
 /**
@@ -17,6 +17,7 @@ use luya\helpers\ArrayHelper;
  * of the Block.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class TagInjector extends BaseBlockInjector
@@ -30,9 +31,9 @@ class TagInjector extends BaseBlockInjector
     {
         return Tag::find()->select(['name'])->indexBy('id')->column();
     }
-    
+
     private $_assignedTags;
-    
+
     /**
      * Get assigned models for the current Block.
      *
@@ -42,24 +43,24 @@ class TagInjector extends BaseBlockInjector
     {
         if ($this->_assignedTags === null) {
             $ids = ArrayHelper::getColumn($this->getContextConfigValue($this->varName, []), 'value');
-            $this->_assignedTags = Tag::find()->where(['in','id', $ids])->indexBy('name')->all();
+            $this->_assignedTags = Tag::find()->where(['in', 'id', $ids])->indexBy('name')->all();
         }
-        
+
         return $this->_assignedTags;
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function setup()
     {
         $this->setContextConfig([
-            'var' => $this->varName,
-            'type' => TypesInterface::TYPE_CHECKBOX_ARRAY,
-            'label' => $this->varLabel,
+            'var'     => $this->varName,
+            'type'    => TypesInterface::TYPE_CHECKBOX_ARRAY,
+            'label'   => $this->varLabel,
             'options' => BlockHelper::checkboxArrayOption($this->getCheckboxArray()),
         ]);
-        
+
         $this->context->addExtraVar($this->varName, $this->getAssignedTags());
     }
 }

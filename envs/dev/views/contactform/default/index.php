@@ -1,9 +1,9 @@
 <?php
 
-use yii\widgets\ActiveForm;
 use yii\helpers\Html;
+use yii\widgets\ActiveForm;
 
-/**
+/*
  * @var object $model Contains the model object based on DynamicModel yii class.
  * @var boolean $success Return true when successfull sent mail and validated
  */

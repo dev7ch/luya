@@ -2,10 +2,10 @@
 
 namespace admintests\admin\ngrest;
 
-use Yii;
 use admintests\AdminTestCase;
-use luya\admin\ngrest\ConfigBuilder;
 use luya\admin\ngrest\Config;
+use luya\admin\ngrest\ConfigBuilder;
+use Yii;
 
 class ConfigBuilderTest extends AdminTestCase
 {
@@ -67,14 +67,13 @@ class ConfigBuilderTest extends AdminTestCase
 
         $this->assertArrayHasKey('aw', $cfg);
         $aw = $cfg['aw'];
-        
+
         $this->assertArrayHasKey('ff21bd877239c16ade6e598df6d2bfa91c127953', $aw);
         $obj = $aw['ff21bd877239c16ade6e598df6d2bfa91c127953'];
 
         $this->assertArrayHasKey('objectConfig', $obj);
         $this->assertArrayHasKey('alias', $obj);
         $this->assertArrayHasKey('icon', $obj);
-
 
         $ngRestConfig = new Config(['apiEndpoint' => 'api-admin-test', 'primaryKey' => 'id']);
         $ngRestConfig->setConfig($cfg);
@@ -140,12 +139,12 @@ class ConfigBuilderTest extends AdminTestCase
         $this->assertEquals(false, $ngRestConfig->isDeletable());
 
         $ngRestConfig->addField('list', 'foo', [
-            'name' => 'foo',
-            'alias' => 'ID',
+            'name'    => 'foo',
+            'alias'   => 'ID',
             'plugins' => [
                 [
                     'class' => '\luya\admin\ngrest\plugins\Text',
-                    'args' => [],
+                    'args'  => [],
                 ],
             ],
         ]);

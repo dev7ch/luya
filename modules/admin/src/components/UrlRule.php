@@ -5,14 +5,14 @@ namespace luya\admin\components;
 use yii;
 
 /**
- * Url rule for NgRest Apis
+ * Url rule for NgRest Apis.
  *
  * @author Basil Suter <basil@nadar.io>
  */
 class UrlRule extends \yii\rest\UrlRule
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -29,6 +29,6 @@ class UrlRule extends \yii\rest\UrlRule
             $this->controller = [];
         }
     }
-    
+
     public $pluralize = false;
 }

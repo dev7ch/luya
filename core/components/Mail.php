@@ -2,11 +2,10 @@
 
 namespace luya\components;
 
-use Yii;
 use luya\Exception;
 use PHPMailer;
 use SMTP;
-
+use Yii;
 use yii\base\Controller;
 
 /**
@@ -31,6 +30,7 @@ use yii\base\Controller;
  * @property \PHPMailer $mailer The PHP Mailer object
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class Mail extends \yii\base\Component
@@ -81,15 +81,15 @@ class Mail extends \yii\base\Component
      * @var bool enable debug output mode 'Data and commands'
      */
     public $debug = false;
-    
+
     /**
      * @var string Posible values are `tls` or `ssl`
      */
     public $smtpSecure = 'tls';
-    
+
     /**
-     * @var string|boolean Define a layout template file which is going to be wrapped around the body()
-     * content. The file alias will be resolved so an example layout could look as followed:
+     * @var string|bool Define a layout template file which is going to be wrapped around the body()
+     *                  content. The file alias will be resolved so an example layout could look as followed:
      *
      * ```php
      * $layout = '@app/views/maillayout.php';
@@ -104,16 +104,16 @@ class Mail extends \yii\base\Component
      * ```
      */
     public $layout = false;
-    
+
     /**
-     * Getter for the mailer object
+     * Getter for the mailer object.
      *
      * @return \PHPMailer
      */
     public function getMailer()
     {
         if ($this->_mailer === null) {
-            $this->_mailer = new PHPmailer;
+            $this->_mailer = new PHPmailer();
             $this->_mailer->CharSet = 'UTF-8';
             $this->_mailer->From = $this->from;
             $this->_mailer->FromName = $this->fromName;
@@ -139,9 +139,9 @@ class Mail extends \yii\base\Component
 
         return $this->_mailer;
     }
-    
+
     /**
-     * Reset the mailer object to null
+     * Reset the mailer object to null.
      *
      * @return void
      */
@@ -149,12 +149,13 @@ class Mail extends \yii\base\Component
     {
         $this->_mailer = null;
     }
-    
+
     /**
-     * Compose a new mail message, this will first flush existing mailer objects
+     * Compose a new mail message, this will first flush existing mailer objects.
      *
      * @param string $subject The subject of the mail
-     * @param string $body The HTML body of the mail message.
+     * @param string $body    The HTML body of the mail message.
+     *
      * @return \luya\components\Mail
      */
     public function compose($subject = null, $body = null)
@@ -166,31 +167,36 @@ class Mail extends \yii\base\Component
         if ($body !== null) {
             $this->body($body);
         }
+
         return $this;
     }
-    
+
     /**
-     * Set the mail message subject of the mailer instance
+     * Set the mail message subject of the mailer instance.
      *
      * @param string $subject The subject message
+     *
      * @return \luya\components\Mail
      */
     public function subject($subject)
     {
         $this->getMailer()->Subject = $subject;
+
         return $this;
     }
-    
+
     /**
      * Set the HTML body for the mailer message, if a layout is defined the layout
      * will automatically wrapped about the html body.
      *
      * @param string $body The HTML body message
+     *
      * @return \luya\components\Mail
      */
     public function body($body)
     {
         $this->getMailer()->Body = $this->wrapLayout($body);
+
         return $this;
     }
 
@@ -204,28 +210,30 @@ class Mail extends \yii\base\Component
      * ```
      *
      * @param string $viewFile The view file to render
-     * @param array $params The parameters to pass to the view file.
+     * @param array  $params   The parameters to pass to the view file.
+     *
      * @return \luya\components\Mail
      */
     public function render($viewFile, array $params = [])
     {
         $this->body(Yii::$app->view->render($viewFile, $params));
-        
+
         return $this;
     }
-    
+
     private $_context = [];
-    
+
     /**
      * Pass option parameters to the layout files.
      *
      * @param array $vars
+     *
      * @return \luya\components\Mail
      */
     public function context(array $vars)
     {
         $this->_context = $vars;
-        
+
         return $this;
     }
 
@@ -234,6 +242,7 @@ class Mail extends \yii\base\Component
      * the passed  content as $content variable in the view.
      *
      * @param string $content The content to wrapp inside the layout.
+     *
      * @return string
      */
     protected function wrapLayout($content)
@@ -242,14 +251,14 @@ class Mail extends \yii\base\Component
         if ($this->layout === false) {
             return $content;
         }
-        
+
         $view = Yii::$app->getView();
-        
+
         $vars = array_merge($this->_context, ['content' => $content]);
-        
+
         return $view->renderPhpFile(Yii::getAlias($this->layout), $vars);
     }
-    
+
     /**
      * Add multiple addresses into the mailer object.
      *
@@ -265,8 +274,9 @@ class Mail extends \yii\base\Component
      * addresses(['John Doe' => 'john.doe@example.com', 'Jane Doe' => 'jane.doe@example.com']);
      * ```
      *
-     * @return \luya\components\Mail
      * @param array $emails An array with email addresses or name => email paring to use names.
+     *
+     * @return \luya\components\Mail
      */
     public function addresses(array $emails)
     {
@@ -277,15 +287,16 @@ class Mail extends \yii\base\Component
                 $this->address($mail, $name);
             }
         }
-        
+
         return $this;
     }
-    
+
     /**
-     * Add a single address with optional name
+     * Add a single address with optional name.
      *
      * @param string $email The email address e.g. john@example.com
-     * @param string $name The name for the address e.g. John Doe
+     * @param string $name  The name for the address e.g. John Doe
+     *
      * @return \luya\components\Mail
      */
     public function address($email, $name = null)
@@ -310,8 +321,9 @@ class Mail extends \yii\base\Component
      * ccAddresses(['John Doe' => 'john.doe@example.com', 'Jane Doe' => 'jane.doe@example.com']);
      * ```
      *
-     * @return \luya\components\Mail
      * @param array $emails An array with email addresses or name => email paring to use names.
+     *
+     * @return \luya\components\Mail
      */
     public function ccAddresses(array $emails)
     {
@@ -327,10 +339,11 @@ class Mail extends \yii\base\Component
     }
 
     /**
-     * Add a single CC address with optional name
+     * Add a single CC address with optional name.
      *
      * @param string $email The email address e.g. john@example.com
-     * @param string $name The name for the address e.g. John Doe
+     * @param string $name  The name for the address e.g. John Doe
+     *
      * @return \luya\components\Mail
      */
     public function ccAddress($email, $name = null)
@@ -355,8 +368,9 @@ class Mail extends \yii\base\Component
      * bccAddresses(['John Doe' => 'john.doe@example.com', 'Jane Doe' => 'jane.doe@example.com']);
      * ```
      *
-     * @return \luya\components\Mail
      * @param array $emails An array with email addresses or name => email paring to use names.
+     *
+     * @return \luya\components\Mail
      */
     public function bccAddresses(array $emails)
     {
@@ -372,10 +386,11 @@ class Mail extends \yii\base\Component
     }
 
     /**
-     * Add a single BCC address with optional name
+     * Add a single BCC address with optional name.
      *
      * @param string $email The email address e.g. john@example.com
-     * @param string $name The name for the address e.g. John Doe
+     * @param string $name  The name for the address e.g. John Doe
+     *
      * @return \luya\components\Mail
      */
     public function bccAddress($email, $name = null)
@@ -384,45 +399,50 @@ class Mail extends \yii\base\Component
 
         return $this;
     }
-    
+
     /**
      * Add attachment.
      *
      * @param string $filePath The path to the file, will be checked with `is_file`.
-     * @param string $name An optional name to use for the Attachment.
+     * @param string $name     An optional name to use for the Attachment.
+     *
      * @return \luya\components\Mail
      */
     public function addAttachment($filePath, $name = null)
     {
         $this->getMailer()->addAttachment($filePath, empty($name) ? '' : $name);
-        
+
         return $this;
     }
-    
+
     /**
      * Add ReplyTo Address.
      *
      * @param string $email
      * @param string $name
+     *
      * @return \luya\components\Mail
      */
     public function addReplyTo($email, $name = null)
     {
         $this->getMailer()->addReplyTo($email, empty($name) ? $email : $name);
-        
+
         return $this;
     }
 
     /**
-     * Trigger the send event of the mailer
-     * @return bool
+     * Trigger the send event of the mailer.
+     *
      * @throws Exception
+     *
+     * @return bool
      */
     public function send()
     {
         if (empty($this->mailer->Subject) || empty($this->mailer->Body)) {
-            throw new Exception("Mail subject() and body() can not be empty in order to send mail.");
+            throw new Exception('Mail subject() and body() can not be empty in order to send mail.');
         }
+
         return $this->getMailer()->send();
     }
 
@@ -445,12 +465,12 @@ class Mail extends \yii\base\Component
     {
         //Create a new SMTP instance
         $smtp = new SMTP();
-        
+
         if ($verbose) {
             // Enable connection-level debug output
             $smtp->do_debug = 3;
         }
-        
+
         try {
             // connect to an SMTP server
             if ($smtp->connect($this->host, $this->port)) {
@@ -460,7 +480,8 @@ class Mail extends \yii\base\Component
                         return true;
                     } else {
                         $data = [$this->host, $this->port, $this->smtpSecure, $this->username];
-                        throw new Exception('Authentication failed ('.implode(',', $data).'): '.$smtp->getLastReply() . PHP_EOL . print_r($smtp->getError(), true));
+
+                        throw new Exception('Authentication failed ('.implode(',', $data).'): '.$smtp->getLastReply().PHP_EOL.print_r($smtp->getError(), true));
                     }
                 } else {
                     throw new Exception('HELO failed: '.$smtp->getLastReply());
@@ -470,6 +491,7 @@ class Mail extends \yii\base\Component
             }
         } catch (Exception $e) {
             $smtp->quit(true);
+
             throw new \yii\base\Exception($e->getMessage());
         }
     }

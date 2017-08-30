@@ -19,6 +19,7 @@ use yii\db\ActiveRecord;
  * ```
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class Timestamp extends Behavior
@@ -27,12 +28,12 @@ class Timestamp extends Behavior
      * @var array An array with all fields where the timestamp should be applied to on insert.
      */
     public $insert = [];
-    
+
     /**
      * @var array An array with all fields where the timestamp should be applied to on update.
      */
     public $update = [];
-    
+
     /**
      * Register event handlers before insert and update.
      *
@@ -45,7 +46,7 @@ class Timestamp extends Behavior
             ActiveRecord::EVENT_BEFORE_UPDATE => 'beforeUpdate',
         ];
     }
-    
+
     /**
      * Insert the timestamp for all provided fields.
      *
@@ -57,7 +58,7 @@ class Timestamp extends Behavior
             $event->sender->$field = time();
         }
     }
-    
+
     /**
      * Update the timestamp for all provided fields.
      *

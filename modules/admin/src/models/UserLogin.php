@@ -8,21 +8,21 @@ use yii\db\ActiveRecord;
 /**
  * This is the model class for table "admin_user_login".
  *
- * @property integer $id
- * @property integer $user_id
- * @property integer $timestamp_create
+ * @property int $id
+ * @property int $user_id
+ * @property int $timestamp_create
  * @property string $auth_token
  * @property string $ip
  */
 final class UserLogin extends ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
         parent::init();
-        
+
         $this->on(self::EVENT_BEFORE_VALIDATE, function ($event) {
             if ($event->sender->isNewRecord) {
                 $this->timestamp_create = time();
@@ -32,20 +32,20 @@ final class UserLogin extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
         return 'admin_user_login';
     }
-    
+
     public function getUser()
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -58,16 +58,16 @@ final class UserLogin extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'user_id' => 'User ID',
+            'id'               => 'ID',
+            'user_id'          => 'User ID',
             'timestamp_create' => 'Timestamp Create',
-            'auth_token' => 'Auth Token',
-            'ip' => 'Ip',
+            'auth_token'       => 'Auth Token',
+            'ip'               => 'Ip',
         ];
     }
 }

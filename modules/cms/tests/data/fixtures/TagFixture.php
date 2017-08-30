@@ -12,11 +12,11 @@ class TagFixture extends ActiveFixture
     {
         return [
             'tag1' => [
-                'id' => '1',
+                'id'   => '1',
                 'name' => 'John',
             ],
             'tag2' => [
-                'id' => '2',
+                'id'   => '2',
                 'name' => 'Jane',
             ],
         ];

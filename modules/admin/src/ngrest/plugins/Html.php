@@ -2,8 +2,8 @@
 
 namespace luya\admin\ngrest\plugins;
 
-use luya\Exception;
 use luya\admin\ngrest\base\Plugin;
+use luya\Exception;
 
 /**
  * Renders HTML in List View. Update/Create are disabled.
@@ -11,31 +11,32 @@ use luya\admin\ngrest\base\Plugin;
  * This will bind the Api Response as trusted html and allow the html injection.
  *
  * @since 1.0.0-beta7
+ *
  * @author Basil Suter <basil@nadar.io>
  */
 class Html extends Plugin
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderList($id, $ngModel)
     {
-        return $this->createTag('div', null, ['ng-bind-html' => $ngModel . ' | trustAsUnsafe']);
+        return $this->createTag('div', null, ['ng-bind-html' => $ngModel.' | trustAsUnsafe']);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderCreate($id, $ngModel)
     {
-        throw new Exception("HTML Plugin does not support create form.");
+        throw new Exception('HTML Plugin does not support create form.');
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderUpdate($id, $ngModel)
     {
-        throw new Exception("HTML Plugin does not support update form.");
+        throw new Exception('HTML Plugin does not support update form.');
     }
 }

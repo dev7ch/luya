@@ -23,7 +23,7 @@ use luya\helpers\ArrayHelper;
 class SelectArray extends Select
 {
     private $_data;
-    
+
     /**
      * Setter method for Data.
      *
@@ -33,16 +33,16 @@ class SelectArray extends Select
     {
         $this->_data = $data;
     }
-    
+
     /**
+     * {@inheritdoc}
      *
-     * {@inheritDoc}
      * @see \luya\admin\ngrest\plugins\Select::getData()
      */
     public function getData()
     {
         $cleandata = [];
-         
+
         foreach ($this->_data as $key => $value) {
             $cleandata[] = [
                 'value' => $key,

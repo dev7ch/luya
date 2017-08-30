@@ -2,16 +2,16 @@
 
 namespace luya\helpers;
 
+use luya\Exception;
 use yii\db\ActiveQueryInterface;
 use yii\db\ActiveRecordInterface;
-use luya\helpers\ArrayHelper;
 use yii\helpers\Html;
-use luya\Exception;
 
 /**
  * Exporting into Formats.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class ExportHelper
@@ -19,9 +19,10 @@ class ExportHelper
     /**
      * Export an Array or ActiveQuery instance into a CSV formated string.
      *
-     * @param array|ActiveQueryInterface $input The data to export into a csv
-     * @param array $keys Defines which keys should be packed into the generated CSV. The defined keys does not change the sort behavior of the generated csv.
-     * @param string $header Whether the column name should be set as header inside the csv or not.
+     * @param array|ActiveQueryInterface $input  The data to export into a csv
+     * @param array                      $keys   Defines which keys should be packed into the generated CSV. The defined keys does not change the sort behavior of the generated csv.
+     * @param string                     $header Whether the column name should be set as header inside the csv or not.
+     *
      * @return string The generated CSV as string.
      */
     public static function csv($input, array $keys = [], $header = true)
@@ -34,19 +35,19 @@ class ExportHelper
     }
 
     /**
-     *
-     * @param array $contentRows
+     * @param array   $contentRows
      * @param unknown $delimiter
      * @param unknown $keys
-     * @param string $generateHeader
+     * @param string  $generateHeader
+     *
      * @return string
      */
     protected static function generateContent($contentRows, $delimiter, $keys, $generateHeader = true)
     {
         if (is_scalar($contentRows)) {
-            throw new Exception("Content must be either an array, object or Travarsable");
+            throw new Exception('Content must be either an array, object or Travarsable');
         }
-        
+
         $attributeKeys = $keys;
         $header = [];
         $rows = [];
@@ -63,7 +64,7 @@ class ExportHelper
                 $attributeKeys[get_class($content)] = $keys;
             }
             $rows[$i] = ArrayHelper::toArray($content, $attributeKeys, false);
-            
+
             // handler header
             if ($i == 0 && $generateHeader) {
                 if ($content instanceof ActiveRecordInterface) {
@@ -78,26 +79,26 @@ class ExportHelper
                     $header = array_keys($rows[0]);
                 }
             }
-            
+
             $i++;
         }
 
         $output = null;
         if ($generateHeader) {
-            $output.= self::generateRow($header, $delimiter, '"');
+            $output .= self::generateRow($header, $delimiter, '"');
         }
         foreach ($rows as $row) {
-            $output.= self::generateRow($row, $delimiter, '"');
+            $output .= self::generateRow($row, $delimiter, '"');
         }
 
         return $output;
     }
 
     /**
-     *
-     * @param array $row
+     * @param array   $row
      * @param unknown $delimiter
      * @param unknown $enclose
+     *
      * @return string
      */
     protected static function generateRow(array $row, $delimiter, $enclose)
@@ -105,7 +106,7 @@ class ExportHelper
         array_walk($row, function (&$item) use ($enclose) {
             $item = $enclose.Html::encode($item).$enclose;
         });
-        
-        return implode($delimiter, $row) . PHP_EOL;
+
+        return implode($delimiter, $row).PHP_EOL;
     }
 }

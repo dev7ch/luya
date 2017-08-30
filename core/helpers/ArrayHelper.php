@@ -16,6 +16,7 @@ namespace luya\helpers;
  * + {{luya\helpers\ArrayHelper::generateRange()}}
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class ArrayHelper extends \yii\helpers\BaseArrayHelper
@@ -24,6 +25,7 @@ class ArrayHelper extends \yii\helpers\BaseArrayHelper
      * Create an object from an array.
      *
      * @param array $array
+     *
      * @return object
      */
     public static function toObject(array $array)
@@ -34,30 +36,33 @@ class ArrayHelper extends \yii\helpers\BaseArrayHelper
     /**
      * Prepend an assoc array item as first entry for a given array.
      *
-     * @param array $arr The array where the value should be prepend
+     * @param array  $arr The array where the value should be prepend
      * @param string $key The new array key
-     * @param mixed $val The value for the new key
+     * @param mixed  $val The value for the new key
+     *
      * @return array
      */
     public static function arrayUnshiftAssoc(&$arr, $key, $val)
     {
         $arr = array_reverse($arr, true);
         $arr[$key] = $val;
+
         return array_reverse($arr, true);
     }
-    
+
     /**
      * TypeCast values from a mixed array source. numeric values will be casted as integer.
      *
      * This method is often used to convert corect json respons arrays
      *
      * @param array $array The array which should be type casted
+     *
      * @return array An array with type casted values
      */
     public static function typeCast(array $array)
     {
         $return = [];
-        
+
         foreach ($array as $k => $v) {
             if (is_numeric($v)) {
                 $return[$k] = StringHelper::typeCastNumeric($v);
@@ -67,10 +72,10 @@ class ArrayHelper extends \yii\helpers\BaseArrayHelper
                 $return[$k] = $v;
             }
         }
-        
+
         return $return;
     }
-    
+
     /**
      * Search trough all keys inside of an array, any occurence will return the rest of the array.
      *
@@ -91,14 +96,16 @@ class ArrayHelper extends \yii\helpers\BaseArrayHelper
      *
      * Searching for the string `Bar` would return the the orignal array is bar would be found in both.
      *
-     * @param array $array The multidimensional array keys.
+     * @param array  $array      The multidimensional array keys.
      * @param string $searchText The text you where search inside the rows.
-     * @param boolean $sensitive Whether to use strict sensitive search (true) or case insenstivie search (false).
+     * @param bool   $sensitive  Whether to use strict sensitive search (true) or case insenstivie search (false).
+     *
      * @return array The modified array depending on the search result hits.
      */
     public static function search(array $array, $searchText, $sensitive = false)
     {
         $function = ($sensitive) ? 'strpos' : 'stripos';
+
         return array_filter($array, function ($item) use ($searchText, $function) {
             $response = false;
             foreach ($item as $key => $value) {
@@ -109,10 +116,11 @@ class ArrayHelper extends \yii\helpers\BaseArrayHelper
                     $response = true;
                 }
             }
+
             return $response;
         });
     }
-    
+
     /**
      * Search for a Column Value inside a Multidimension array and return the array with the found key.
      *
@@ -132,18 +140,20 @@ class ArrayHelper extends \yii\helpers\BaseArrayHelper
      *
      * > This will not work with assoc keys
      *
-     * @param array $array The array with the multimensional array values.
+     * @param array  $array  The array with the multimensional array values.
      * @param string $column The column to lookup and compare with the $search string.
      * @param string $search The string to search inside the provided column.
-     * @return array|boolean
+     *
+     * @return array|bool
      */
     public static function searchColumn(array $array, $column, $search)
     {
         $columns = array_column($array, $column);
         $key = array_search($search, $columns);
-        return ($key !== false) ?  $array[$key] : false;
+
+        return ($key !== false) ? $array[$key] : false;
     }
-    
+
     /**
      * Search for columns with the given search value, returns the full array with all valid items.
      *
@@ -166,9 +176,10 @@ class ArrayHelper extends \yii\helpers\BaseArrayHelper
      * // );
      * ```
      *
-     * @param array $array The multidimensional array input
+     * @param array  $array  The multidimensional array input
      * @param string $column The column to compare with $search string
-     * @param mixed $search The search string to compare with the column value.
+     * @param mixed  $search The search string to compare with the column value.
+     *
      * @return array Returns an array with all valid elements.
      */
     public static function searchColumns(array $array, $column, $search)
@@ -176,10 +187,10 @@ class ArrayHelper extends \yii\helpers\BaseArrayHelper
         $keys = array_filter($array, function ($var) use ($column, $search) {
             return strcasecmp($search, $var[$column]) == 0 ? true : false;
         });
-        
+
         return $keys;
     }
-    
+
     /**
      * Generate an Array from a Rang with an appending optional Text.
      *
@@ -201,17 +212,18 @@ class ArrayHelper extends \yii\helpers\BaseArrayHelper
      *
      * In php range() function is used to generate the array range.
      *
-     * @param string|integer $from The range starts from
-     * @param string|integer $to The range ends
+     * @param string|int   $from The range starts from
+     * @param string|int   $to   The range ends
      * @param string|array $text Optinal text to append to each element. If an array is given the first value is used
-     * for the singular value, the second will be used for the pluralized values.
+     *                           for the singular value, the second will be used for the pluralized values.
+     *
      * @return array An array where the key is the number and value the number with optional text.
      */
     public static function generateRange($from, $to, $text = null)
     {
         $range = range($from, $to);
         $array = array_combine($range, $range);
-        
+
         if ($text) {
             array_walk($array, function (&$item, $key) use ($text) {
                 if (is_array($text)) {
@@ -226,7 +238,7 @@ class ArrayHelper extends \yii\helpers\BaseArrayHelper
                 }
             });
         }
-        
+
         return $array;
     }
 }

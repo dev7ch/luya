@@ -31,44 +31,45 @@ class DefaultController extends \luya\web\Controller
     {
         $provider = new ActiveDataProvider([
             'query' => Article::find()->andWhere(['is_deleted' => false]),
-            'sort' => [
+            'sort'  => [
                 'defaultOrder' => $this->module->articleDefaultOrder,
             ],
             'pagination' => [
                 'defaultPageSize' => $this->module->articleDefaultPageSize,
             ],
         ]);
-        
+
         return $this->render('index', [
-            'model' => Article::className(),
+            'model'    => Article::className(),
             'provider' => $provider,
         ]);
     }
-    
+
     /**
      * Get all articles for a given categorie ids string seperated by command.
      *
      * @param string $ids The categorie ids: `1,2,3`
+     *
      * @return \yii\web\Response|string
      */
     public function actionCategories($ids)
     {
-        $ids = explode(",", Html::encode($ids));
-        
+        $ids = explode(',', Html::encode($ids));
+
         if (!is_array($ids)) {
             return $this->goHome();
         }
-        
+
         $provider = new ActiveDataProvider([
             'query' => Article::find()->where(['in', 'cat_id', $ids])->andWhere(['is_deleted' => false]),
-            'sort' => [
+            'sort'  => [
                 'defaultOrder' => $this->module->articleDefaultOrder,
             ],
             'pagination' => [
                 'defaultPageSize' => $this->module->articleDefaultPageSize,
             ],
         ]);
-        
+
         return $this->render('categories', [
             'provider' => $provider,
         ]);
@@ -101,48 +102,50 @@ class DefaultController extends \luya\web\Controller
      * }
      * ```
      *
-     * @param integer $categoryId
+     * @param int $categoryId
+     *
      * @return \yii\web\Response|string
      */
     public function actionCategory($categoryId)
     {
         $model = Cat::findOne($categoryId);
-        
+
         if (!$model) {
             return $this->goHome();
         }
-        
+
         $provider = new ActiveDataProvider([
             'query' => $model->getArticles(),
-            'sort' => [
+            'sort'  => [
                 'defaultOrder' => $this->module->categoryArticleDefaultOrder,
             ],
             'pagination' => [
                 'defaultPageSize' => $this->module->categoryArticleDefaultPageSize,
             ],
         ]);
-        
+
         return $this->render('category', [
-            'model' => $model,
+            'model'    => $model,
             'provider' => $provider,
         ]);
     }
-    
+
     /**
      * Detail Action of an article by Id.
      *
-     * @param integer $id
+     * @param int    $id
      * @param string $title
+     *
      * @return \yii\web\Response|string
      */
     public function actionDetail($id, $title)
     {
         $model = Article::findOne(['id' => $id, 'is_deleted' => false]);
-        
+
         if (!$model) {
             return $this->goHome();
         }
-        
+
         return $this->render('detail', [
             'model' => $model,
         ]);

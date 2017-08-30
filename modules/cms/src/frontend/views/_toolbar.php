@@ -1,6 +1,6 @@
 <?php
-use luya\helpers\Url;
 use luya\cms\frontend\Module;
+use luya\helpers\Url;
 
 ?>
 <div id="luya-cms-toolbar-wrapper">
@@ -20,13 +20,13 @@ use luya\cms\frontend\Module;
             </div>
         </div>
         <div class="luya-cms-toolbar__button">
-            <a target="_blank" href="<?= Url::toInternal(['/admin/default/index', '#' => '!/template/cmsadmin~2Fdefault~2Findex/update/' . $menu->current->navId], true); ?>">
+            <a target="_blank" href="<?= Url::toInternal(['/admin/default/index', '#' => '!/template/cmsadmin~2Fdefault~2Findex/update/'.$menu->current->navId], true); ?>">
                 <i alt="<?= Module::t('tb_edit_alt'); ?>" title="<?= Module::t('tb_edit_alt'); ?>"  class="material-icons">mode_edit</i>
             </a>
         </div>
         <div class="luya-cms-toolbar__button">
             <a class="luya-cms-toolbar__container-toggler" href="javascript:void(0);" onclick="toggleDetails(this, 'luya-cms-toolbar-seo-container')">
-                <?php if ($seoAlertCount > 0): ?><span class="luya-cms-toolbar__badge luya-cms-toolbar__badge--danger"><?= $seoAlertCount; ?></span><?php endif;?> <span><?= Module::t('tb_seo'); ?></span> <i class="material-icons">keyboard_arrow_down</i>
+                <?php if ($seoAlertCount > 0): ?><span class="luya-cms-toolbar__badge luya-cms-toolbar__badge--danger"><?= $seoAlertCount; ?></span><?php endif; ?> <span><?= Module::t('tb_seo'); ?></span> <i class="material-icons">keyboard_arrow_down</i>
             </a>
         </div>
         <div class="luya-cms-toolbar__button">

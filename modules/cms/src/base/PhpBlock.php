@@ -11,12 +11,13 @@ use yii\base\ViewContextInterface;
  * @property \luya\cms\base\PhpBlockView $view View Object.
  *
  * @since 1.0.0-beta8
+ *
  * @author Basil Suter <basil@nadar.io>
  */
 abstract class PhpBlock extends InternalBaseBlock implements PhpBlockInterface, ViewContextInterface
 {
     private $_view;
-    
+
     /**
      * View Object getter.
      *
@@ -27,44 +28,47 @@ abstract class PhpBlock extends InternalBaseBlock implements PhpBlockInterface, 
         if ($this->_view === null) {
             $this->_view = Yii::createObject(PhpBlockView::class);
         }
-        
+
         return $this->_view;
     }
-    
+
     /**
      * Get relative view path ofr rendering view files.
      *
      * @see \yii\base\ViewContextInterface
+     *
      * @return string the view path that may be prefixed to a relative view name.
      */
     public function getViewPath()
     {
-        return $this->ensureModule() . '/views/blocks';
+        return $this->ensureModule().'/views/blocks';
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function frontend()
     {
         return $this->view->render($this->getViewFileName('php'), [], $this);
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderFrontend()
     {
         $this->injectorSetup();
+
         return $this->frontend();
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderAdmin()
     {
         $this->injectorSetup();
+
         return $this->admin();
     }
 }

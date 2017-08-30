@@ -2,23 +2,23 @@
 
 namespace luya\crawler\models;
 
-use Yii;
-use luya\admin\ngrest\base\NgRestModel;
 use luya\admin\aws\DetailViewActiveWindow;
+use luya\admin\ngrest\base\NgRestModel;
+use Yii;
 
 /**
  * Searchdata Model.
  *
- * @property integer $id
+ * @property int $id
  * @property string $query
- * @property integer $results
- * @property integer $timestamp
+ * @property int $results
+ * @property int $timestamp
  * @property string $language
  */
 class Searchdata extends NgRestModel
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -26,7 +26,7 @@ class Searchdata extends NgRestModel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function ngRestApiEndpoint()
     {
@@ -34,21 +34,21 @@ class Searchdata extends NgRestModel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('app', 'ID'),
-            'query' => Yii::t('app', 'Query'),
-            'results' => Yii::t('app', 'Results'),
+            'id'        => Yii::t('app', 'ID'),
+            'query'     => Yii::t('app', 'Query'),
+            'results'   => Yii::t('app', 'Results'),
             'timestamp' => Yii::t('app', 'Timestamp'),
-            'language' => Yii::t('app', 'Language'),
+            'language'  => Yii::t('app', 'Language'),
         ];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -61,7 +61,7 @@ class Searchdata extends NgRestModel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function genericSearchFields()
     {
@@ -69,20 +69,20 @@ class Searchdata extends NgRestModel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function ngRestAttributeTypes()
     {
         return [
-            'query' => 'text',
-            'results' => 'number',
+            'query'     => 'text',
+            'results'   => 'number',
             'timestamp' => 'datetime',
-            'language' => 'text',
+            'language'  => 'text',
         ];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function ngRestScopes()
     {
@@ -91,9 +91,9 @@ class Searchdata extends NgRestModel
             ['delete', false],
         ];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function ngRestActiveWindows()
     {

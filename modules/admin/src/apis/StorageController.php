@@ -2,19 +2,19 @@
 
 namespace luya\admin\apis;
 
-use Yii;
-use luya\Exception;
+use luya\admin\base\RestController;
+use luya\admin\filters\MediumThumbnail;
+use luya\admin\filters\TinyCrop;
+use luya\admin\helpers\I18n;
 use luya\admin\helpers\Storage;
 use luya\admin\models\StorageFile;
 use luya\admin\models\StorageFolder;
 use luya\admin\Module;
-use luya\traits\CacheableTrait;
-use luya\admin\helpers\I18n;
-use luya\admin\base\RestController;
-use yii\caching\DbDependency;
-use luya\admin\filters\TinyCrop;
-use luya\admin\filters\MediumThumbnail;
+use luya\Exception;
 use luya\helpers\FileHelper;
+use luya\traits\CacheableTrait;
+use Yii;
+use yii\caching\DbDependency;
 
 /**
  * Filemanager and Storage API.
@@ -28,7 +28,7 @@ use luya\helpers\FileHelper;
 class StorageController extends RestController
 {
     use CacheableTrait;
-    
+
     /**
      * Flush the storage caching data.
      */
@@ -39,7 +39,7 @@ class StorageController extends RestController
         $this->deleteHasCache('storageApiDataFiles');
         $this->deleteHasCache('storageApiDataImages');
     }
-    
+
     // DATA READERS
 
     /**
@@ -50,7 +50,7 @@ class StorageController extends RestController
     public function actionDataFolders()
     {
         $cache = $this->getHasCache('storageApiDataFolders');
-        
+
         if ($cache === false) {
             $folders = [];
             foreach (Yii::$app->storage->findFolders() as $key => $folder) {
@@ -58,15 +58,15 @@ class StorageController extends RestController
                 $folders[$key]['toggle_open'] = (int) Yii::$app->adminuser->identity->setting->get('foldertree.'.$folder->id);
                 $folders[$key]['subfolder'] = Yii::$app->storage->getFolder($folder->id)->hasChild();
             }
-            
+
             $this->setHasCache('storageApiDataFolders', $folders, new DbDependency(['sql' => 'SELECT MAX(id) FROM admin_storage_folder WHERE is_deleted=false']), 0);
-            
+
             return $folders;
         }
-        
+
         return $cache;
     }
-    
+
     /**
      * Get all files from the storage container.
      *
@@ -75,7 +75,7 @@ class StorageController extends RestController
     public function actionDataFiles()
     {
         $cache = $this->getHasCache('storageApiDataFiles');
-        
+
         if ($cache === false) {
             $files = [];
             foreach (Yii::$app->storage->findFiles(['is_hidden' => false, 'is_deleted' => false]) as $file) {
@@ -101,12 +101,13 @@ class StorageController extends RestController
                 $files[] = $data;
             }
             $this->setHasCache('storageApiDataFiles', $files, new DbDependency(['sql' => 'SELECT MAX(id) FROM admin_storage_file WHERE is_deleted=false']), 0);
+
             return $files;
         }
-        
+
         return $cache;
     }
-    
+
     /**
      * Get all images from the storage container.
      *
@@ -115,7 +116,7 @@ class StorageController extends RestController
     public function actionDataImages()
     {
         $cache = $this->getHasCache('storageApiDataImages');
-        
+
         if ($cache === false) {
             $images = [];
             foreach (Yii::$app->storage->findImages() as $image) {
@@ -124,40 +125,41 @@ class StorageController extends RestController
                 }
             }
             $this->setHasCache('storageApiDataImages', $images, new DbDependency(['sql' => 'SELECT MAX(id) FROM admin_storage_image']), 0);
+
             return $images;
         }
-        
+
         return $cache;
     }
-    
+
     // ACTIONS
 
     /**
      * Update the caption of storage file.
      *
-     * @return boolean
+     * @return bool
      */
     public function actionFilemanagerUpdateCaption()
     {
         $fileId = Yii::$app->request->post('id', false);
         $captionsText = Yii::$app->request->post('captionsText', false);
-    
+
         if ($fileId && $captionsText) {
             $model = StorageFile::findOne($fileId);
             if ($model) {
                 $model->updateAttributes([
                     'caption' => I18n::encode($captionsText),
                 ]);
-    
+
                 $this->flushApiCache();
-    
+
                 return true;
             }
         }
-    
+
         return false;
     }
-    
+
     /**
      * Upload an image to the filemanager.
      *
@@ -174,7 +176,7 @@ class StorageController extends RestController
             return ['error' => true, 'message' => Module::t('api_storage_image_upload_error', ['error' => $err->getMessage()])];
         }
     }
-    
+
     /**
      * Get all available registered filters.
      *
@@ -184,11 +186,11 @@ class StorageController extends RestController
     {
         return Yii::$app->storage->filtersArray;
     }
-    
+
     /**
      * Action to replace a current file with a new.
      *
-     * @return boolean
+     * @return bool
      */
     public function actionFileReplace()
     {
@@ -202,38 +204,38 @@ class StorageController extends RestController
                     foreach (Yii::$app->storage->findImages(['file_id' => $file->id]) as $img) {
                         Storage::removeImage($img->id, false);
                     }
-                    
+
                     // calculate new file files based on new file
                     $model = StorageFile::findOne($fileId);
                     $fileHash = FileHelper::md5sum($serverSource);
                     $fileSize = @filesize($serverSource);
                     $model->updateAttributes([
-                        'hash_file' => $fileHash,
-                        'file_size' => $fileSize,
+                        'hash_file'        => $fileHash,
+                        'file_size'        => $fileSize,
                         'upload_timestamp' => time(),
                     ]);
                     $this->flushApiCache();
-                    
+
                     return true;
                 }
             }
         }
-        
+
         return false;
     }
-    
-    
+
     /**
      * Upload a new file from $_FILES array.
      *
      * @return array An array with upload and message key.
-    */
+     */
     public function actionFilesUpload()
     {
         foreach ($_FILES as $k => $file) {
             if ($file['error'] !== UPLOAD_ERR_OK) {
                 return ['upload' => false, 'message' => Storage::getUploadErrorMessage($file['error'])];
             }
+
             try {
                 $response = Yii::$app->storage->addFile($file['tmp_name'], $file['name'], Yii::$app->request->post('folderId', 0));
                 if ($response) {
@@ -245,30 +247,32 @@ class StorageController extends RestController
                 return ['upload' => false, 'message' => Module::t('api_sotrage_file_upload_error', ['error' => $err->getMessage()])];
             }
         }
-    
+
         return ['upload' => false, 'message' => Module::t('api_sotrage_file_upload_empty_error')];
     }
-    
+
     /**
      * Move files into another folder.
      *
-     * @return boolean
+     * @return bool
      */
     public function actionFilemanagerMoveFiles()
     {
         $toFolderId = Yii::$app->request->post('toFolderId', 0);
         $fileIds = Yii::$app->request->post('fileIds', []);
-        
+
         $response = Storage::moveFilesToFolder($fileIds, $toFolderId);
         $this->flushApiCache();
+
         return $response;
     }
-    
+
     /**
      * Remove files from the storage component.
      *
      * @todo make permission check.
-     * @return boolean
+     *
+     * @return bool
      */
     public function actionFilemanagerRemoveFiles()
     {
@@ -278,14 +282,16 @@ class StorageController extends RestController
             }
         }
         $this->flushApiCache();
+
         return true;
     }
-    
+
     /**
      * Check whether a folder is empty or not in order to delete this folder.
      *
-     * @param integer $folderId The folder id to check whether it has files or not.
-     * @return boolean
+     * @param int $folderId The folder id to check whether it has files or not.
+     *
+     * @return bool
      */
     public function actionIsFolderEmpty($folderId)
     {
@@ -293,10 +299,10 @@ class StorageController extends RestController
         if ($count > 0) {
             return false;
         }
-        
+
         return true;
     }
-    
+
     /**
      * delete folder, all subfolders and all included files.
      *
@@ -304,9 +310,11 @@ class StorageController extends RestController
      * 2. get all included files and delete them
      * 3. delete folder
      *
-     * @param integer $folderId The folder to delete.
+     * @param int $folderId The folder to delete.
+     *
      * @todo move to storage helpers?
-     * @return boolean
+     *
+     * @return bool
      */
     public function actionFolderDelete($folderId)
     {
@@ -315,30 +323,31 @@ class StorageController extends RestController
         foreach ($matchingChildFolders as $matchingChildFolder) {
             $this->actionFolderDelete($matchingChildFolder['id']);
         }
-        
+
         // find all attached files and delete them
         $folderFiles = StorageFile::find()->where(['folder_id' => $folderId])->all();
         foreach ($folderFiles as $folderFile) {
             $folderFile->delete();
         }
-        
+
         // delete folder
         $model = StorageFolder::findOne($folderId);
         if (!$model) {
             return false;
         }
         $model->is_deleted = true;
-        
+
         $this->flushApiCache();
-        
+
         return $model->update();
     }
-    
+
     /**
      * Update the folder model data.
      *
-     * @param integer $folderId The folder id.
-     * @return boolean
+     * @param int $folderId The folder id.
+     *
+     * @return bool
      */
     public function actionFolderUpdate($folderId)
     {
@@ -347,16 +356,16 @@ class StorageController extends RestController
             return false;
         }
         $model->attributes = Yii::$app->request->post();
-    
+
         $this->flushApiCache();
-        
+
         return $model->update();
     }
-    
+
     /**
      * Create a new folder pased on post data.
      *
-     * @return boolean
+     * @return bool
      */
     public function actionFolderCreate()
     {
@@ -364,6 +373,7 @@ class StorageController extends RestController
         $parentFolderId = Yii::$app->request->post('parentFolderId', 0);
         $response = Yii::$app->storage->addFolder($folderName, $parentFolderId);
         $this->flushApiCache();
+
         return $response;
     }
 }

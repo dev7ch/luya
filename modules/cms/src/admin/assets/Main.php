@@ -10,37 +10,37 @@ namespace luya\cms\admin\assets;
 class Main extends \yii\web\AssetBundle
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $sourcePath = '@cmsadmin/resources';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $js = [
-        'dist/js/main.min.js'
+        'dist/js/main.min.js',
     ];
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $css = [
         'dist/css/cmsadmin.css',
     ];
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $depends = [
         'luya\admin\assets\Main',
     ];
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $publishOptions = [
             'except' => [
                     'node_modules/',
-            ]
+            ],
     ];
 }

@@ -2,62 +2,67 @@
 
 namespace luya\admin\base;
 
+use luya\console\Command;
 use Yii;
+use yii\base\NotSupportedException;
 use yii\db\Schema;
 use yii\helpers\Inflector;
-use yii\base\NotSupportedException;
-use luya\console\Command;
 
 /**
- * Base Crud Controller
+ * Base Crud Controller.
  *
  * As we can not ensure to access the gii model generate class we have to copy the base of the class, check the see section.
  *
  * @see https://github.com/yiisoft/yii2-gii/blob/master/generators/model/Generator.php
+ *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 abstract class BaseCrudController extends Command
 {
     /**
-     * @var boolean Whether to use schem name or not
+     * @var bool Whether to use schem name or not
      */
     public $useSchemaName = true;
-    
+
     /**
      * @var array A list of class names.
      */
     protected $classNames;
-    
+
     /**
      * @var array A list of table names.
      */
     protected $tableNames;
-    
+
     /**
      * @var string The name of the table.
      */
     public $tableName;
-    
+
     /**
-     * @var boolean Whether to generate labels from comments or not.
+     * @var bool Whether to generate labels from comments or not.
      */
     public $generateLabelsFromComments = false;
-    
+
     /**
-     * Get the sql tables from the current database connection
+     * Get the sql tables from the current database connection.
      *
      * @return array An array with all sql tables.
      */
     public function getSqlTablesArray()
     {
         $names = Yii::$app->db->schema->tableNames;
-    
+
         return array_combine($names, $names);
     }
+
     /**
      * Generates validation rules for the specified table.
+     *
      * @param \yii\db\TableSchema $table the table schema
+     *
      * @return array the generated validation rules
      */
     public function generateRules($table)
@@ -102,10 +107,10 @@ abstract class BaseCrudController extends Command
         }
         $rules = [];
         foreach ($types as $type => $columns) {
-            $rules[] = "[['" . implode("', '", $columns) . "'], '$type']";
+            $rules[] = "[['".implode("', '", $columns)."'], '$type']";
         }
         foreach ($lengths as $length => $columns) {
-            $rules[] = "[['" . implode("', '", $columns) . "'], 'string', 'max' => $length]";
+            $rules[] = "[['".implode("', '", $columns)."'], 'string', 'max' => $length]";
         }
         $db = $this->getDbConnection();
         // Unique indexes rules
@@ -116,12 +121,12 @@ abstract class BaseCrudController extends Command
                 if (!$this->isColumnAutoIncremental($table, $uniqueColumns)) {
                     $attributesCount = count($uniqueColumns);
                     if ($attributesCount === 1) {
-                        $rules[] = "[['" . $uniqueColumns[0] . "'], 'unique']";
+                        $rules[] = "[['".$uniqueColumns[0]."'], 'unique']";
                     } elseif ($attributesCount > 1) {
                         $labels = array_intersect_key($this->generateLabels($table), array_flip($uniqueColumns));
                         $lastLabel = array_pop($labels);
                         $columnsList = implode("', '", $uniqueColumns);
-                        $rules[] = "[['$columnsList'], 'unique', 'targetAttribute' => ['$columnsList'], 'message' => 'The combination of " . implode(', ', $labels) . " and $lastLabel has already been taken.']";
+                        $rules[] = "[['$columnsList'], 'unique', 'targetAttribute' => ['$columnsList'], 'message' => 'The combination of ".implode(', ', $labels)." and $lastLabel has already been taken.']";
                     }
                 }
             }
@@ -146,13 +151,16 @@ abstract class BaseCrudController extends Command
             $targetAttributes = implode(', ', $targetAttributes);
             $rules[] = "[['$attributes'], 'exist', 'skipOnError' => true, 'targetClass' => $refClassName::className(), 'targetAttribute' => [$targetAttributes]]";
         }
+
         return $rules;
     }
-    
+
     /**
      * Generates a class name from the specified table name.
-     * @param string $tableName the table name (which may contain schema prefix)
-     * @param boolean $useSchemaName should schema name be included in the class name, if present
+     *
+     * @param string $tableName     the table name (which may contain schema prefix)
+     * @param bool   $useSchemaName should schema name be included in the class name, if present
+     *
      * @return string the generated class name
      */
     protected function generateClassName($tableName, $useSchemaName = null)
@@ -164,7 +172,7 @@ abstract class BaseCrudController extends Command
         $fullTableName = $tableName;
         if (($pos = strrpos($tableName, '.')) !== false) {
             if (($useSchemaName === null && $this->useSchemaName) || $useSchemaName) {
-                $schemaName = substr($tableName, 0, $pos) . '_';
+                $schemaName = substr($tableName, 0, $pos).'_';
             }
             $tableName = substr($tableName, $pos + 1);
         }
@@ -177,7 +185,7 @@ abstract class BaseCrudController extends Command
             if (($pos = strrpos($pattern, '.')) !== false) {
                 $pattern = substr($pattern, $pos + 1);
             }
-            $patterns[] = '/^' . str_replace('*', '(\w+)', $pattern) . '$/';
+            $patterns[] = '/^'.str_replace('*', '(\w+)', $pattern).'$/';
         }
         $className = $tableName;
         foreach ($patterns as $pattern) {
@@ -186,14 +194,17 @@ abstract class BaseCrudController extends Command
                 break;
             }
         }
+
         return $this->classNames[$fullTableName] = Inflector::id2camel($schemaName.$className, '_');
     }
-    
+
     /**
      * Checks if any of the specified columns is auto incremental.
-     * @param \yii\db\TableSchema $table the table schema
-     * @param array $columns columns to check for autoIncrement property
-     * @return boolean whether any of the specified columns is auto incremental.
+     *
+     * @param \yii\db\TableSchema $table   the table schema
+     * @param array               $columns columns to check for autoIncrement property
+     *
+     * @return bool whether any of the specified columns is auto incremental.
      */
     protected function isColumnAutoIncremental($table, $columns)
     {
@@ -202,12 +213,15 @@ abstract class BaseCrudController extends Command
                 return true;
             }
         }
+
         return false;
     }
-    
+
     /**
      * Generates the attribute labels for the specified table.
+     *
      * @param \yii\db\TableSchema $table the table schema
+     *
      * @return array the generated attribute labels (name => label)
      */
     public function generateLabels($table)
@@ -221,14 +235,15 @@ abstract class BaseCrudController extends Command
             } else {
                 $label = Inflector::camel2words($column->name);
                 if (!empty($label) && substr_compare($label, ' id', -3, 3, true) === 0) {
-                    $label = substr($label, 0, -3) . ' ID';
+                    $label = substr($label, 0, -3).' ID';
                 }
                 $labels[$column->name] = $label;
             }
         }
+
         return $labels;
     }
-    
+
     /**
      * @return Connection the DB connection as specified by [[db]].
      */

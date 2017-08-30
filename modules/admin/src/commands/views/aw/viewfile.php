@@ -1,9 +1,8 @@
 <?php
 /**
- * @var $className
+ * @var
  * @var $moduleId
  */
-
 echo "<?php\n";
 ?>
 

@@ -2,12 +2,12 @@
 
 namespace luya\admin\base;
 
-use luya\admin\models\StorageFilter;
 use luya\admin\models\StorageEffect;
+use luya\admin\models\StorageFilter;
 use luya\admin\models\StorageFilterChain;
 use luya\Exception;
-use yii\helpers\Json;
 use yii\base\Object;
+use yii\helpers\Json;
 
 /**
  * Base class for all storage component filters.
@@ -98,7 +98,7 @@ abstract class Filter extends Object implements FilterInterface
         if (!$model) {
             $model = new StorageFilter();
             $model->setAttributes([
-                'name' => $this->name(),
+                'name'       => $this->name(),
                 'identifier' => static::identifier(),
             ]);
             $model->insert(false);
@@ -113,11 +113,13 @@ abstract class Filter extends Object implements FilterInterface
      * be thrown.
      *
      * @param string $effectIdentifier The name of effect, used EFFECT prefixed constants like
-     * + EFFECT_RESIZE
-     * + EFFECT_THUMBNAIL
-     * + EFFECT_CROP
-     * @return array Contain an array with the effect properties.
+     *                                 + EFFECT_RESIZE
+     *                                 + EFFECT_THUMBNAIL
+     *                                 + EFFECT_CROP
+     *
      * @throws \luya\Exception
+     *
+     * @return array Contain an array with the effect properties.
      */
     public function findEffect($effectIdentifier)
     {
@@ -135,7 +137,9 @@ abstract class Filter extends Object implements FilterInterface
      * Get an array with all the effect param options, based on the effect params defintion.
      *
      * @param array $effectParams
+     *
      * @throws \luya\Exception When the vars key does not exists in the effect definition.
+     *
      * @return array
      */
     public function getEffectParamsList($effectParams)
@@ -158,8 +162,9 @@ abstract class Filter extends Object implements FilterInterface
      * Returns a parsed effect chain for the current Filter. The method verifys if the provieded effect
      * parameters are available in the effect defintions of luya.
      *
-     * @return array Each row of the array must have "effect_id" and "effect_json_values" key.
      * @throws \luya\Exception When effect option could be found in the effect defintions.
+     *
+     * @return array Each row of the array must have "effect_id" and "effect_json_values" key.
      */
     public function getChain()
     {
@@ -203,7 +208,7 @@ abstract class Filter extends Object implements FilterInterface
         $processed = [];
 
         $removeImages = false;
-        
+
         foreach ($this->getChain() as $chain) {
             // get filter chain for filter and effect
             $model = StorageFilterChain::find()->where(['filter_id' => $filterModel->id, 'effect_id' => $chain['effect_id']])->one();
@@ -231,15 +236,15 @@ abstract class Filter extends Object implements FilterInterface
             $deletion->delete();
             $removeImages = true;
         }
-        
+
         if ($removeImages) {
             $this->addLog("[!] {$filterModel->name}: Remove images.");
             $removeLog = $filterModel->removeImageSources();
             foreach ($removeLog as $id => $sucess) {
                 if ($sucess) {
-                    $this->addLog('✓ image ' . $id . ' sucessfull unlinked.');
+                    $this->addLog('✓ image '.$id.' sucessfull unlinked.');
                 } else {
-                    $this->addLog('⨯ error while unlinking image id ' . $id);
+                    $this->addLog('⨯ error while unlinking image id '.$id);
                 }
             }
         }

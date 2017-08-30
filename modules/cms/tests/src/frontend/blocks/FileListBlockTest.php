@@ -7,12 +7,12 @@ use cmstests\BlockTestCase;
 class FileListBlockTest extends BlockTestCase
 {
     public $blockClass = 'luya\cms\frontend\blocks\FileListBlock';
-    
+
     public function testEmpty()
     {
         $this->assertEmpty($this->renderFrontend());
     }
-    
+
     public function testFiles()
     {
         $this->block->addExtraVar('fileList', [

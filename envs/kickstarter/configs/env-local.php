@@ -13,29 +13,29 @@ defined('YII_ENV') or define('YII_ENV', 'local');
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 
 $config = [
-    
+
     /*
      * For best interoperability it is recommended that you use only alphanumeric characters when specifying an application ID
      */
     'id' => 'myproject',
-    
+
     /*
      * The name of your site, will be display on the login screen
      */
     'siteTitle' => 'My Project',
-    
+
     /*
      * Let the application know which module should be executed by default (if no url is set). This module must be included
      * in the modules section. In the most cases you are using the cms as default handler for your website. But the concept
      * of LUYA is also that you can use the Website without the CMS module!
      */
     'defaultRoute' => 'cms',
-    
+
     /*
      * Define the basePath of the project (Yii Configration Setup)
      */
     'basePath' => dirname(__DIR__),
-    
+
     'modules' => [
 
         /*
@@ -47,16 +47,16 @@ $config = [
          * you have to make sure the mail component is configured correctly. You can test this with console command `./vendor/bin/luya health/mailer`.
          */
         'admin' => [
-            'class' => 'luya\admin\Module',
-            'secureLogin' => false, // when enabling secure login, the mail component must be proper configured otherwise the auth token mail will not send.
+            'class'             => 'luya\admin\Module',
+            'secureLogin'       => false, // when enabling secure login, the mail component must be proper configured otherwise the auth token mail will not send.
             'interfaceLanguage' => 'en', // Admin interface default language. Currently supported: "en", "de", "fr", "es", "ru", "it", "ua", "el".
         ],
-        
+
         /*
          * Frontend module for the `cms` module.
          */
         'cms' => [
-            'class' => 'luya\cms\frontend\Module',
+            'class'             => 'luya\cms\frontend\Module',
             'enableCompression' => true, // compressing the cms output (removing white spaces and newlines)
         ],
 
@@ -64,22 +64,22 @@ $config = [
          * Admin module for the `cms` module.
          */
         'cmsadmin' => [
-            'class' => 'luya\cms\admin\Module',
-            'hiddenBlocks' => [],
+            'class'           => 'luya\cms\admin\Module',
+            'hiddenBlocks'    => [],
             'blockVariations' => [],
         ],
     ],
     'components' => [
-        
+
         /*
          * Add your smtp connection to the mail component to send mails (which is required for secure login), you can test your
          * mail component with the luya console command ./vendor/bin/luya health/mailer.
          */
         'mail' => [
-            'host' => null,
+            'host'     => null,
             'username' => null,
             'password' => null,
-            'from' => null,
+            'from'     => null,
             'fromName' => null,
         ],
 
@@ -96,7 +96,7 @@ $config = [
         'errorHandler' => [
             'transferException' => false,
         ],
-        
+
         /*
          * The composition component handles your languages and they way your urls will look like. The composition componentn will
          * automatically add the language prefix you have defined in `default` to your url (the language part in the url "example.com/EN/homepage").
@@ -105,10 +105,10 @@ $config = [
          * default: (array) Contains the default setup for the current language, this must match your language system configuration.
          */
         'composition' => [
-            'hidden' => true, // you will not have languages in your url (most case for pages which are not multi lingual)
+            'hidden'  => true, // you will not have languages in your url (most case for pages which are not multi lingual)
             'default' => ['langShortCode' => 'en'], // the default language for the composition should match your default language shortCode in the langauge table.
         ],
-        
+
         /*
          * When you are enabling the cache, luya will cache cms blocks and speed up the system in different ways. In the prep config
          * we use the DummyCache to "fake" the caching behavior, but actually nothing gets cached, when your in production you should
@@ -141,6 +141,5 @@ if (YII_DEBUG) {
     $config['modules']['gii'] = 'yii\gii\Module';
 }
 */
-
 
 return \yii\helpers\ArrayHelper::merge($config, require('env-local-db.php'));

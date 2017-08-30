@@ -2,8 +2,8 @@
 
 namespace luya\admin\aws;
 
-use Yii;
 use luya\admin\ngrest\base\ActiveWindow;
+use Yii;
 
 /**
  * Active Window to set permissions for a specific Group, used in groups ngrest model.
@@ -21,7 +21,7 @@ class GroupAuthActiveWindow extends ActiveWindow
      * @var string The icon name from goolges material icon set (https://material.io/icons/)
      */
     public $icon = 'verified_user';
-    
+
     /**
      * The default action which is going to be requested when clicking the ActiveWindow.
      *
@@ -48,8 +48,8 @@ class GroupAuthActiveWindow extends ActiveWindow
 
         foreach ($safeCopy as $authId => $options) {
             Yii::$app->db->createCommand()->insert('admin_group_auth', [
-                'group_id' => $this->getItemId(),
-                'auth_id' => $authId,
+                'group_id'    => $this->getItemId(),
+                'auth_id'     => $authId,
                 'crud_create' => (isset($options['create']) && $options['create'] == 1) ? 1 : 0,
                 'crud_update' => (isset($options['update']) && $options['update'] == 1) ? 1 : 0,
                 'crud_delete' => (isset($options['delete']) && $options['delete'] == 1) ? 1 : 0,
@@ -63,7 +63,7 @@ class GroupAuthActiveWindow extends ActiveWindow
     {
         return [
             'rights' => $this->getRightsData(),
-            'auths' => $this->getAuthData(),
+            'auths'  => $this->getAuthData(),
         ];
     }
 
@@ -74,6 +74,7 @@ class GroupAuthActiveWindow extends ActiveWindow
         foreach ($data as $k => $v) {
             $data[$k]['is_head'] = ($last !== $v['module_name']) ? 1 : 0;
             $data[$k]['group_alias'] = ucfirst($v['module_name']);
+
             try {
                 $data[$k]['alias_name'] = Yii::t($v['module_name'], $v['alias_name'], [], Yii::$app->language);
             } catch (\Exception $e) {
@@ -92,7 +93,7 @@ class GroupAuthActiveWindow extends ActiveWindow
 
         foreach ($query as $item) {
             $subs[$item['auth_id']] = [
-                'base' => 1,
+                'base'   => 1,
                 'create' => (int) $item['crud_create'],
                 'update' => (int) $item['crud_update'],
                 'delete' => (int) $item['crud_delete'],

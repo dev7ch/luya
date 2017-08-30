@@ -2,9 +2,9 @@
 
 namespace luya\cms\frontend\blocks;
 
-use luya\TagParser;
-use luya\cms\frontend\Module;
 use luya\cms\base\PhpBlock;
+use luya\cms\frontend\Module;
+use luya\TagParser;
 
 /**
  * Table Block.
@@ -14,17 +14,17 @@ use luya\cms\base\PhpBlock;
 final class TableBlock extends PhpBlock
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $module = 'cms';
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $cacheEnabled = true;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function name()
     {
@@ -32,7 +32,7 @@ final class TableBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function icon()
     {
@@ -40,13 +40,13 @@ final class TableBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function config()
     {
         return [
             'vars' => [
-                ['var' => 'table', 'label' => "", 'type' => 'zaa-table'],
+                ['var' => 'table', 'label' => '', 'type' => 'zaa-table'],
             ],
             'cfgs' => [
                 ['var' => 'header', 'label' => Module::t('block_table_header_label'), 'type' => 'zaa-checkbox'],
@@ -60,12 +60,12 @@ final class TableBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getFieldHelp()
     {
         return [
-            'table' => Module::t('block_table_help_table')
+            'table' => Module::t('block_table_help_table'),
         ];
     }
 
@@ -91,10 +91,10 @@ final class TableBlock extends PhpBlock
                     $row[$field] = TagParser::convertWithMarkdown($value);
                 }
             }
-            
+
             $table[] = $row;
         }
-        
+
         return $table;
     }
 
@@ -111,22 +111,22 @@ final class TableBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function extraVars()
     {
         return [
-            'table' => $this->getTableData(),
+            'table'      => $this->getTableData(),
             'headerData' => $this->getHeaderRow(),
         ];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function admin()
     {
-        return  '<p>{% if extras.table is empty %}<span class="block__empty-text">' . Module::t('block_table_no_table') . '</span>{% else %}'.
+        return  '<p>{% if extras.table is empty %}<span class="block__empty-text">'.Module::t('block_table_no_table').'</span>{% else %}'.
                 '<table class="table table-bordered table-striped table-align-middle table-responsive">'.
                     '{% if cfgs.header %}'.
                     '<thead class="thead-inverse">'.

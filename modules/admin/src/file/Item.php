@@ -2,35 +2,35 @@
 
 namespace luya\admin\file;
 
-use Yii;
-use luya\helpers\Url;
-use luya\helpers\FileHelper;
 use luya\admin\helpers\I18n;
 use luya\admin\storage\ItemAbstract;
+use luya\helpers\FileHelper;
+use luya\helpers\Url;
+use Yii;
 
 /**
  * Storage File Item.
  *
  * @property string $caption The file caption
  * @property array $captionArray Contains the captions for all languages
- * @property integer $id The File id
- * @property integer $folderId The id of the folder the file is stored in.
+ * @property int $id The File id
+ * @property int $folderId The id of the folder the file is stored in.
  * @property \luya\admin\folder\Item $folder Get the folder item object.
  * @property string $name Get the original file name of the file.
  * @property string $systemFileName The new file name inside the storage folder.
  * @property string $mimeType The MIME type of the file while uploading.
  * @property string $extension The file extension name like jpg, gif, png etc.
- * @property integer $size Size of the file in Bytes.
+ * @property int $size Size of the file in Bytes.
  * @property string $sizeReadable The humand readable size.
- * @property integer $uploadTimestamp Unix timestamp when the file has been uploaded.
- * @property boolean $isImage Whether the file is of type image or not.
+ * @property int $uploadTimestamp Unix timestamp when the file has been uploaded.
+ * @property bool $isImage Whether the file is of type image or not.
  * @property string $hashName The 8 chars long unique hash name of the file.
  * @property string $source The source url to the file inside the storage folder with nice Urls.
  * @property string $sourceStatic The absolute source url to the file inside the storage folder with nice Urls.
  * @property string $httpSource The raw path to the file inside the storage folder.
  * @property string $serverSource The path to the file on the filesystem of the server.
- * @property boolean $isHidden Whether the file is marked as hidden or not.
- * @property boolean $isDeleted Return whether the file has been removed from the filesytem or not.
+ * @property bool $isHidden Whether the file is marked as hidden or not.
+ * @property bool $isDeleted Return whether the file has been removed from the filesytem or not.
  * @property booelan $fileExists Whether the file resource exists in the storage folder or not.
  *
  * @author Basil Suter <basil@nadar.io>
@@ -38,24 +38,26 @@ use luya\admin\storage\ItemAbstract;
 class Item extends ItemAbstract
 {
     private $_imageMimeTypes = ['image/gif', 'image/jpeg', 'image/png', 'image/jpg', 'image/bmp', 'image/tiff'];
-    
+
     private $_caption;
-    
+
     /**
-     * Set caption for file item, override existings values
+     * Set caption for file item, override existings values.
      *
      * @param string $text The caption text for this image
+     *
      * @since 1.0.0-beta7
      */
     public function setCaption($text)
     {
         $this->_caption = trim($text);
     }
-    
+
     /**
-     * Return the caption text for this file, if not defined the item array will be collected
+     * Return the caption text for this file, if not defined the item array will be collected.
      *
      * @return string The caption text for this image
+     *
      * @since 1.0.0-beta7
      */
     public function getCaption()
@@ -63,12 +65,12 @@ class Item extends ItemAbstract
         if ($this->_caption === null) {
             $this->_caption = I18n::findActive($this->getCaptionArray());
         }
-    
+
         return $this->_caption;
     }
-    
+
     /**
-     * Get the array with all captions from the filemanager global "captions" definition for all provided languages
+     * Get the array with all captions from the filemanager global "captions" definition for all provided languages.
      *
      * @return array Get the array with all captions from the filemanager global "captions" definition for all provided languages
      */
@@ -76,27 +78,27 @@ class Item extends ItemAbstract
     {
         return I18n::decode($this->itemArray['caption']);
     }
-    
+
     /**
      * Get the ID of the file (File-Id) and has nothing incommon with the image id.
      *
-     * @return integer The id of the file from the database.
+     * @return int The id of the file from the database.
      */
     public function getId()
     {
         return (int) $this->itemArray['id'];
     }
-    
+
     /**
      * Get the Id of the folder fhe file is stored in.
      *
-     * @return integer The id of the folder where the file is located.
+     * @return int The id of the folder where the file is located.
      */
     public function getFolderId()
     {
         return (int) $this->itemArray['folder_id'];
     }
-    
+
     /**
      * Get the Folder Object where the file is stored in.
      *
@@ -106,7 +108,7 @@ class Item extends ItemAbstract
     {
         return Yii::$app->storage->getFolder($this->getFolderId());
     }
-    
+
     /**
      * Get the original file name of the file.
      *
@@ -118,7 +120,7 @@ class Item extends ItemAbstract
     {
         return $this->itemArray['name_original'];
     }
-    
+
     /**
      * Get the new defined storage file Name.
      *
@@ -131,7 +133,7 @@ class Item extends ItemAbstract
     {
         return $this->itemArray['name_new_compound'];
     }
-    
+
     /**
      * Get the MIME Type of the file.
      *
@@ -149,7 +151,7 @@ class Item extends ItemAbstract
     {
         return $this->itemArray['mime_type'];
     }
-    
+
     /**
      * Get the file extension.
      *
@@ -169,7 +171,7 @@ class Item extends ItemAbstract
     {
         return $this->itemArray['extension'];
     }
-    
+
     /**
      * Get the size of the file in Bytes.
      *
@@ -179,7 +181,7 @@ class Item extends ItemAbstract
     {
         return (int) $this->itemArray['file_size'];
     }
-    
+
     /**
      * Get the size of a file in human readable size.
      *
@@ -196,17 +198,17 @@ class Item extends ItemAbstract
     {
         return FileHelper::humanReadableFilesize($this->getSize());
     }
-    
+
     /**
      * The Unix Timestamp when the file has been uploaded to the Server.
      *
-     * @return integer Unix timestamp when the file has been uploaded.
+     * @return int Unix timestamp when the file has been uploaded.
      */
     public function getUploadTimestamp()
     {
         return (int) $this->itemArray['upload_timestamp'];
     }
-    
+
     /**
      * Whether the file is of type image or not.
      *
@@ -221,13 +223,13 @@ class Item extends ItemAbstract
      *
      * The file indicates to be an image and return value is true.
      *
-     * @return boolean Whether the file is of type image or not.
+     * @return bool Whether the file is of type image or not.
      */
     public function getIsImage()
     {
         return in_array($this->getMimeType(), $this->_imageMimeTypes);
     }
-    
+
     /**
      * The unique file hash name for the file itself.
      *
@@ -239,7 +241,7 @@ class Item extends ItemAbstract
     {
         return $this->itemArray['hash_name'];
     }
-    
+
     /**
      * Get the md5 sum of the file calculated when creating.
      *
@@ -251,7 +253,7 @@ class Item extends ItemAbstract
     {
         return $this->itemArray['hash_file'];
     }
-    
+
     /**
      * Get the realtive url to the source of the file.
      *
@@ -280,7 +282,7 @@ class Item extends ItemAbstract
     {
         return Url::toRoute(['/admin/file/download', 'id' => $this->getId(), 'hash' => $this->getHashName(), 'fileName' => $this->getName()]);
     }
-    
+
     /**
      * Get the absolute source url but with the sheme includes, means including server location.
      *
@@ -297,7 +299,7 @@ class Item extends ItemAbstract
     {
         return Url::toRoute(['/admin/file/download', 'id' => $this->getId(), 'hash' => $this->getHashName(), 'fileName' => $this->getName()], true);
     }
-    
+
     /**
      * Get the source path without beautiful urls.
      *
@@ -307,9 +309,9 @@ class Item extends ItemAbstract
      */
     public function getHttpSource()
     {
-        return Yii::$app->storage->httpPath . '/' . $this->itemArray['name_new_compound'];
+        return Yii::$app->storage->httpPath.'/'.$this->itemArray['name_new_compound'];
     }
-    
+
     /**
      * Get the path to the source files internal, on the servers path.
      *
@@ -320,9 +322,9 @@ class Item extends ItemAbstract
      */
     public function getServerSource()
     {
-        return Yii::$app->storage->serverPath . '/' . $this->itemArray['name_new_compound'];
+        return Yii::$app->storage->serverPath.'/'.$this->itemArray['name_new_compound'];
     }
-    
+
     /**
      * Return whether the file is hidden or not.
      *
@@ -331,23 +333,24 @@ class Item extends ItemAbstract
      * then the file is hidden but still available and usable.
      *
      * @since 1.0.0-beta7
-     * @return boolean Whether the file is marked as hidden or not.
+     *
+     * @return bool Whether the file is marked as hidden or not.
      */
     public function getIsHidden()
     {
         return (bool) $this->itemArray['is_hidden'];
     }
-    
+
     /**
      * Return boolean value whether the file server source exsits on the server or not.
      *
-     * @return boolean Whether the file still exists in the storage folder or not.
+     * @return bool Whether the file still exists in the storage folder or not.
      */
     public function getFileExists()
     {
         return (bool) file_exists($this->getServerSource());
     }
-    
+
     /**
      * Indicates wether a file is delete from the file system.
      *
@@ -356,20 +359,21 @@ class Item extends ItemAbstract
      * the disk but will still exist in the database but is marked as *is_deleted*.
      *
      * @since 1.0.0-beta7
-     * @return boolean Return whether the file has been removed from the filesytem or not.
+     *
+     * @return bool Return whether the file has been removed from the filesytem or not.
      */
     public function getIsDeleted()
     {
         return (bool) $this->itemArray['is_deleted'];
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function fields()
     {
         return [
-            'id','folderId', 'name', 'systemFileName', 'source', 'httpSource', 'serverSource', 'isImage', 'mimeType', 'extension', 'uploadTimestamp', 'size', 'sizeReadable', 'caption', 'captionArray'
+            'id', 'folderId', 'name', 'systemFileName', 'source', 'httpSource', 'serverSource', 'isImage', 'mimeType', 'extension', 'uploadTimestamp', 'size', 'sizeReadable', 'caption', 'captionArray',
         ];
     }
 }

@@ -5,7 +5,7 @@ namespace luya\admin\controllers;
 use luya\admin\ngrest\base\Controller;
 
 /**
- * NgRest Logger Controller
+ * NgRest Logger Controller.
  *
  * @author Basil Suter <basil@nadar.io>
  */

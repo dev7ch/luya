@@ -1,7 +1,7 @@
 <?php
 use luya\admin\filters\MediumThumbnail;
 
-/**
+/*
  * @var $this \luya\cms\base\PhpBlockView
 */
 ?>

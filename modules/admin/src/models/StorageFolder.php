@@ -12,15 +12,15 @@ use yii\db\ActiveRecord;
 final class StorageFolder extends ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
         return 'admin_storage_folder';
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function find()
     {
@@ -28,14 +28,14 @@ final class StorageFolder extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
         return [
             [['name'], 'required'],
             [['parent_id', 'timestamp_create', 'is_deleted'], 'safe'],
-            [['is_deleted'], 'boolean']
+            [['is_deleted'], 'boolean'],
         ];
     }
 }

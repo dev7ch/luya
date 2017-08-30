@@ -5,13 +5,13 @@ namespace app\blocks;
 use luya\cms\injectors\LinkInjector;
 
 /**
- * Block created with Luya Block Creator Version 1.0.0-RC1-dev at 21.09.2016 15:28
+ * Block created with Luya Block Creator Version 1.0.0-RC1-dev at 21.09.2016 15:28.
  */
 class LinkInjectorTestBlock extends \luya\cms\base\PhpBlock
 {
     /**
      * @var bool Choose whether block is a layout/container/segmnet/section block or not, Container elements will be optically displayed
-     * in a different way for a better user experience. Container block will not display isDirty colorizing.
+     *           in a different way for a better user experience. Container block will not display isDirty colorizing.
      */
     public $isContainer = false;
 
@@ -31,7 +31,7 @@ class LinkInjectorTestBlock extends \luya\cms\base\PhpBlock
             'link' => new LinkInjector(),
         ];
     }
-    
+
     public function name()
     {
         return 'LinkInjectorTestBlock';
@@ -48,7 +48,7 @@ class LinkInjectorTestBlock extends \luya\cms\base\PhpBlock
     }
 
     /**
-     * Available twig variables:
+     * Available twig variables:.
      */
     public function admin()
     {

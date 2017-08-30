@@ -1,7 +1,7 @@
 <?php
 /**
- * @var $this \luya\cms\base\PhpBlockView
-*/
+ * @var \luya\cms\base\PhpBlockView
+ */
 ?>
 <?php if ($this->extraValue('url')): ?>
 	<?php if ($this->cfgValue('width')): ?>

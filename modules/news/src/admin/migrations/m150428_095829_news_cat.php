@@ -7,7 +7,7 @@ class m150428_095829_news_cat extends Migration
     public function safeUp()
     {
         $this->createTable('news_cat', [
-            'id' => $this->primaryKey(),
+            'id'    => $this->primaryKey(),
             'title' => $this->string(150)->notNull(),
         ]);
     }

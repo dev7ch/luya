@@ -2,10 +2,10 @@
 
 namespace luya\account\frontend\controllers;
 
-use Yii;
+use luya\account\frontend\base\Controller;
 use luya\account\models\LoginForm;
 use luya\helpers\Url;
-use luya\account\frontend\base\Controller;
+use Yii;
 
 class DefaultController extends Controller
 {
@@ -13,17 +13,17 @@ class DefaultController extends Controller
     {
         return [
             [
-                'allow' => true,
+                'allow'   => true,
                 'actions' => ['index'],
-                'roles' => ['?', '@'],
+                'roles'   => ['?', '@'],
             ], [
-                'allow' => true,
+                'allow'   => true,
                 'actions' => ['lostpass'],
-                'roles' => ['?'],
+                'roles'   => ['?'],
             ], [
-                'allow' => true,
+                'allow'   => true,
                 'actions' => ['logout'],
-                'roles' => ['@'],
+                'roles'   => ['@'],
             ],
         ];
     }
@@ -31,6 +31,7 @@ class DefaultController extends Controller
     /**
      * @param $_GET ['redirect'] should be urlencoded
      * @param $_POST ['LoginForm'] data to login
+     *
      * @return string
      */
     public function actionIndex($ref = null)
@@ -38,7 +39,7 @@ class DefaultController extends Controller
         if (!empty($ref)) {
             Yii::$app->session->set('accountRef', $ref);
         }
-        
+
         if (!$this->module->getUserIdentity()->isGuest) {
             if (Yii::$app->session->get('accountRef')) {
                 $url = Yii::$app->session->get('accountRef');

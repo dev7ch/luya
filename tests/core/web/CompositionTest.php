@@ -2,24 +2,24 @@
 
 namespace luyatests\core\web;
 
-use luya\web\Request;
 use luya\web\Composition;
+use luya\web\Request;
 
 /**
  * removed tests to implemented here (if not already).
  *
  *
- $parts = Yii::$app->composition->get();
-
- $this->assertArrayHasKey('langShortCode', $parts);
- $this->assertArrayHasKey('foo', $parts);
- $this->assertArrayHasKey('bar', $parts);
-
- $this->assertEquals('de', $parts['langShortCode']);
- $this->assertEquals('de', Yii::$app->composition->getLanguage());
- $this->assertEquals('1234', $parts['foo']);
- $this->assertEquals('luya09', $parts['bar']);
-
+ * $parts = Yii::$app->composition->get();
+ *
+ * $this->assertArrayHasKey('langShortCode', $parts);
+ * $this->assertArrayHasKey('foo', $parts);
+ * $this->assertArrayHasKey('bar', $parts);
+ *
+ * $this->assertEquals('de', $parts['langShortCode']);
+ * $this->assertEquals('de', Yii::$app->composition->getLanguage());
+ * $this->assertEquals('1234', $parts['foo']);
+ * $this->assertEquals('luya09', $parts['bar']);
+ *
  *
  * @author nadar
  */
@@ -117,34 +117,34 @@ class CompositionTest extends \luyatests\LuyaWebTestCase
         $this->assertEquals('', $resolve['route']);
         $this->assertEquals('ch', $resolve['resolvedValues']['countryShortCode']);
     }
-    
+
     public function testMultiDomainMapping()
     {
         $request = new Request();
         $request->pathInfo = 'foo/bar';
         $request->hostInfo = 'example.fr';
-        
+
         $composition = new \luya\web\Composition($request, [
-            'hostInfoMapping' => ['example.fr' => ['langShortCode' => 'fr', 'x' => 'y']]
+            'hostInfoMapping' => ['example.fr' => ['langShortCode' => 'fr', 'x' => 'y']],
         ]);
-        
+
         $resolv = $composition->getResolvedPathInfo($request);
-        
+
         $this->assertEquals('fr', $resolv['compositionKeys']['langShortCode']);
         $this->assertTrue(isset($resolv['compositionKeys']['x']));
     }
-    
+
     public function testGetDefaultLanguage()
     {
         $request = new Request();
         $comp = new Composition($request);
         $this->assertEquals('en', $comp->getDefaultLangShortCode());
-        
+
         // test route override
         $override = $comp->createRoute(['langShortCode' => 'us']);
-        
+
         $this->assertEquals('us', $override);
-        
+
         // as override does not set/change the base value
         $this->assertEquals('en', $comp->getLanguage());
         $this->assertEquals('en', $comp['langShortCode']);
@@ -152,7 +152,7 @@ class CompositionTest extends \luyatests\LuyaWebTestCase
         $comp['fooCode'] = 'bar';
         $this->assertEquals('bar', $comp['fooCode']);
     }
-    
+
     public function testGetKeys()
     {
         $request = new Request();
@@ -160,7 +160,7 @@ class CompositionTest extends \luyatests\LuyaWebTestCase
         $this->assertTrue(is_array($comp->get()));
         $this->assertArrayHasKey('langShortCode', $comp->get());
     }
-    
+
     /**
      * @expectedException Exception
      */
@@ -169,7 +169,7 @@ class CompositionTest extends \luyatests\LuyaWebTestCase
         $request = new Request();
         $comp = new Composition($request, ['default' => ['noLangShortCode' => 'ch']]);
     }
-    
+
     /**
      * @expectedException Exception
      */
@@ -179,7 +179,7 @@ class CompositionTest extends \luyatests\LuyaWebTestCase
         $comp = new Composition($request);
         $comp[] = 'bar';
     }
-    
+
     /**
      * @expectedException Exception
      */
@@ -189,7 +189,7 @@ class CompositionTest extends \luyatests\LuyaWebTestCase
         $comp = new Composition($request);
         unset($comp['langShortCode']);
     }
-    
+
     public function testRemoval()
     {
         $request = new Request();
@@ -197,7 +197,7 @@ class CompositionTest extends \luyatests\LuyaWebTestCase
         $request->hostInfo = 'example.fr';
         $comp = new Composition($request);
         $comp->hidden = false;
-        
+
         $this->assertEquals('this-should/be-left', $comp->removeFrom('en/this-should/be-left'));
     }
 }

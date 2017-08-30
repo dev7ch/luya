@@ -2,14 +2,15 @@
 
 namespace luya\admin\importers;
 
-use Yii;
 use luya\admin\models\Property;
 use luya\console\Importer;
+use Yii;
 
 /**
  * Import Properties.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class PropertyImporter extends Importer
@@ -40,7 +41,7 @@ class PropertyImporter extends Importer
     }
 
     /**
-     * Installation of the property
+     * Installation of the property.
      */
     protected function install($object)
     {
@@ -48,17 +49,17 @@ class PropertyImporter extends Importer
         if ($model) {
             $model->setAttributes([
                 'module_name' => $object->moduleName,
-                'class_name' => $object::className(),
+                'class_name'  => $object::className(),
             ]);
             $model->update(false);
-    
+
             return $model->id;
         } else {
             $model = new Property();
             $model->setAttributes([
-                'var_name' => $object->varName(),
+                'var_name'    => $object->varName(),
                 'module_name' => $object->moduleName,
-                'class_name' => $object::className(),
+                'class_name'  => $object::className(),
             ]);
             $insert = $model->insert(false);
             if ($insert) {

@@ -46,20 +46,20 @@ class DetailViewActiveWindow extends ActiveWindow
      * @var string The name of the module where the active windows is located in order to finde the view path.
      */
     public $module = '@admin';
-    
+
     /**
      * @var string The name of of the ActiveWindow. This is displayed in the CRUD list.
      */
     public $alias = 'Detail';
-    
+
     /**
      * @var string The icon name from goolges material icon set (https://material.io/icons/)
      */
     public $icon = 'zoom_in';
-    
+
     /**
      * @var array a list of attributes to be displayed in the detail view. Each array element
-     * represents the specification for displaying one particular attribute.
+     *            represents the specification for displaying one particular attribute.
      *
      * An attribute can be specified as a string in the format of `attribute`, `attribute:format` or `attribute:format:label`,
      * where `attribute` refers to the attribute name, and `format` represents the format of the attribute. The `format`
@@ -91,7 +91,7 @@ class DetailViewActiveWindow extends ActiveWindow
      *   Please refer to [[\yii\helpers\BaseHtml::renderTagAttributes()]] for the supported syntax.
      */
     public $attributes;
-    
+
     /**
      * Renders the index file of the ActiveWindow.
      *
@@ -100,8 +100,8 @@ class DetailViewActiveWindow extends ActiveWindow
     public function index()
     {
         return $this->render('index', [
-            'id' => $this->itemId,
-            'model' => $this->model,
+            'id'         => $this->itemId,
+            'model'      => $this->model,
             'attributes' => $this->attributes,
         ]);
     }

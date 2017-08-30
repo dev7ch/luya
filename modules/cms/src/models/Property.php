@@ -5,7 +5,7 @@ namespace luya\cms\models;
 use luya\admin\models\Property as AdminProperty;
 
 /**
- * CMS PROPERTY
+ * CMS PROPERTY.
  *
  * Each CMS property is attached to an ADMIN PROPERTY with the current navigation (nav_id) context.
  *
@@ -24,20 +24,20 @@ final class Property extends \yii\db\ActiveRecord
             [['nav_id', 'admin_prop_id', 'value'], 'required'],
         ];
     }
-    
+
     public function getAdminProperty()
     {
         return $this->hasOne(AdminProperty::className(), ['id' => 'admin_prop_id']);
     }
-    
+
     private $_object;
-    
+
     public function getObject()
     {
         if ($this->_object === null) {
             $this->_object = $this->adminProperty->createObject($this->value);
         }
-        
+
         return $this->_object;
     }
 }

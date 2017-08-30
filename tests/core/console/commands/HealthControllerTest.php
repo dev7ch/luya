@@ -2,8 +2,8 @@
 
 namespace luyatests\core\console\commands;
 
-use Yii;
 use luya\console\commands\HealthController;
+use Yii;
 
 class HealthControllerTest extends \luyatests\LuyaConsoleTestCase
 {

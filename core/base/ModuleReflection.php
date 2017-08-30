@@ -2,12 +2,12 @@
 
 namespace luya\base;
 
-use Yii;
-use yii\web\NotFoundHttpException;
-use yii\base\InvalidConfigException;
-use yii\base\Object;
 use luya\web\Request;
 use luya\web\UrlManager;
+use Yii;
+use yii\base\InvalidConfigException;
+use yii\base\Object;
+use yii\web\NotFoundHttpException;
 
 /**
  * Run any route inside the provided module.
@@ -34,6 +34,7 @@ use luya\web\UrlManager;
  * @property string $suffix The suffix which should be used to attach to the url rules.
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 class ModuleReflection extends Object
@@ -47,7 +48,7 @@ class ModuleReflection extends Object
      * @var \luya\web\UrlManager UrlManager object from DI-Container.
      */
     public $urlManager;
-    
+
     /**
      * @var \yii\base\Controller|null The controller paramter is null until the [[run()]] method has been applied.
      */
@@ -58,9 +59,9 @@ class ModuleReflection extends Object
     /**
      * Class constructor in order to consum from DI Container.
      *
-     * @param Request $request
+     * @param Request    $request
      * @param UrlManager $urlManager
-     * @param array $config
+     * @param array      $config
      */
     public function __construct(Request $request, UrlManager $urlManager, array $config = [])
     {
@@ -70,20 +71,20 @@ class ModuleReflection extends Object
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
         if ($this->module === null) {
             throw new InvalidConfigException('The module attribute is required and can not be null.');
         }
-        
+
         // add the module specific url rules to the url manager
         $this->urlManager->addRules($this->module->urlRules, true);
     }
 
     private $_module;
-    
+
     /**
      * Setter for the module property.
      *
@@ -93,7 +94,7 @@ class ModuleReflection extends Object
     {
         $this->_module = $module;
     }
-    
+
     /**
      * Getter for the module property.
      *
@@ -103,9 +104,9 @@ class ModuleReflection extends Object
     {
         return $this->_module;
     }
-    
+
     private $_suffix;
-    
+
     /**
      * Setter for the suffix property.
      *
@@ -126,7 +127,7 @@ class ModuleReflection extends Object
     {
         return $this->_suffix;
     }
-    
+
     private $_requestRoute;
 
     /**
@@ -139,7 +140,7 @@ class ModuleReflection extends Object
         if ($this->_requestRoute !== null) {
             return $this->_requestRoute;
         }
-        
+
         if ($this->_defaultRoute !== null && empty($this->getSuffix())) {
             $array = $this->_defaultRoute;
         } else {
@@ -148,14 +149,14 @@ class ModuleReflection extends Object
             // return human readable array
             $array = [
                 'route' => $route[0],
-                'args' => $route[1],
+                'args'  => $route[1],
             ];
         }
         // resolve the current route by the module
         $array['route'] = $this->module->resolveRoute($array['route']);
         // overload args if none defined with massiv get assigment
         if (count($array['args']) === 0) {
-            /**
+            /*
              * issue: https://github.com/luyadev/luya/issues/754
              *
              * 01.02.2016: we have to remove the get param overloading, otherwhise we can not guarnte
@@ -166,8 +167,8 @@ class ModuleReflection extends Object
              */
             $array['args'] = [];
         }
-        
-        /**
+
+        /*
          * issue: https://github.com/luyadev/luya/issues/754
          *
          * As the route resolving should not contain empty argument list we overload the $requertRoute['args'] if they are empty
@@ -176,21 +177,22 @@ class ModuleReflection extends Object
         if (empty($array['args'])) {
             $array['args'] = $this->request->get();
         }
-        
+
         // @see https://github.com/luyadev/luya/issues/1267
         if ($this->_defaultRoute !== null) {
             $array['args'] = array_merge($this->_defaultRoute['args'], $array['args']);
         }
 
         $this->_requestRoute = $array;
-        
+
         return $array;
     }
 
     /**
-     * Setter method for the requested route
+     * Setter method for the requested route.
+     *
      * @param unknown $route
-     * @param array $args
+     * @param array   $args
      */
     public function setRequestRoute($route, array $args = [])
     {
@@ -202,16 +204,16 @@ class ModuleReflection extends Object
      *
      * @param string $controller
      * @param string $action
-     * @param array $args
+     * @param array  $args
      */
     public function defaultRoute($controller, $action = null, array $args = [])
     {
         $this->_defaultRoute = [
             'route' => implode('/', [$this->module->id, $controller, (empty($action)) ? 'index' : $action]),
-            'args' => $args,
+            'args'  => $args,
         ];
     }
-    
+
     /**
      * Returns the url rule parameters which are taken from the requested route.
      *
@@ -220,10 +222,10 @@ class ModuleReflection extends Object
     public function getUrlRule()
     {
         $request = $this->getRequestRoute();
-        
+
         return [
             'module' => $this->module->id,
-            'route' => $this->module->id . '/' . $request['route'],
+            'route'  => $this->module->id.'/'.$request['route'],
             'params' => $request['args'],
         ];
     }
@@ -231,8 +233,9 @@ class ModuleReflection extends Object
     /**
      * Run the route based on the values.
      *
-     * @return string|\yii\web\Response The response of the action, can be either a string or an object from response.
      * @throws \yii\web\NotFoundHttpException
+     *
+     * @return string|\yii\web\Response The response of the action, can be either a string or an object from response.
      */
     public function run()
     {
@@ -243,11 +246,11 @@ class ModuleReflection extends Object
         if (!isset($controller[0]) && !is_object($controller[0])) {
             throw new NotFoundHttpException(sprintf("Unable to create controller '%s' for module '%s'.", $requestRoute['route'], $this->module->id));
         }
-        
-        Yii::info('LUYA module run module "'.$this->module->id.'" route ' . $requestRoute['route'], __METHOD__);
-        
+
+        Yii::info('LUYA module run module "'.$this->module->id.'" route '.$requestRoute['route'], __METHOD__);
+
         $this->controller = $controller[0];
-        
+
         // run the action on the provided controller object
         return $this->controller->runAction($controller[1], $requestRoute['args']);
     }

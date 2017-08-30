@@ -20,7 +20,7 @@ use yii\db\ActiveRecord;
 final class TagRelation extends ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -28,7 +28,7 @@ final class TagRelation extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -44,7 +44,8 @@ final class TagRelation extends ActiveRecord
      * This methods i mainly used internal to retrieve data for the Active Window. Use the {{luya\admin\traits\TagsTrait}} in your Model instead.
      *
      * @param string $tableName The table name
-     * @param integer $pkId The primary key combination.
+     * @param int    $pkId      The primary key combination.
+     *
      * @return array|ActiveRecord[]
      */
     public static function getDataForRelation($tableName, $pkId)
@@ -58,13 +59,14 @@ final class TagRelation extends ActiveRecord
      * This methods i mainly used internal to retrieve data for the Active Window. Use the {{luya\admin\traits\TagsTrait}} in your Model instead.
      *
      * @param string $tableName The table name.
+     *
      * @return array|ActiveRecord[]
      */
     public static function getDistinctDataForTable($tableName)
     {
         return self::find()->select('tag_id')->where(['table_name' => $tableName])->distinct()->asArray()->all();
     }
-    
+
     /**
      * Get tag object relation.
      *

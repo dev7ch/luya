@@ -12,12 +12,13 @@ namespace luya\admin\base;
  * ```
  *
  * @author Basil Suter <basil@nadar.io>
+ *
  * @since 1.0.0
  */
 abstract class CheckboxProperty extends Property
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function type()
     {
@@ -25,18 +26,18 @@ abstract class CheckboxProperty extends Property
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function options()
     {
         return [
-            'true-value' => 1,
+            'true-value'  => 1,
             'false-value' => 0,
         ];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getValue()
     {

@@ -9,7 +9,7 @@ final class Module extends \luya\admin\base\Module
     public $apis = [
         'api-account-user' => 'luya\account\admin\apis\UserController',
     ];
-    
+
     public function getMenu()
     {
         return (new AdminMenuBuilder($this))

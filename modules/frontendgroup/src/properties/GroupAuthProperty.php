@@ -2,9 +2,9 @@
 
 namespace luya\frontendgroup\properties;
 
+use luya\admin\base\Property;
 use Yii;
 use yii\helpers\Json;
-use luya\admin\base\Property;
 
 /**
  * The Property where you can choose the groups who can see the menu item.
@@ -14,8 +14,8 @@ use luya\admin\base\Property;
 class GroupAuthProperty extends Property
 {
     /**
+     * {@inheritdoc}
      *
-     * {@inheritDoc}
      * @see \yii\base\Object::init()
      */
     public function init()
@@ -25,7 +25,7 @@ class GroupAuthProperty extends Property
         // atache before render to stop render if not in group
         $this->on(self::EVENT_BEFORE_RENDER, [$this, 'eventBeforeRender']);
     }
-    
+
     public function eventBeforeRender($event)
     {
         if ($this->requiresAuth()) {
@@ -38,12 +38,12 @@ class GroupAuthProperty extends Property
             }
         }
     }
-    
+
     public function varName()
     {
         return 'groupAuthProtection';
     }
-    
+
     public function label()
     {
         return 'Welche Gruppen können diese Seite sehen?';
@@ -53,17 +53,17 @@ class GroupAuthProperty extends Property
     {
         return 'zaa-checkbox-array';
     }
-    
+
     public function options()
     {
         $opt = [];
         foreach (Yii::$app->getModule('frontendgroup')->frontendGroups as $group) {
             $opt[] = ['value' => $group, 'label' => $group];
         }
-        
+
         return ['items' => $opt];
     }
-    
+
     public function getGroups()
     {
         $groups = [];
@@ -72,24 +72,26 @@ class GroupAuthProperty extends Property
                 $groups[] = $value['value'];
             }
         }
-        
+
         return $groups;
     }
-    
+
     public function requiresAuth()
     {
         return (bool) !empty($this->getGroups());
     }
-    
+
     public function getAdminValue()
     {
         $value = parent::getValue();
+
         return Json::decode($value);
     }
-    
+
     public function getValue()
     {
         $value = parent::getValue();
+
         return Json::decode($value);
     }
 }

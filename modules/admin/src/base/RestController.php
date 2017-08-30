@@ -2,9 +2,9 @@
 
 namespace luya\admin\base;
 
-use Yii;
-use luya\rest\UserBehaviorInterface;
 use luya\rest\Controller;
+use luya\rest\UserBehaviorInterface;
+use Yii;
 
 /**
  * provides the basic functionality to access and serialize this controller via rest

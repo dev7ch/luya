@@ -2,45 +2,45 @@
 
 namespace luya\cms\frontend\blocks;
 
-use luya\cms\frontend\Module;
-use luya\cms\frontend\blockgroups\DevelopmentGroup;
 use luya\cms\base\PhpBlock;
+use luya\cms\frontend\blockgroups\DevelopmentGroup;
+use luya\cms\frontend\Module;
 
 /**
- * HTML Block
+ * HTML Block.
  *
  * @author Basil Suter <basil@nadar.io>
  */
 final class HtmlBlock extends PhpBlock
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $module = 'cms';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $cacheEnabled = true;
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function blockGroup()
     {
         return DevelopmentGroup::className();
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function name()
     {
         return Module::t('block_html_name');
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function icon()
     {
@@ -48,7 +48,7 @@ final class HtmlBlock extends PhpBlock
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function config()
     {
@@ -57,17 +57,18 @@ final class HtmlBlock extends PhpBlock
                 ['var' => 'html', 'label' => Module::t('block_html_html_label'), 'type' => self::TYPE_TEXTAREA],
             ],
             'cfgs' => [
-                ['var' => 'raw', 'label' => Module::t('block_html_cfg_raw_label'), 'type' => self::TYPE_CHECKBOX]
+                ['var' => 'raw', 'label' => Module::t('block_html_cfg_raw_label'), 'type' => self::TYPE_CHECKBOX],
             ],
         ];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function admin()
     {
-        $message =  Module::t('block_html_no_content');
+        $message = Module::t('block_html_no_content');
+
         return <<<EOT
     	{% if vars.html is empty %}
     		<span class="block__empty-text">{$message}</span>{% else %}

@@ -2,8 +2,8 @@
 
 namespace luya\admin\ngrest\plugins;
 
-use Yii;
 use luya\admin\ngrest\base\Plugin;
+use Yii;
 
 /**
  * Type File Upload.
@@ -31,12 +31,12 @@ use luya\admin\ngrest\base\Plugin;
 class File extends Plugin
 {
     /**
-     * @var boolean Whether to return a {{luya\admin\file\Item}} instead of the numeric file id value from the database.
+     * @var bool Whether to return a {{luya\admin\file\Item}} instead of the numeric file id value from the database.
      */
     public $fileItem = false;
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderList($id, $ngModel)
     {
@@ -44,7 +44,7 @@ class File extends Plugin
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderCreate($id, $ngModel)
     {
@@ -52,15 +52,15 @@ class File extends Plugin
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderUpdate($id, $ngModel)
     {
         return $this->renderCreate($id, $ngModel);
     }
-    
+
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function onAfterFind($event)
     {

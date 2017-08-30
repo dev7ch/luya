@@ -2,8 +2,8 @@
 
 namespace luya\account\models;
 
-use Yii;
 use luya\admin\ngrest\base\NgRestModel;
+use Yii;
 
 class User extends NgRestModel implements \yii\web\IdentityInterface
 {
@@ -16,7 +16,7 @@ class User extends NgRestModel implements \yii\web\IdentityInterface
         parent::init();
         $this->on(self::EVENT_BEFORE_INSERT, [$this, 'encodePassword']);
     }
-    
+
     public static function tableName()
     {
         return 'account_user';
@@ -82,31 +82,32 @@ class User extends NgRestModel implements \yii\web\IdentityInterface
     }
 
     /* NgRest */
-    
+
     public static function ngRestApiEndpoint()
     {
         return 'api-account-user';
     }
-    
+
     public function ngRestConfig($config)
     {
-        $config->list->field("firstname", "Vorname")->text();
-        $config->list->field("lastname", "Lastname")->text();
-        $config->list->field("email", "E-Mail")->text();
-        $config->list->field("subscription_newsletter", "Newsletter")->toggleStatus();
-        $config->list->field("subscription_medianews", "Neuigkeiten")->toggleStatus();
-        $config->list->field("is_mail_verified", "E-Mail verifiziert")->toggleStatus();
-        $config->list->field("is_active", "Aktiviert")->toggleStatus();
-        
+        $config->list->field('firstname', 'Vorname')->text();
+        $config->list->field('lastname', 'Lastname')->text();
+        $config->list->field('email', 'E-Mail')->text();
+        $config->list->field('subscription_newsletter', 'Newsletter')->toggleStatus();
+        $config->list->field('subscription_medianews', 'Neuigkeiten')->toggleStatus();
+        $config->list->field('is_mail_verified', 'E-Mail verifiziert')->toggleStatus();
+        $config->list->field('is_active', 'Aktiviert')->toggleStatus();
+
         $config->update->copyFrom('list');
         $config->update->field('street', 'Strasse')->text();
         $config->update->field('zip', 'PLZ')->text();
         $config->update->field('city', 'Ortschaft')->text();
         $config->update->field('country', 'Land')->text();
         $config->update->field('company', 'Firma')->text();
+
         return $config;
     }
-    
+
     /* IdentityInterface */
 
     /**
@@ -125,8 +126,8 @@ class User extends NgRestModel implements \yii\web\IdentityInterface
      * Finds an identity by the given token.
      *
      * @param string $token the token to be looked for
+     * @param null   $type
      *
-     * @param null $type
      * @return IdentityInterface|null the identity object that matches the given token.
      */
     public static function findIdentityByAccessToken($token, $type = null)

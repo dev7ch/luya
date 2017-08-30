@@ -3,15 +3,13 @@
 namespace luya\crawler\models;
 
 use luya\crawler\admin\Module;
-
-
 use Nadar\Stemming\Stemm;
 use yii\db\Expression;
 
 /**
  * This is the model class for table "crawler_index".
  *
- * @property integer $id
+ * @property int $id
  * @property string $url
  * @property string $title
  * @property string $content
@@ -19,18 +17,18 @@ use yii\db\Expression;
  * @property string $language_info
  * @property string $url_found_on_page
  * @property string $group
- * @property integer $added_to_index
- * @property integer $last_update
+ * @property int $added_to_index
+ * @property int $last_update
  * @property string $clickUrl
  */
 class Index extends \luya\admin\ngrest\base\NgRestModel
 {
     public static $counter = 0;
-    
+
     public static $searchDataId = 0;
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -38,7 +36,7 @@ class Index extends \luya\admin\ngrest\base\NgRestModel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -55,38 +53,39 @@ class Index extends \luya\admin\ngrest\base\NgRestModel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributeLabels()
     {
         return [
-            'url' => Module::t('index_url'),
-            'title' => Module::t('index_title'),
-            'language_info' => Module::t('index_language_info'),
-            'content' => Module::t('index_content'),
+            'url'               => Module::t('index_url'),
+            'title'             => Module::t('index_title'),
+            'language_info'     => Module::t('index_language_info'),
+            'content'           => Module::t('index_content'),
             'url_found_on_page' => Module::t('index_url_found'),
-            'added_to_index' => ' add to index on',
-            'last_update' => 'last update'
+            'added_to_index'    => ' add to index on',
+            'last_update'       => 'last update',
         ];
     }
-    
+
     /**
      * Search by general Like statement.
      *
      * @param string $query
      * @param string $languageInfo
+     *
      * @return \yii\db\ActiveRecord[]
      */
     public static function flatSearchByQuery($query, $languageInfo)
     {
         $query = static::encodeQuery($query);
-    
+
         $query = Stemm::stemPhrase($query, $languageInfo);
-        
+
         if (strlen($query) < 1) {
             return [];
         }
-    
+
         $q = self::find()->where(['like', 'content', $query]);
         $q->orWhere(['like', 'description', $query]);
         $q->orWhere(['like', 'title', $query]);
@@ -94,25 +93,27 @@ class Index extends \luya\admin\ngrest\base\NgRestModel
             $q->andWhere(['language_info' => $languageInfo]);
         }
         $result = $q->all();
-    
+
         $searchData = new Searchdata();
         $searchData->detachBehavior('LogBehavior');
         $searchData->attributes = [
-            'query' => $query,
-            'results' => count($result),
+            'query'     => $query,
+            'results'   => count($result),
             'timestamp' => time(),
-            'language' => $languageInfo,
+            'language'  => $languageInfo,
         ];
         $searchData->save();
-    
+
         return $result;
     }
-    
+
     /**
-     * Intelligent searc
+     * Intelligent searc.
+     *
      * @param unknown $query
      * @param unknown $languageInfo
-     * @param string $returnQuery
+     * @param string  $returnQuery
+     *
      * @return \yii\db\ActiveRecord
      */
     public static function searchByQuery($query, $languageInfo)
@@ -120,44 +121,45 @@ class Index extends \luya\admin\ngrest\base\NgRestModel
         if (strlen($query) < 1) {
             return [];
         }
-        
+
         $activeQuery = self::activeQuerySearch($query, $languageInfo);
-        
+
         $result = $activeQuery->all();
-        
+
         $searchData = new Searchdata();
         $searchData->detachBehavior('LogBehavior');
         $searchData->attributes = [
-            'query' => $query,
-            'results' => count($result),
+            'query'     => $query,
+            'results'   => count($result),
             'timestamp' => time(),
-            'language' => $languageInfo,
+            'language'  => $languageInfo,
         ];
         $searchData->save();
-        
+
         return $result;
     }
-    
+
     /**
      * Smart search by a query.
      *
      * @param unknown $query
      * @param unknown $languageInfo
-     * @param string $returnQuery
+     * @param string  $returnQuery
+     *
      * @return \yii\db\ActiveQuery
      */
     public static function activeQuerySearch($query, $languageInfo)
     {
         $query = static::encodeQuery($query);
-        
-        $parts = explode(" ", $query);
-        
+
+        $parts = explode(' ', $query);
+
         $index = [];
         foreach ($parts as $word) {
             if (empty($word)) {
                 continue;
             }
-            
+
             $word = Stemm::stem($word, $languageInfo);
             $q = self::find()->select(['id', 'url', 'title']);
             $q->where(['like', 'content', $word]);
@@ -167,11 +169,10 @@ class Index extends \luya\admin\ngrest\base\NgRestModel
                 $q->andWhere(['language_info' => $languageInfo]);
             }
             $data = $q->asArray()->indexBy('id')->all();
-        
+
             static::indexer($word, $data, $index);
         }
-        
-        
+
         $ids = [];
         $foundOld = 1;
         foreach ($index as $item) {
@@ -182,19 +183,18 @@ class Index extends \luya\admin\ngrest\base\NgRestModel
                 $ids[$item['urlwordpos']] = $item['id'];
             }
         }
-        
+
         arsort($ids);
-        
+
         $activeQuery = self::find()->where(['in', 'id', $ids]);
         if (!empty($ids)) {
-            $activeQuery->orderBy(new Expression('FIELD (id, ' . implode(', ', $ids) . ')'));
+            $activeQuery->orderBy(new Expression('FIELD (id, '.implode(', ', $ids).')'));
         }
-        
+
         return $activeQuery;
     }
-    
+
     /**
-     *
      * @param unknown $item
      * @param unknown $index
      */
@@ -215,18 +215,18 @@ class Index extends \luya\admin\ngrest\base\NgRestModel
             }
         }
     }
-    
+
     private static $_midImportant = 500;
-    
+
     private static $_unImportant = 1000;
-    
+
     private static function evalPosition(array $item, $keyword)
     {
         $newpos = strpos($item['url'], $keyword);
-        
+
         if ($newpos === false) {
             $posInTitle = strpos($item['title'], $keyword);
-            
+
             if ($posInTitle !== false) {
                 $newpos = $posInTitle + self::$_midImportant;
                 self::$_midImportant++;
@@ -235,37 +235,38 @@ class Index extends \luya\admin\ngrest\base\NgRestModel
                 self::$_unImportant++;
             }
         }
-        
+
         $after = substr($item['url'], $newpos + 1);
-        
+
         if ($after) {
             $newpos = $newpos + strlen($after);
         }
-        
+
         if (isset($item['urlwordpos']) && $item['urlwordpos'] < $newpos) {
             return $item['urlwordpos'];
         }
-        
+
         return $newpos;
     }
-    
+
     /**
      * Encode the input query.
      *
      * @param unknown $query
+     *
      * @return string
      */
     public static function encodeQuery($query)
     {
         return trim(htmlentities($query, ENT_QUOTES));
     }
-    
 
     /**
      * Generate preview from the search word and the corresponding cut amount.
      *
-     * @param string $word The word too lookup in the `$content` variable.
+     * @param string $word      The word too lookup in the `$content` variable.
      * @param number $cutAmount The amount of words on the left and right side of the word.
+     *
      * @return mixed
      */
     public function preview($word, $cutAmount = 150)
@@ -274,10 +275,10 @@ class Index extends \luya\admin\ngrest\base\NgRestModel
     }
 
     /**
-     *
      * @param unknown $word
      * @param unknown $context
-     * @param number $truncateAmount
+     * @param number  $truncateAmount
+     *
      * @return string
      */
     public function cut($word, $context, $truncateAmount = 150)
@@ -297,19 +298,19 @@ class Index extends \luya\admin\ngrest\base\NgRestModel
     }
 
     /**
-     *
      * @param unknown $word
      * @param unknown $text
-     * @param string $sheme
+     * @param string  $sheme
+     *
      * @return mixed
      */
     public function highlight($word, $text, $sheme = "<span style='background-color:#FFEBD1; color:black;'>%s</span>")
     {
-        return preg_replace("/".preg_quote(htmlentities($word, ENT_QUOTES), '/')."/i", sprintf($sheme, $word), $text);
+        return preg_replace('/'.preg_quote(htmlentities($word, ENT_QUOTES), '/').'/i', sprintf($sheme, $word), $text);
     }
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function genericSearchFields()
     {
@@ -317,7 +318,7 @@ class Index extends \luya\admin\ngrest\base\NgRestModel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function ngRestApiEndpoint()
     {
@@ -325,28 +326,29 @@ class Index extends \luya\admin\ngrest\base\NgRestModel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function ngRestAttributeTypes()
     {
         return [
-            'url' => 'text',
-            'title' => 'text',
-            'language_info' => 'text',
+            'url'               => 'text',
+            'title'             => 'text',
+            'language_info'     => 'text',
             'url_found_on_page' => 'text',
-            'content' => 'textarea',
-            'last_update' => 'datetime',
-            'added_to_index' => 'datetime',
+            'content'           => 'textarea',
+            'last_update'       => 'datetime',
+            'added_to_index'    => 'datetime',
         ];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function ngRestConfig($config)
     {
         $this->ngRestConfigDefine($config, 'list', ['title', 'url', 'language_info', 'last_update', 'added_to_index']);
         $this->ngRestConfigDefine($config, ['create', 'update'], ['url', 'title', 'language_info', 'url_found_on_page', 'content', 'last_update', 'added_to_index']);
+
         return $config;
     }
 }

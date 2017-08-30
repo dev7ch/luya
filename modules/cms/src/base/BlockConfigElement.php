@@ -22,8 +22,8 @@ abstract class BlockConfigElement
     protected $id;
 
     /**
-     *
      * @param array $item The element config with all fields.
+     *
      * @throws Exception
      */
     public function __construct(array $item)
@@ -39,12 +39,13 @@ abstract class BlockConfigElement
      * Has the config element an element or not.
      *
      * @param string $key
-     * @return boolean
+     *
+     * @return bool
      */
     protected function has($key)
     {
         if (!is_array($key)) {
-            return (array_key_exists($key, $this->item));
+            return array_key_exists($key, $this->item);
         }
 
         foreach ($key as $value) {
@@ -60,7 +61,8 @@ abstract class BlockConfigElement
      * Get the element value.
      *
      * @param string $key
-     * @param mixed $default
+     * @param mixed  $default
+     *
      * @return string
      */
     protected function get($key, $default = null)

@@ -2,12 +2,12 @@
 
 namespace luya\crawler\frontend\controllers;
 
-use Yii;
 use luya\crawler\models\Index;
-use yii\helpers\Html;
-use yii\data\ActiveDataProvider;
 use luya\crawler\models\Searchdata;
+use Yii;
+use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
+use yii\helpers\Html;
 
 /**
  * Crawler Index Controller.
@@ -34,34 +34,34 @@ class DefaultController extends \luya\web\Controller
     public function actionIndex($query = null, $page = null)
     {
         $language = Yii::$app->composition->getKey('langShortCode');
-        
+
         if (empty($query)) {
             $provider = new ArrayDataProvider();
         } else {
             $activeQuery = Index::activeQuerySearch($query, $language);
-            
+
             $provider = new ActiveDataProvider([
-                'query' => $activeQuery,
+                'query'      => $activeQuery,
                 'pagination' => [
                     'defaultPageSize' => $this->module->searchResultPageSize,
-                    'route' => '/crawler/default',
-                    'params' => ['query' => $query, 'page' => $page]
+                    'route'           => '/crawler/default',
+                    'params'          => ['query' => $query, 'page' => $page],
                 ],
             ]);
-            
+
             $searchData = new Searchdata();
             $searchData->detachBehavior('LogBehavior');
             $searchData->attributes = [
-                'query' => $query,
-                'results' => $provider->totalCount,
+                'query'     => $query,
+                'results'   => $provider->totalCount,
                 'timestamp' => time(),
-                'language' => $language,
+                'language'  => $language,
             ];
             $searchData->save();
         }
-        
+
         return $this->render('index', [
-            'query' => Html::encode($query),
+            'query'    => Html::encode($query),
             'provider' => $provider,
         ]);
     }

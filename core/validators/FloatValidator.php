@@ -29,6 +29,7 @@ use yii\validators\Validator;
  *
  * @author Basil Suter <basil@nadar.io>
  * @author Martin Petrasch <martin.petrasch@zephir.ch>
+ *
  * @since 1.0.0
  */
 class FloatValidator extends Validator
@@ -37,7 +38,7 @@ class FloatValidator extends Validator
      * @var string The messaged to send when an error appears.
      */
     public $message = '{attribute} must be a float or numeric value.';
-    
+
     /**
      * Validate the value if is_numeric or if not is_float.
      *

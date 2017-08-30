@@ -16,7 +16,7 @@ class IndexAction extends \yii\rest\IndexAction
     /**
      * Prepare the data models based on the ngrest find query.
      *
-     * {@inheritDoc}
+     * {@inheritdoc}
      *
      * @see \yii\rest\IndexAction::prepareDataProvider()
      */
@@ -29,7 +29,7 @@ class IndexAction extends \yii\rest\IndexAction
         $modelClass = $this->modelClass;
         $data = new \yii\data\ActiveDataProvider([
             'pagination' => $this->controller->pagination,
-            'query' => $modelClass::ngRestFind(),
+            'query'      => $modelClass::ngRestFind(),
         ]);
 
         return $data;

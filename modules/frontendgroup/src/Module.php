@@ -2,13 +2,13 @@
 
 namespace luya\frontendgroup;
 
-use Yii;
-use yii\base\BootstrapInterface;
 use luya\admin\models\Property;
+use luya\base\CoreModuleInterface;
+use luya\cms\Menu;
 use luya\cms\models\Property as CmsProperty;
 use luya\frontendgroup\properties\GroupAuthProperty;
-use luya\cms\Menu;
-use luya\base\CoreModuleInterface;
+use Yii;
+use yii\base\BootstrapInterface;
 
 /**
  * FrontendGroup Module.
@@ -20,8 +20,8 @@ use luya\base\CoreModuleInterface;
 final class Module extends \luya\base\Module implements BootstrapInterface, CoreModuleInterface
 {
     /**
+     * {@inheritdoc}
      *
-     * {@inheritDoc}
      * @see \yii\base\BootstrapInterface::bootstrap()
      */
     public function bootstrap($app)
@@ -52,9 +52,9 @@ final class Module extends \luya\base\Module implements BootstrapInterface, Core
             }
         }
     }
-    
+
     /**
-     * Define all available frontend groups
+     * Define all available frontend groups.
      *
      * @var array An array contain all frontend groups which are available, like
      *
@@ -63,11 +63,11 @@ final class Module extends \luya\base\Module implements BootstrapInterface, Core
      * ```
      */
     public $frontendGroups = [];
-    
+
     /**
      * @var array Define an array with the names of defined yii\web\User's from the config. Example defintion
-     * in the config. This array will be used to perform group permission checks based on the
-     * luya\web\GroupUserIdentityInterface implemantions of `authGroups()`.
+     *            in the config. This array will be used to perform group permission checks based on the
+     *            luya\web\GroupUserIdentityInterface implemantions of `authGroups()`.
      *
      * ```
      * 'patient' => [

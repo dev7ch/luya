@@ -2,7 +2,7 @@
 use luya\admin\Module;
 use luya\admin\ngrest\aw\CallbackFormWidget;
 
-/**
+/*
  * @var $this \luya\admin\ngrest\base\ActiveWindowView
  * @var $form luya\admin\ngrest\aw\CallbackFormWidget
  */

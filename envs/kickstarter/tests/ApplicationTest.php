@@ -9,7 +9,7 @@ class ApplicationTest extends ServerTestCase
     public function getConfigArray()
     {
         return [
-            'id' => 'myapp',
+            'id'       => 'myapp',
             'basePath' => dirname(__DIR__),
         ];
     }

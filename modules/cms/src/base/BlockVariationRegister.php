@@ -29,8 +29,8 @@ use yii\helpers\Inflector;
  * VideoBlock::variations()
  *     ->add('bold', 'Bold Videos')->cfgs([])->register(),
  * ```
- * @author Basil Suter <basil@nadar.io>
  *
+ * @author Basil Suter <basil@nadar.io>
  */
 class BlockVariationRegister
 {
@@ -38,11 +38,11 @@ class BlockVariationRegister
      * @var \luya\cms\base\InternalBaseBlock Internal base block from where the BlockFlavor has been instantiatet.
      */
     protected $block;
-    
+
     private $_variations = [];
-    
+
     private $_tempIdentifier;
-    
+
     /**
      * @param InternalBaseBlock $block
      */
@@ -50,63 +50,71 @@ class BlockVariationRegister
     {
         $this->block = $block;
     }
-    
+
     /**
      * Register a new flavor.
      *
      * @param string $identifier
      * @param string $title
+     *
      * @return \luya\cms\base\BlockVariationRegister
      */
     public function add($identifier, $title)
     {
         $identifier = Inflector::slug($identifier);
         $this->_variations[$identifier] = [
-            'title' => $title,
-            'cfgs' => [],
-            'vars' => [],
+            'title'  => $title,
+            'cfgs'   => [],
+            'vars'   => [],
             'extras' => [],
         ];
         $this->_tempIdentifier = $identifier;
+
         return $this;
     }
-    
+
     /**
      * Flavor CFG variables.
      *
      * @param array $config
+     *
      * @return \luya\cms\base\BlockVariationRegister
      */
     public function cfgs(array $config)
     {
         $this->_variations[$this->_tempIdentifier]['cfgs'] = $config;
+
         return $this;
     }
-    
+
     /**
      * Flavor VAR variables.
      *
      * @param array $config
+     *
      * @return \luya\cms\base\BlockVariationRegister
      */
     public function vars(array $config)
     {
         $this->_variations[$this->_tempIdentifier]['vars'] = $config;
+
         return $this;
     }
-    
+
     /**
      * Flavor EXTRA variables.
      *
      * @param array $config
+     *
      * @return \luya\cms\base\BlockVariationRegister
      */
     public function extras(array $config)
     {
         $this->_variations[$this->_tempIdentifier]['extras'] = $config;
+
         return $this;
     }
-    
+
     /**
      * @return array
      */

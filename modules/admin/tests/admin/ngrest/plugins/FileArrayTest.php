@@ -3,10 +3,9 @@
 namespace admintests\admin\ngrest\plugins;
 
 use admintests\AdminTestCase;
-
-use yii\base\Event;
 use admintests\data\fixtures\UserFixture;
 use luya\admin\ngrest\plugins\FileArray;
+use yii\base\Event;
 
 class FileArrayTest extends AdminTestCase
 {
@@ -19,18 +18,17 @@ class FileArrayTest extends AdminTestCase
         $user->id = '{"en":[{"fileId":"70","caption":"A"},{"fileId":"69","caption":"B"}],"de":[],"fr":[]}';
         $event->sender = $user;
         $plugin = new FileArray([
-            'alias' => 'alias',
-            'name' => 'id',
-            'i18n' => true,
+            'alias'        => 'alias',
+            'name'         => 'id',
+            'i18n'         => true,
             'fileIterator' => true,
         ]);
-        
+
         $plugin->onFind($event);
-        
+
         $this->assertInstanceOf('\luya\admin\file\Iterator', $user->id);
     }
-    
-    
+
     public function testNotFileIteratorObject()
     {
         $event = new Event();
@@ -40,18 +38,17 @@ class FileArrayTest extends AdminTestCase
         $user->id = '{"en":[{"fileId":"70","caption":"A"},{"fileId":"69","caption":"B"}],"de":[],"fr":[]}';
         $event->sender = $user;
         $plugin = new FileArray([
-            'alias' => 'alias',
-            'name' => 'id',
-            'i18n' => true,
+            'alias'        => 'alias',
+            'name'         => 'id',
+            'i18n'         => true,
             'fileIterator' => false,
         ]);
-        
+
         $plugin->onFind($event);
-        
+
         $this->assertTrue(is_array($user->id));
     }
-    
-    
+
     public function testFileIteratorObjectNotI18n()
     {
         $event = new Event();
@@ -61,17 +58,17 @@ class FileArrayTest extends AdminTestCase
         $user->id = '[{"fileId":"70","caption":"A"},{"fileId":"69","caption":"B"}]';
         $event->sender = $user;
         $plugin = new FileArray([
-            'alias' => 'alias',
-            'name' => 'id',
-            'i18n' => false,
+            'alias'        => 'alias',
+            'name'         => 'id',
+            'i18n'         => false,
             'fileIterator' => true,
         ]);
-    
+
         $plugin->onFind($event);
-        
+
         $this->assertInstanceOf('\luya\admin\file\Iterator', $user->id);
     }
-    
+
     public function testFileIteratorObjectNotI18nEmptyValue()
     {
         $event = new Event();
@@ -81,17 +78,17 @@ class FileArrayTest extends AdminTestCase
         $user->id = '[]';
         $event->sender = $user;
         $plugin = new FileArray([
-            'alias' => 'alias',
-            'name' => 'id',
-            'i18n' => false,
+            'alias'        => 'alias',
+            'name'         => 'id',
+            'i18n'         => false,
             'fileIterator' => true,
         ]);
-    
+
         $plugin->onFind($event);
-    
+
         $this->assertSame([], $user->id);
     }
-    
+
     public function testNotFileIteratorObjectNotI18n()
     {
         $event = new Event();
@@ -101,14 +98,14 @@ class FileArrayTest extends AdminTestCase
         $user->id = '[{"fileId":"70","caption":"A"},{"fileId":"69","caption":"B"}]';
         $event->sender = $user;
         $plugin = new FileArray([
-            'alias' => 'alias',
-            'name' => 'id',
-            'i18n' => false,
+            'alias'        => 'alias',
+            'name'         => 'id',
+            'i18n'         => false,
             'fileIterator' => false,
         ]);
-    
+
         $plugin->onFind($event);
-    
+
         $this->assertTrue(is_array($user->id));
     }
 }

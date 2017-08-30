@@ -2,11 +2,10 @@
 
 namespace luya\admin\ngrest;
 
-use yii\base\Object;
-
-use luya\helpers\ArrayHelper;
 use luya\admin\Module;
+use luya\helpers\ArrayHelper;
 use yii\base\InvalidConfigException;
+use yii\base\Object;
 
 /**
  * Defines and holds an NgRest Config.
@@ -38,23 +37,23 @@ use yii\base\InvalidConfigException;
 class Config extends Object implements ConfigInterface
 {
     private $_config = [];
-    
+
     public function setConfig(array $config)
     {
         if (!empty($this->_config)) {
-            throw new InvalidConfigException("Unable to override an already provided Config.");
+            throw new InvalidConfigException('Unable to override an already provided Config.');
         }
-        
+
         $this->_config = $config;
     }
-    
+
     public function getConfig()
     {
         return $this->_config;
     }
-    
+
     private $_relations = [];
-    
+
     public function getRelataions()
     {
         return $this->_relations;
@@ -64,121 +63,121 @@ class Config extends Object implements ConfigInterface
     {
         $this->_relations = $relations;
     }
-    
+
     private $_apiEndpoint;
-    
+
     public function getApiEndpoint()
     {
         return $this->_apiEndpoint;
     }
-    
+
     public function setApiEndpoint($apiEndpoint)
     {
         $this->_apiEndpoint = $apiEndpoint;
     }
-    
+
     private $_attributeGroups = false;
-    
+
     public function getAttributeGroups()
     {
         return $this->_attributeGroups;
     }
-    
+
     public function setAttributeGroups(array $groups)
     {
         $this->_attributeGroups = $groups;
     }
-    
+
     private $_filters = false;
-    
+
     public function getFilters()
     {
         return $this->_filters;
     }
-    
+
     public function setFilters(array $filters)
     {
         $this->_filters = $filters;
     }
-    
+
     private $_defaultOrder;
-    
+
     public function getDefaultOrder()
     {
         return $this->_defaultOrder;
     }
-    
+
     public function setDefaultOrder($defaultOrder)
     {
         $this->_defaultOrder = $defaultOrder;
     }
-    
+
     private $_groupByField;
-    
+
     public function getGroupByField()
     {
         return $this->_groupByField;
     }
-    
+
     public function setGroupByField($groupByField)
     {
         $this->_groupByField = $groupByField;
     }
-    
+
     private $_tableName;
-    
+
     public function getTableName()
     {
         return $this->_tableName;
     }
-    
+
     public function setTableName($tableName)
     {
         $this->_tableName = $tableName;
     }
-    
+
     private $_primaryKey;
-    
+
     public function getPrimaryKey()
     {
         return $this->_primaryKey;
     }
-    
+
     public function setPrimaryKey($key)
     {
         $this->_primaryKey = $key;
     }
-    
+
     public function getDefaultOrderField()
     {
         if (!$this->getDefaultOrder()) {
             return false;
         }
-        
+
         return key($this->getDefaultOrder());
     }
-    
+
     public function getDefaultOrderDirection()
     {
         if (!$this->getDefaultOrder()) {
             return false;
         }
-        
+
         $direction = (is_array($this->getDefaultOrder())) ? current($this->getDefaultOrder()) : null; // us preg split to find in string?
 
         if ($direction == SORT_ASC || strtolower($direction) == 'asc') {
             return '+';
         }
-            
+
         if ($direction == SORT_DESC || strtolower($direction) == 'desc') {
             return '-';
         }
-        
+
         return '+';
     }
 
     private $_hash;
-    
+
     public function getHash()
     {
         if ($this->_hash === null) {
@@ -207,7 +206,7 @@ class Config extends Object implements ConfigInterface
     {
         return ($this->hasField($pointer, $field)) ? $this->_config[$pointer][$field] : false;
     }
-    
+
     public function getFields($pointer, array $fields)
     {
         $data = [];
@@ -216,11 +215,12 @@ class Config extends Object implements ConfigInterface
                 $data[$fieldName] = $this->getField($pointer, $fieldName);
             }
         }
+
         return $data;
     }
-    
+
     /**
-     * Get an option by its key from the options pointer. Define options like
+     * Get an option by its key from the options pointer. Define options like.
      *
      * ```php
      * $configBuilder->options = ['saveCallback' => 'console.log(this)'];
@@ -233,7 +233,8 @@ class Config extends Object implements ConfigInterface
      * ```
      *
      * @param unknown $key
-     * @return boolean
+     *
+     * @return bool
      */
     public function getOption($key)
     {
@@ -247,10 +248,10 @@ class Config extends Object implements ConfigInterface
         }
 
         $options = ArrayHelper::merge([
-            'name' => null,
-            'i18n' => false,
-            'alias' => null,
-            'type' => null,
+            'name'       => null,
+            'i18n'       => false,
+            'alias'      => null,
+            'type'       => null,
             'extraField' => false,
         ], $options);
 
@@ -285,7 +286,7 @@ class Config extends Object implements ConfigInterface
     }
 
     private $_plugins;
-    
+
     /**
      * @todo: combine getPlugins and getExtraFields()
      */
@@ -312,7 +313,7 @@ class Config extends Object implements ConfigInterface
     }
 
     private $_extraFields;
-    
+
     /**
      * @todo: combine getPlugins and getExtraFields()
      */
@@ -345,6 +346,7 @@ class Config extends Object implements ConfigInterface
                 $extraFields[] = $field['name'];
             }
         }
+
         return $extraFields;
     }
 
@@ -352,11 +354,11 @@ class Config extends Object implements ConfigInterface
     {
         if (!$this->hasField('list', $this->primaryKey)) {
             $this->addField('list', $this->primaryKey, [
-                'name' => $this->primaryKey,
+                'name'  => $this->primaryKey,
                 'alias' => Module::t('model_pk_id'),
-                'type' => [
+                'type'  => [
                     'class' => 'luya\admin\ngrest\plugins\Text',
-                    'args' => [],
+                    'args'  => [],
                 ],
             ]);
         }
