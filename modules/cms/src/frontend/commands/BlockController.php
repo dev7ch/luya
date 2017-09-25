@@ -22,49 +22,49 @@ class BlockController extends \luya\console\Command
      * @inheritdoc
      */
     public $defaultAction = 'create';
-    
+
     /**
      * @var string Type module
      */
     const TYPE_MODULE = 'module';
-    
+
     /**
      * @var string Type application block
      */
     const TYPE_APP = 'app';
-    
+
     /**
      * @var string The type of block, valid `app` (static::TYPE_APP) or `module` (static::TYPE_TMODULE) values.
      */
     public $type;
-    
+
     /**
      * @var string If type is `module` the name of the module must be provided with this $moduleName property.
      */
     public $moduleName;
-    
+
     /**
      * @var array Provide the configuration array which is inside the `config()` method of the block.
      */
     public $config;
-    
+
     /**
      * @var boolean Whether the block is a container/layout block or not this will enable/dsiable the $isContainer property
      */
     public $isContainer;
-    
+
     /**
      * @var boolean Whether the caching property should be displayed or not inside the block.
      */
     public $cacheEnabled;
-    
+
     /**
      * @var boolean If dry run is enabled the content of the block will be returned but no files will be created. This is usefull for unit testing.
      */
     public $dryRun = false;
-    
+
     private $_blockName;
-    
+
     /**
      * Setter method for $blockName, ensure the correct block name.
      *
@@ -75,10 +75,10 @@ class BlockController extends \luya\console\Command
         if (!StringHelper::endsWith($name, 'Block')) {
             $name .= 'Block';
         }
-        
+
         $this->_blockName = Inflector::camelize($name);
     }
-    
+
     /**
      * Getter method fro $blockName.
      *
@@ -88,22 +88,22 @@ class BlockController extends \luya\console\Command
     {
         return $this->_blockName;
     }
-    
+
     /**
      * @var array An array with the list of extras which are generated during the var creator process, example content `'foo' => 'value',`
      */
     public $extras = [];
-    
+
     /**
      * @var array An array with all phpdoc comments which should be added to the admin template, exmaple content `['{{extras.foobar}}']`.
      */
     public $phpdoc = [];
-    
+
     /**
      * @var array Am array with additional docblocks messages to render inside the view file.
      */
     public $viewFileDoc = [];
-    
+
     /**
      * Get an array with all modules where you can generate blocks for.
      *
@@ -121,57 +121,67 @@ class BlockController extends \luya\console\Command
 
     private function getVariableTypes()
     {
-        return [
-            'text' => 'Textinput',
-            'textarea' => 'Textarea multi rows input',
-            'password' => 'Passwort input field (hides the signs)',
-            'number' => 'Numbers allowed only',
-            'decimal' => 'Decimal Number Float',
-            'wysiwyg' => 'What you see is what you get Editor',
-            'select' => 'Dropdown Select',
-            'date' => 'Date Selector',
-            'datetime' => 'Date and Time selector',
-            'checkbox' => 'A single Checkbox',
-            'checkbox-array' => 'radio Buttons with several inputs',
-            'file-upload' => 'User can upload a single file',
-            'file-array-upload' => 'User can upload severals files',
-            'image-upload' => 'creata a image upload form and return the imageId on success',
-            'image-array-upload' => 'creates an asrray with image id an caption string',
-            'list-array' => 'Creates an array with a key variable value',
-            'table' => 'User can dynamic create tables (jsons)',
-            'link' => 'Generats a linkable internal or external resource (use Link Injector!)',
-            'cms-page' => 'Returns CMS page selection tree (only when cms is registered).',
-            'slug' => 'Slugified input field which allows only lower chars and - for url rules.',
-            'radio' => 'Generate radio inputs which allows to select and return a single value.',
-            'multiple-inputs' => 'Nesting all types inside an array.'
+        $variableTypes = [
+            '0' => 'text - Textinput',
+            '1' => 'textarea - Textarea multi rows input',
+            '2' => 'password - Passwort input field (hides the signs)',
+            '3' => 'number - Numbers allowed only',
+            '4' => 'decimal - Decimal Number Float',
+            '5' => 'wysiwyg - What you see is what you get Editor',
+            '6' => 'select - Dropdown Select',
+            //'double entry ? key 20 ?' => 'Radios Selection',
+
+            '7' => 'date - Date Selector',
+            '8' => 'datetime - Date and Time selector',
+            '9' => 'checkbox - A single Checkbox',
+            '10' => 'checkbox-array - radio Buttons with several inputs',
+            '11' => 'file-upload - User can upload a single file',
+            '12' => 'file-array-upload - User can upload severals files',
+            '13' => 'image-upload - creata a image upload form and return the imageId on success',
+            '14' => 'image-array-upload - creates an array with image id an caption string',
+            '15' => 'list-array - Creates an array with a key variable value',
+            '16' => 'table - User can dynamic create tables (jsons)',
+            '17' => 'link - Generates a linkable internal or external resource (use Link Injector!)',
+            '18' => 'cms-page - Returns CMS page selection tree (only when cms is registered).',
+            '19' => 'slug - Slugified input field which allows only lower chars and - for url rules.',
+            '20' => 'radio - Generate radio inputs which allows to select and return a single value.',
+            '21' => 'multiple-inputs - Nesting all types inside an array.'
         ];
+
+        foreach (array_values($variableTypes) as $i => $var) {
+
+            echo "[$i] - $var\n";
+        }
+
+        return $variableTypes;
+
     }
-    
+
     private function getVariableTypeInterfaceMap()
     {
         return [
-            'text' => 'self::TYPE_TEXT',
-            'textarea' => 'self::TYPE_TEXTAREA',
-            'password' => 'self::TYPE_PASSWORD',
-            'number' => 'self::TYPE_NUMBER',
-            'decimal' => 'self::TYPE_DECIMAL',
-            'wysiwyg' => 'self::TYPE_WYSIWYG',
-            'select' => 'self::TYPE_SELECT',
-            'date' => 'self::TYPE_DATE',
-            'datetime' => 'self::TYPE_DATETIME',
-            'checkbox' => 'self::TYPE_CHECKBOX',
-            'checkbox-array' => 'self::TYPE_CHECKBOX_ARRAY',
-            'file-upload' => 'self::TYPE_FILEUPLOAD',
-            'file-array-upload' => 'self::TYPE_FILEUPLOAD_ARRAY',
-            'image-upload' => 'self::TYPE_IMAGEUPLOAD',
-            'image-array-upload' => 'self::TYPE_IMAGEUPLOAD_ARRAY',
-            'list-array' => 'self::TYPE_LIST_ARRAY',
-            'table' => 'self::TYPE_TABLE',
-            'link' => 'self::TYPE_LINK',
-            'cms-page' => 'self::TYPE_CMS_PAGE',
-            'slug' => 'self::TYPE_SLUG',
-            'radio' => 'self::TYPE_RADIO',
-            'multiple-inputs' => 'self::TYPE_MULTIPLE_INPUTS',
+            '0' => 'self::TYPE_TEXT',
+            '1' => 'self::TYPE_TEXTAREA',
+            '2' => 'self::TYPE_PASSWORD',
+            '3' => 'self::TYPE_NUMBER',
+            '4' => 'self::TYPE_DECIMAL',
+            '5' => 'self::TYPE_WYSIWYG',
+            '6' => 'self::TYPE_SELECT',
+            '7' => 'self::TYPE_DATE',
+            '8' => 'self::TYPE_DATETIME',
+            '9' => 'self::TYPE_CHECKBOX',
+            '10' => 'self::TYPE_CHECKBOX_ARRAY',
+            '11' => 'self::TYPE_FILEUPLOAD',
+            '12' => 'self::TYPE_FILEUPLOAD_ARRAY',
+            '13' => 'self::TYPE_IMAGEUPLOAD',
+            '14' => 'self::TYPE_IMAGEUPLOAD_ARRAY',
+            '15' => 'self::TYPE_LIST_ARRAY',
+            '16' => 'self::TYPE_TABLE',
+            '17' => 'self::TYPE_LINK',
+            '18' => 'self::TYPE_CMS_PAGE',
+            '19' => 'self::TYPE_SLUG',
+            '20' => 'self::TYPE_RADIO',
+            '21' => 'self::TYPE_MULTIPLE_INPUTS',
         ];
     }
 
@@ -186,7 +196,7 @@ class BlockController extends \luya\console\Command
             'radio' => "BlockHelper::radioArrayOption([1 => 'Label for 1'])",
         ];
     }
-    
+
     private function getExtraVarDef($type, $varName, $func)
     {
         $info = [
@@ -206,11 +216,11 @@ class BlockController extends \luya\console\Command
                 return 'Yii::$app->menu->findOne([\'nav_id\' => $this->'.$func.'(\''.$varName.'\', 0)]),';
             },
         ];
-        
+
         if (array_key_exists($type, $info)) {
             return "'".$varName."' => ".$info[$type]($varName);
         }
-        
+
         return false;
     }
 
@@ -231,17 +241,17 @@ class BlockController extends \luya\console\Command
         $this->output(PHP_EOL.'-> Create new '.$prefix, Console::FG_YELLOW);
         $name = $this->prompt('Variable Name:', ['required' => true]);
         $label = $this->prompt('End-User Label:', ['required' => true]);
-    
+
         $v = [
             'var' => Inflector::variablize($name),
             'label' => $label,
         ];
-    
+
         $this->output('Added '.$prefix.PHP_EOL, Console::FG_GREEN);
-    
+
         return $v;
     }
-    
+
     /**
      * Create a variable based of user input.
      *
@@ -255,36 +265,36 @@ class BlockController extends \luya\console\Command
         $name = $this->prompt('Variable Name:', ['required' => true]);
         $label = $this->prompt('End-User Label:', ['required' => true]);
         $type = $this->select('Variable Type:', $this->getVariableTypes());
-    
+
         $v = [
             'var' => Inflector::variablize($name),
             'label' => $label,
             'type' => $this->getVariableTypeInterfaceMap()[$type],
         ];
-    
+
         if ($this->hasVariableTypeOption($type)) {
             $v['options'] = $this->getVariableTypeOption($type);
         }
-    
+
         if ($typeCast == 'var') {
             $func = 'getVarValue';
         } else {
             $func = 'getCfgValue';
         }
-    
+
         $extra = $this->getExtraVarDef($type, $v['var'], $func);
-    
+
         if ($extra !== false) {
             $this->phpdoc[] = '{{extras.'.$v['var'].'}}';
             $this->viewFileDoc[] = '$this->extraValue(\''.$v['var'].'\');';
             $this->extras[] = $extra;
         }
-    
+
         $this->output('Added '.$prefix.PHP_EOL, Console::FG_GREEN);
-    
+
         return $v;
     }
-    
+
     /**
      * Get the file namespace based on its type.
      *
@@ -309,10 +319,10 @@ class BlockController extends \luya\console\Command
         if ($this->type == self::TYPE_APP) {
             return Yii::$app->basePath;
         }
-        
+
         return Yii::$app->getModule($this->moduleName)->getBasePath();
     }
-    
+
     /**
      * Generate the view file for the block.
      *
@@ -328,7 +338,7 @@ class BlockController extends \luya\console\Command
             'luyaText' => $this->getGeneratorText('block/create'),
         ]);
     }
-    
+
     /**
      * Wizzard to create a new CMS block.
      *
@@ -355,22 +365,22 @@ class BlockController extends \luya\console\Command
         if (empty($this->blockName)) {
             $this->blockName = $this->prompt('Insert a name for your Block (e.g. HeadTeaser):', ['required' => true]);
         }
-        
+
         if ($this->isContainer === null) {
             $this->isContainer = $this->confirm("Do you want to add placeholders to your block that serve as a container for nested blocks?", false);
         }
-        
+
         if ($this->cacheEnabled === null) {
             $this->cacheEnabled = $this->confirm("Do you want to enable the caching for this block or not?", true);
         }
-        
+
         if ($this->config === null) {
             $this->config = [
                 'vars' => [], 'cfgs' => [], 'placeholders' => [],
             ];
-    
+
             $doConfigure = $this->confirm('Would you like to configure this Block? (vars, cfgs, placeholders)', false);
-    
+
             if ($doConfigure) {
                 $doVars = $this->confirm('Add new Variable (vars)?', false);
                 $i = 1;
@@ -404,12 +414,12 @@ class BlockController extends \luya\console\Command
                 }
             }
         }
-        
+
         $folder = $this->getFileBasePath() . DIRECTORY_SEPARATOR . 'blocks';
         $filePath = $folder . DIRECTORY_SEPARATOR . $this->blockName . '.php';
-        
+
         sort($this->phpdoc);
-        
+
         $content = $this->view->render('@cms/views/commands/block/create_block', [
             'namespace' => $this->getFileNamespace(),
             'className' => $this->blockName,
@@ -427,9 +437,9 @@ class BlockController extends \luya\console\Command
         if ($this->dryRun) {
             return $content;
         }
-        
+
         if (FileHelper::createDirectory($folder) && FileHelper::writeFile($filePath, $content)) {
-            
+
             // generate view file based on block object view context
             $object = Yii::createObject(['class' => $this->getFileNamespace() . '\\' . $this->blockName]);
             $viewsFolder = Yii::getAlias($object->getViewPath());
@@ -437,10 +447,10 @@ class BlockController extends \luya\console\Command
             if (FileHelper::createDirectory($viewsFolder) && FileHelper::writeFile($viewFilePath, $this->generateViewFile($this->blockName))) {
                 $this->outputInfo('View file for the block has been created: ' . $viewFilePath);
             }
-            
+
             return $this->outputSuccess("Block {$this->blockName} has been created: " . $filePath);
         }
-        
+
         return $this->outputError("Error while creating block '$filePath'");
     }
 }
