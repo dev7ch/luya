@@ -48,15 +48,14 @@ class LoginController extends Controller
         }
        
         $this->registerAsset('\luya\admin\assets\Login');
-        
+
         $this->view->registerJs("
-        	$('#email').focus(); 
-        	checkInputLabels();
+            loginInit();
         	observeLogin('#loginForm', '".Url::toAjax('admin/login/async')."', '".Url::toAjax('admin/login/async-token')."');
-        ");
-    
+        ", \yii\web\View::POS_LOAD);
+
         UserOnline::clearList();
-        
+
         return $this->render('index');
     }
     

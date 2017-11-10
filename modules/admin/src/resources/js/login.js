@@ -75,7 +75,7 @@ var observeLogin = function (form, url, secureUrl) {
                 }
             },
             dataType: "json"
-        })
+        });
     });
 
     $('#abortToken').click(function (e) {
@@ -112,10 +112,11 @@ var checkInputLabels = function () {
     });
 };
 
-$(window).on('load', function () {
-    $('.login-logo').addClass('login-logo-loaded');
-    $('.login-form').addClass('login-form-loaded');
-    checkInputLabels();
-});
+function loginInit() {
+        $('.login-logo').addClass('login-logo-loaded');
+        $('.login-form').addClass('login-form-loaded');
+        $('#email').focus();
+        checkInputLabels();
+}
 
 

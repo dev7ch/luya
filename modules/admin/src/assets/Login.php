@@ -10,6 +10,7 @@ namespace luya\admin\assets;
  */
 class Login extends \luya\web\Asset
 {
+
     /**
      * @var string The path to the folder where the files of this asset are located.
      */
@@ -28,12 +29,19 @@ class Login extends \luya\web\Asset
      */
     public $js = [
         'dist/js/login.js',
+        //'js/login.init.js',
+    ];
+
+    public $jsOptions = [
+        'position' => \luya\web\View::POS_LOAD
     ];
 
     /**
      * @var array A list of asset files on where this asset file depends on, it means the current files will be included after the depending files.
      */
     public $depends = [
-        'luya\admin\assets\Jquery',
+        'yii\web\JqueryAsset',
     ];
+
+
 }
